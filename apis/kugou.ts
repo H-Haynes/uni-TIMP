@@ -46,3 +46,21 @@ export const getAlbumListKG = (type:string,page = 1) => {
 		method:'GET'
 	})
 };
+
+/**
+ * 获取歌单详情
+ */
+export const getAlbumDetailKG = (id: string) => {
+    return request({
+		url:`${prefix}/kugou/albumInfo?albumId=${id}`,
+		methods:'GET'
+	})
+};
+
+// 获取排行榜音乐列表
+export const getRankMusicListKG = (id:string|number) => {
+    return request({
+		url:`${prefix}/kugou/rank/info?rankid=${id}`,
+		method:'GET'
+	})
+};

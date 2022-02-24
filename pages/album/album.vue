@@ -41,6 +41,7 @@
 	import {getAlbumDetailWy}  from '@/apis/netease';
 	import {getAlbumDetailQQ,getRankDetailQQ}  from '@/apis/qq';
 	import {getAlbumDetailKW,getRankMusicListKW,getRankListKW} from '@/apis/kuwo';
+	import {getAlbumDetailKG,getRankMusicListKG} from '@/apis/kugou';
 	import {ref,watch,inject} from 'vue';
 	import {onLoad,} from '@dcloudio/uni-app' 
 	import wLoading from "@/components/w-loading/w-loading.vue"
@@ -177,6 +178,31 @@
 	  }
 	};
 	
+	const getKGAlbum = async (id:string) => {
+	  const result = await getAlbumDetailKG(id);
+	  if(result.data.info.list){
+	    let {specialname:name,intro:desc,imgurl:pic,publishtime:updateTime,user_avatar:avatar,nickname} = result.data.info.list;
+	    pic = pic.replace('{size}', '400');
+	    albumInfo.value = {name,desc,pic,updateTime,avatar,nickname};
+	  }
+	  if(result.data.list.list.info){
+	    songList.value = result.data.list.list.info.map(ele=>({
+	      name:ele.filename.split('-')[1].trim(),
+	      id:ele.hash,
+	      mv:ele.mvhash || undefined,
+	      time:ele.duration * 1000,
+	      album:'',
+	      pic:'',
+	      author:[
+	        {
+	          nickname:ele.filename.split('-')[0],
+	          id:0,
+	        },
+	      ],
+	    }));
+	  }
+	};
+	
 	const getKWRankDetail = async(id:number|string) => {
 		
 	  try{
@@ -265,6 +291,32 @@
 		}
 	};
 	
+	const getKGRankDetail = async(id:number|string) => {
+	  const result = await getRankMusicListKG(id);
+	  if(result.data.info){
+	    let {rankname:name,intro:desc,imgurl:pic,updateTime,img_cover:avatar,nickname} = result.data.info;
+	    pic = pic.replace('{size}', '400');
+	    avatar = avatar.replace('{size}', '400');
+	    albumInfo.value = {name,desc,pic,updateTime,avatar,nickname};
+	    let list = [];
+	    if(result.data.songs.list){
+	      list = result.data.songs.list.map(ele=>({
+	        name:ele.filename.split('-')[1].trim(),
+	        id:ele.hash,
+	        mv:ele.mvhash || undefined,
+	        time:ele.duration * 1000,
+	        album:ele.filename.split('-')[1].trim(),
+	        pic:'',
+	        author:[{
+	          nickname:ele.filename.split('-')[0],
+	          id:Math.random().toString(36).substr(2),
+	        }],
+	      }));
+	    }
+	    songList.value = list;
+	  }
+	};
+	
 	const getAlbumInfo = async() =>{
 		
 		if(platform.value == 1){
@@ -280,6 +332,12 @@
 				await getKWRankDetail(albumId.value);
 			}else{
 				await getKWAlbum(albumId.value);
+			}
+		}else if(platform.value == 4){
+			if(isRank.value){
+				await getKGRankDetail(albumId.value);
+			}else{
+				await getKGAlbum(albumId.value);
 			}
 		}
 	}
