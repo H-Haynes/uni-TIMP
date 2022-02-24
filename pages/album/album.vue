@@ -8,9 +8,9 @@
 				<view class="flex flex-shrink-0 items-center mt-2 justify-between">
 					<view class="flex items-center">
 						<image class="w-6 h-6 mr-2 rounded-full" :src="albumInfo.avatar || defaultImg" />
-						<text class="text-xs text-purple-500">{{albumInfo.nickname}}</text>
+						<text class="text-xs text-purple-500 truncate">{{albumInfo.nickname}}</text>
 					</view>
-					<text class="text-xs text-gray-400">{{$filters.dateFormat(albumInfo.updateTime)}}</text>
+					<text class="text-xs text-gray-400 truncate">{{$filters.dateFormat(albumInfo.updateTime)}}</text>
 				</view>
 				<scroll-view scroll-y class="text-xs flex-1 h-14 text-gray-500  mt-2">
 					<text v-html="albumInfo.desc"></text>
@@ -39,6 +39,7 @@
 
 <script setup lang="ts">
 	import {getAlbumDetailWy}  from '@/apis/netease';
+	import {getAlbumDetailQQ}  from '@/apis/qq';
 	import {ref,watch,inject} from 'vue';
 	import {onLoad,} from '@dcloudio/uni-app' 
 	import wLoading from "@/components/w-loading/w-loading.vue"
@@ -63,41 +64,87 @@
 		albumId.value = +params.id;
 		isRank.value = Boolean(+params.rank);
 	})
-	const getAlbumInfo = () =>{
+	
+	const getWyAlbum = async (id:string) => {
 		loading.value = true;
-		if(platform.value == 1){
-			getAlbumDetailWy(albumId.value).then(res=>{
-				if(res.data.code === 200){
-					const {
-						name,
-						updateTime,
-						description:desc,
-						coverImgUrl:pic,
-					} = res.data.playlist; 
-					const {nickname,avatarUrl:avatar} = res.data.playlist.creator
-					albumInfo.value = {
-						name,
-						updateTime,
-						pic,
-						desc,
-						nickname,
-						avatar
-					}
-					songList.value = res.data.playlist.tracks.map(ele=>({
-						name:ele.name,
-						time:ele.dt,
-						id:ele.id,
-						mv:ele.mv,
-						album:ele.al.name || ele.name,
-						author:ele.ar.map(e=>({
-							nickname:e.name,
-							id:e.id
-						}))
-					}))
+		try{
+			const res = await getAlbumDetailWy(id);
+			if(res.data.code === 200){
+				const {
+					name,
+					updateTime,
+					description:desc,
+					coverImgUrl:pic,
+				} = res.data.playlist; 
+				const {nickname,avatarUrl:avatar} = res.data.playlist.creator
+				albumInfo.value = {
+					name,
+					updateTime,
+					pic,
+					desc,
+					nickname,
+					avatar
 				}
-			}).finally(()=>{
-				loading.value = false;
-			})
+				songList.value = res.data.playlist.tracks.map(ele=>({
+					name:ele.name,
+					time:ele.dt,
+					id:ele.id,
+					mv:ele.mv,
+					album:ele.al.name || ele.name,
+					author:ele.ar.map(e=>({
+						nickname:e.name,
+						id:e.id
+					}))
+				}))
+			}
+			loading.value = false;
+		}catch{
+			loading.value = false;
+		}
+	}
+	
+	const getQQAlbum = async (id:string) => {
+		loading.value = true;
+		const result = await getAlbumDetailQQ(id);
+		if(result.data.response.code === 0){
+		    let {
+				dissname:name,
+				desc,
+				logo: pic,
+				ctime:updateTime,
+				headurl:avatar,
+				nickname
+			} = result.data.response.cdlist[0];
+		    updateTime *= 1000;
+		    albumInfo.value = {
+				name,
+				id,
+				desc,
+				pic,
+				updateTime,
+				avatar,
+				nickname
+			};
+		    songList.value = result.data.response.cdlist[0].songlist.map((ele:any)=>({
+				name:ele.name,
+				id:ele.mid,
+				mv:ele.mv.vid || undefined,
+				time:ele.interval * 1000,
+				album:ele.album.name,
+				pic:ele.album.picUrl,
+				author:ele.singer.map((el:any)=>({
+					nickname:el.name,
+					id:el.id,
+				})),
+		    }));
+		}
+	}
+	
+	const getAlbumInfo = async() =>{
+		if(platform.value == 1){
+			await getWyAlbum(albumId.value);
+		}else if(platform.value == 2){
+			await getQQAlbum(albumId.value);
 		}
 	}
 	

@@ -113,7 +113,7 @@
 	// 前往歌单详情
 	const detail = (e) => {
 		uni.navigateTo({
-			url:`/pages/album/album?type=1&id=${e.id}&rank=${e.rank||0}`
+			url:`/pages/album/album?type=2&id=${e.id}&rank=${e.rank||0}`
 		})
 	}
 	watch([()=>currentCategory.value,()=>page.value],()=>{
