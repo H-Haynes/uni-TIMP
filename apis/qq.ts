@@ -56,5 +56,16 @@ export const getAlbumDetailQQ = (id: string) => {
 	})
 };
 
+/**
+ * 获取QQ音乐排行榜详情
+ */
+
+export const getRankDetailQQ = (id:number) => {
+    return request({
+		url:`${prefix}/getRanks?topId=${id}&limit=100`,
+		method:'GET'
+	})
+};
+
 
 

@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 	import {getAlbumDetailWy}  from '@/apis/netease';
-	import {getAlbumDetailQQ}  from '@/apis/qq';
+	import {getAlbumDetailQQ,getRankDetailQQ}  from '@/apis/qq';
 	import {getAlbumDetailKW,getRankMusicListKW,getRankListKW} from '@/apis/kuwo';
 	import {ref,watch,inject} from 'vue';
 	import {onLoad,} from '@dcloudio/uni-app' 
@@ -221,12 +221,60 @@
 	  
 	};
 	
+	const getQQRankDetail = async(id:number) => {
+	  try{
+		  loading.value = true;
+		  const result = await getRankDetailQQ(id);
+		  if(result.data.response.code === 0){
+			let {title:name,titleShare:desc,frontPicUrl: pic,updateTime:updateTime,topAlbumURL:avatar,AdShareContent:nickname} = result.data.response.req_1.data.data;
+			albumInfo.value = {name,desc,pic,updateTime,avatar,nickname};
+			let list = [];
+			if(result.data.response.req_1.data.songInfoList.length>0){
+			  list = result.data.response.req_1.data.songInfoList.map(ele=>({
+					name:ele.name,
+					id:ele.mid,
+					mv:ele.mv.vid || undefined,
+					time:ele.interval * 1000,
+					album:ele.album.name,
+					pic:ele.album.picUrl,
+					author:ele.singer.map((el:any)=>({
+						nickname:el.name,
+						id:el.id,
+					})),
+			  }));
+			}else{
+			  list = result.data.response.req_1.data.data.song.map(ele=>({
+					name:ele.title,
+					id:ele.songId,
+					albumMid:ele.albumMid,
+					mv:ele.vid || undefined,
+					time:null,
+					album:ele.title,
+					pic:ele.cover,
+					author:[{
+					  nickname:ele.singerName,
+					  id:ele.singerMid,
+					}],
+			  }));
+			}
+			songList.value = list;
+		  }
+		  loading.value = false;
+		}catch{
+		  loading.value = false;
+		}
+	};
+	
 	const getAlbumInfo = async() =>{
 		
 		if(platform.value == 1){
 			await getWyAlbum(albumId.value);
 		}else if(platform.value == 2){
-			await getQQAlbum(albumId.value);
+			if(isRank.value){
+				await getQQRankDetail(albumId.value);
+			}else{
+				await getQQAlbum(albumId.value);
+			}
 		}else if(platform.value == 3){
 			if(isRank.value){
 				await getKWRankDetail(albumId.value);
