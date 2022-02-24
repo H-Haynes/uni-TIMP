@@ -13,10 +13,10 @@
 			<view @click="platform=4"  :class="{'linear-text font-bold border-b-2 border-purple-500':platform === 4}" class="inline-block text-base mx-3">酷我音乐</view>
 		</scroll-view>
 
-		<view class="flex-1 overflow-y-scroll pb-12">
-			<keep-alive>
-				<component :is="platformComp"></component>
-			</keep-alive>
+		<view class="flex-1 overflow-hidden pb-12">
+			<!-- <keep-alive> -->
+				<component :key="platform" :is="platformComp"></component>
+			<!-- </keep-alive> -->
 		</view>
 		<timp-audio></timp-audio>
 	</view>

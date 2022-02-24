@@ -7,7 +7,7 @@ const request = promisify(uni.request);
  */
 export const getRecommendWy = () => {
 	return request({
-		url:`${prefix}/personalized?page=2`,
+		url:`${prefix}/personalized?limit=120`,
 		method:'GET',
 	});
 }
@@ -32,4 +32,27 @@ export const getCategoryListWy = () => {
 		url:`${prefix}/playlist/catlist/hot`,
 		methods:'GET'
 	})
+};
+
+
+/**
+ * 获取网易歌单列表
+ * @param type 分类名称
+ * @param page 分页
+ */
+export const getAlbumListWy = (type:string,page = 1) => {
+    return request({
+		url:`${prefix}/top/playlist?cat=${type}&offset=${(page-1) * 50}`,
+		method:'GET'
+	})
+};
+
+/**
+ * 获取网易排行榜列表
+ */
+export const getRankListWy = () => {
+    return request({
+		url:`${prefix}/toplist`,
+		method:'GET'
+	});
 };
