@@ -9,8 +9,8 @@
 			<view @click="platform=0" :class="{'linear-text font-bold border-b-2  border-purple-500':platform === 0}" class="inline-block text-base mx-3">我的</view>
 			<view @click="platform=1" :class="{'linear-text font-bold border-b-2 border-purple-500':platform === 1}" class="inline-block text-base mx-3">网易云音乐</view>
 			<view @click="platform=2"  :class="{'linear-text font-bold border-b-2 border-purple-500':platform === 2}" class="inline-block text-base mx-3">QQ音乐</view>
-			<view @click="platform=3"  :class="{'linear-text font-bold border-b-2 border-purple-500':platform === 3}" class="inline-block text-base mx-3">酷狗音乐</view>
-			<view @click="platform=4"  :class="{'linear-text font-bold border-b-2 border-purple-500':platform === 4}" class="inline-block text-base mx-3">酷我音乐</view>
+			<view @click="platform=3"  :class="{'linear-text font-bold border-b-2 border-purple-500':platform === 3}" class="inline-block text-base mx-3">酷我音乐</view>
+			<view @click="platform=4"  :class="{'linear-text font-bold border-b-2 border-purple-500':platform === 4}" class="inline-block text-base mx-3">酷狗音乐</view>
 		</scroll-view>
 
 		<view class="flex-1 overflow-hidden pb-12">

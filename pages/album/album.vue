@@ -40,6 +40,7 @@
 <script setup lang="ts">
 	import {getAlbumDetailWy}  from '@/apis/netease';
 	import {getAlbumDetailQQ}  from '@/apis/qq';
+	import {getAlbumDetailKW} from '@/apis/kuwo';
 	import {ref,watch,inject} from 'vue';
 	import {onLoad,} from '@dcloudio/uni-app' 
 	import wLoading from "@/components/w-loading/w-loading.vue"
@@ -140,11 +141,49 @@
 		}
 	}
 	
+	const getKWAlbum = async(id:string) =>{
+	  const res = await getAlbumDetailKW(id);
+	  if(res.data.code === 200){
+	    const {
+			name,
+			info:desc,
+			img: pic,
+			updateTime,
+			uPic: avatar,
+			userName:nickname
+		} = res.data.data;
+	    albumInfo.value = {
+			name,
+			desc,
+			pic,
+			updateTime,
+			avatar,nickname
+		};
+	    songList.value = res.data.data.musicList.map((ele:any)=>{
+	          return {
+				  name:ele.name,
+				  id:ele.rid,
+				  mv:ele.mvpayinfo.vid,
+				  time:ele.duration*1000,
+				  album:ele.album,
+				  pic:ele.pic,
+	              author:[{
+	                      nickname:ele.artist,
+	                      id:ele.artistid,
+	              }],
+	              
+	          };
+	    });
+	  }
+	};
+	
 	const getAlbumInfo = async() =>{
 		if(platform.value == 1){
 			await getWyAlbum(albumId.value);
 		}else if(platform.value == 2){
 			await getQQAlbum(albumId.value);
+		}else if(platform.value == 3){
+			await getKWAlbum(albumId.value);
 		}
 	}
 	

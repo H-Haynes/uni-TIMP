@@ -55,3 +55,22 @@ export const getAlbumListKW = (type:string,page = 1) => {
 		method:'GET'
 	})
 };
+
+/**
+ * 获取歌单详情
+ */
+export const getAlbumDetailKW = (id: string) => {
+    return request({
+		url:`${prefix}/kuwo/musicList?pid=${id}`,
+		methods:'GET'
+	})
+};
+
+// 获取排行榜音乐列表
+export const getRankMusicListKW = (id:string|number) => {
+    return request({
+		url:`${prefix}/kuwo/rank/musicList?bangId=${id}&rn=100`,
+		method:'GET'
+	})
+};
+
