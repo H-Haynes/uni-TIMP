@@ -21,4 +21,16 @@
 
 <style>
 	/*每个页面公共css */
+	uni-page-body{
+		overflow: hidden;
+		height:100vh;
+	}
+	.linear-text{
+		background-image:linear-gradient(to right,rgb(106,177,214),rgb(93,125,220),rgb(140,105,230));
+		-webkit-background-clip:text; 
+		-webkit-text-fill-color:transparent;
+	}
+	.linear-bg{
+		background-image:linear-gradient(to right,rgb(106,177,214),rgb(93,125,220),rgb(140,105,230));
+	}
 </style>
