@@ -4,9 +4,9 @@
 		<my-banner scaleY="1.1" scaleX="1.1" @bannerClick="handleBannerClick" :bannerList="bannerList"></my-banner>
 		<view class="mb-3 px-2">
 			<text @click="changeCategory(0)" :class="{'current-category border-gray-100':currentCategory === 0}"  class="inline-block text-sm text-red-500 border border-red-500 mr-1 px-2 mb-2">排行榜</text>
-			<text @click="changeCategory(category.id)" :class="{'current-category':currentCategory === category.id}" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2" v-for="category in categoryList.slice(0,10)" :key="category.id">{{category.name}}</text>
+			<text @click="changeCategory(category.id)" :class="{'current-category':currentCategory === category.id}" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2" v-for="category in categoryList.slice(0,10)" :key="category.name">{{category.name}}</text>
 
-			<text @click="changeCategory(category.id)" :class="{'current-category':currentCategory === category.id}" v-show="showAllCategory" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2" v-for="category in categoryList.slice(10,categoryList.length-1)" :key="category.id">{{category.name}}</text>
+			<text @click="changeCategory(category.id)" :class="{'current-category':currentCategory === category.id}" v-show="showAllCategory" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2" v-for="category in categoryList.slice(10,categoryList.length-1)" :key="category.name">{{category.name}}</text>
 
 			<text v-show="!showAllCategory" @click="showAllCategory=true" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2">···</text>
 			<text v-show="showAllCategory" @click="showAllCategory=false" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2">收起</text>
@@ -24,7 +24,7 @@
 <script setup lang="ts">
 	import wLoading from "../components/w-loading/w-loading.vue"
 
-	import {getRecommendWy,getBannerWy,getCategoryListWy,getAlbumListWy,getRankListWy} from '../apis/netease';
+	import {getRecommendQQ,getCategoryListQQ,getRankListQQ,getAlbumListQQ} from '@/apis/qq';
 	import myBanner from '../components/EtherealWheat-banner/specialBanner.vue';
 	import {ref,toRaw,watch} from 'vue'
 	const albumList = ref([]);
@@ -35,50 +35,48 @@
 	const page = ref(1);
 	const loading = ref(false);
 	const loadingRef = ref(null);
-	//获取推荐歌单
-	getRecommendWy().then(res=>{
-		if(res.data.result){
-			albumList.value = res.data.result.map(ele=>({
-				name:ele.name,
-				pic:ele.picUrl,
-				id:ele.id,
+	//获取推荐歌单/轮播图
+	getRecommendQQ().then(res=>{
+		if(res.data.response.code === 0){
+			albumList.value = res.data.response.playlist.data.v_playlist.map(ele=>({
+				name:ele.title,
+				pic:ele.cover_url_medium,
+				id:ele.tid,
 			}))
-		}
-	})
-	//获取banner列表
-	getBannerWy().then(res=>{
-		if(res.data.code === 200){
-			bannerList.value = res.data.banners.map(ele=>({
-				pic:ele.imageUrl,
-				type:ele.targetType === 1 ? 1 : 2 ,// 1为歌曲2 为其他类型，暂时忽略
-				id:ele.targetId
-			}))
+			bannerList.value = res.data.response.focus.data.content.map(ele=>({
+			  pic:ele.pic_info.url,
+			  id:ele.jump_info.url,
+			  type:ele.type === 10002 ? 1 : 2, // 1为音乐 2为歌单
+			}));
 		}
 	})
 	
 	// 获取歌单分类
-	getCategoryListWy().then(res=>{
-		if(res.data.code === 200){
-			categoryList.value = res.data.sub.map(ele=>({
-				id:ele.name,
-				name:ele.name,
-				type:1
-			}))
+	getCategoryListQQ().then(res=>{
+		if(res.data.response.code === 0){
+			let list = res.data.response.data.categories.map(ele=>{
+			  return ele.items.map(e=>({
+				name:e.categoryName,
+				id:e.categoryId,
+				type:2
+			  }));
+			});
+			categoryList.value = list.reduce((pre,cur)=>pre.concat(cur),[]);
 		}
 	})
 	
 	const handleBannerClick = (e) =>{
 		console.log(toRaw(e))
 	}
-	// 获取网易排行榜
+	// 获取QQ音乐排行榜
 	const getRankList = () => {
 		loading.value = true;
-		getRankListWy().then(res=>{
-			if(res.data.code === 200){
-				albumList.value = res.data.list.map(ele=>({
-					name:ele.name,
+		getRankListQQ().then(res=>{
+			if(res.data.response.code === 0){
+				albumList.value = res.data.response.data.topList.map(ele=>({
+					name:ele.topTitle,
 					id:ele.id,
-					pic:ele.coverImgUrl,
+					pic:ele.picUrl,
 					rank:1
 				}))
 			}
@@ -97,18 +95,20 @@
 		page.value = pageNum;
 		currentCategory.value = category;
 		loading.value = true;
-		const albumListResult = await getAlbumListWy(category,pageNum);
-		if(albumListResult.data.code === 200){
-		  const list = albumListResult.data.playlists.map(ele=>{
-			return {
-			  id:ele.id,
-			  name:ele.name,
-			  pic:ele.coverImgUrl,
-			};
-		  });
-		  albumList.value = pageNum == 1 ? list : albumList.value.concat(list); // 不是第一页则进行拼接
+		try{
+			const albumListResult = await getAlbumListQQ(category,pageNum);
+			if(albumListResult.data.response.code === 0){
+			  const list = albumListResult.data.response.data.list.map(ele=>({
+				  id:ele.dissid,
+				  name:ele.dissname,
+				  pic:ele.imgurl,
+			  }));
+			  albumList.value = pageNum == 1 ? list : albumList.value.concat(list); // 不是第一页则进行拼接
+			}
+			loading.value = false;
+		}catch{
+			loading.value = false;
 		}
-		loading.value = false;
 	};
 	// 前往歌单详情
 	const detail = (e) => {

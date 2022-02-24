@@ -25,8 +25,8 @@
 				</uni-tr>
 				<uni-tr v-for="song in songList" :key="song.id">
 						<uni-td class="flex flex-col">
-							<view class="text-sm font-bold truncate">{{song.name}}</view>
-							<text class="text-xs truncate">{{song.author.map(ele=>ele.nickname).join('/')}} - {{song.album}}</text>
+							<view class="text-sm font-bold ">{{song.name}}</view>
+							<text class="text-xs ">{{song.author.map(ele=>ele.nickname).join('/')}} - {{song.album}}</text>
 						</uni-td>
 						<uni-td align="right">
 							<text class="inline-block iconfont icon-gengduomore10  mr-2"></text>

@@ -23,15 +23,17 @@
 </template>
 
 <script setup>
-	import TimpAudio from "../../components/TimpAudio.vue"
-	import mine from '../../components/mine.vue'
-	import NeteaseList from '../../components/NeteaseList.vue'
+	import TimpAudio from "@/components/TimpAudio.vue"
+	import mine from '@/components/mine.vue'
+	import NeteaseList from '@/components/NeteaseList.vue'
+	import QQList from '@/components/QQList.vue'
 	import {ref,computed} from 'vue';
-	const platform = ref(1);
+	const platform = ref(2);
 	const platformComp = computed(()=>{
 		switch(platform.value){
 			case 0: return mine;
 			case 1: return NeteaseList;
+			case 2: return QQList;
 			default: return mine;
 		}
 	})
