@@ -40,7 +40,7 @@
 <script setup lang="ts">
 	import {getAlbumDetailWy}  from '@/apis/netease';
 	import {getAlbumDetailQQ}  from '@/apis/qq';
-	import {getAlbumDetailKW} from '@/apis/kuwo';
+	import {getAlbumDetailKW,getRankMusicListKW,getRankListKW} from '@/apis/kuwo';
 	import {ref,watch,inject} from 'vue';
 	import {onLoad,} from '@dcloudio/uni-app' 
 	import wLoading from "@/components/w-loading/w-loading.vue"
@@ -62,8 +62,8 @@
 	const songList = ref([])
 	onLoad(params=>{
 		platform.value = +params.type;
-		albumId.value = +params.id;
 		isRank.value = Boolean(+params.rank);
+		albumId.value = +params.id;
 	})
 	
 	const getWyAlbum = async (id:string) => {
@@ -177,13 +177,62 @@
 	  }
 	};
 	
+	const getKWRankDetail = async(id:number|string) => {
+		
+	  try{
+		  loading.value=true;
+		  const result = await getRankMusicListKW(id);
+		  if(result.data.code === 200){
+			songList.value = result.data.data.musicList.map(ele=>({
+			  name:ele.name,
+			  id:ele.musicrid,
+			  mv:ele.mvpayinfo.vid,
+			  time:ele.duration*1000,
+			  album:ele.album,
+			  pic:ele.pic,
+			  author:[{
+				nickname:ele.artist,
+				id:ele.artistid,
+			  }],
+			}));
+		  }
+		  // 从排行榜列表获取到相关描述
+		  const rankListResult = await getRankListKW();
+		  if(rankListResult.data.code === 200){
+			let rankList = rankListResult.data.data.reduce((prev,cur)=>{
+				return prev.concat(cur.list);
+			},[]);
+			let rank = rankList.find(ele=>ele.sourceid == id);
+
+			let {name,intro:desc,pic,updateTime,pic:avatar,nickname} = rank;
+			albumInfo.value = {
+				name,
+				desc,
+				pic,
+				updateTime,
+				avatar,
+				nickname
+			};
+		  }
+		  loading.value=false;
+	  }catch{
+		  loading.value=false;
+	  }
+	  
+	};
+	
 	const getAlbumInfo = async() =>{
+		
 		if(platform.value == 1){
 			await getWyAlbum(albumId.value);
 		}else if(platform.value == 2){
 			await getQQAlbum(albumId.value);
 		}else if(platform.value == 3){
-			await getKWAlbum(albumId.value);
+			if(isRank.value){
+				await getKWRankDetail(albumId.value);
+			}else{
+				await getKWAlbum(albumId.value);
+			}
 		}
 	}
 	
