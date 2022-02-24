@@ -56,3 +56,13 @@ export const getRankListWy = () => {
 		method:'GET'
 	});
 };
+
+/**
+ * 获取歌单详情
+ */
+export const getAlbumDetailWy = (id: string) => {
+    return request({
+		url:`${prefix}/playlist/detail?id=${id}`,
+		methods:'GET'
+	})
+};

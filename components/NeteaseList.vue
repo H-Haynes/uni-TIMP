@@ -12,7 +12,7 @@
 			<text v-show="showAllCategory" @click="showAllCategory=false" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2">收起</text>
 		</view>
 		<view class="flex flex-wrap justify-around ">
-			<view class="w-28" v-for="album in albumList" :key="album.id">
+			<view @click="detail(album)" class="w-28" v-for="album in albumList" :key="album.id">
 				<image class="w-28 h-28 rounded"  :lazy-load="true" :src="album.pic" />
 				<text class="text-xs inline-block leading-5 h-10 overflow-hidden">{{album.name}}</text>
 			</view>
@@ -70,7 +70,7 @@
 	const handleBannerClick = (e) =>{
 		console.log(toRaw(e))
 	}
-	
+	// 获取网易排行榜
 	const getRankList = () => {
 		loading.value = true;
 		getRankListWy().then(res=>{
@@ -86,13 +86,13 @@
 			loading.value = false;
 		})
 	}
-	
+	// 切换分类
 	const changeCategory = (category) => {
 		if(category === currentCategory) return; // 相同分类不改变
 		currentCategory.value = category; // 设置分类
 		page.value = 1; // 重设页数
 	}
-	
+	// 获取歌单列表
 	const getAlbumList = async (category:string,pageNum = 1) => {
 		page.value = pageNum;
 		currentCategory.value = category;
@@ -110,7 +110,12 @@
 		}
 		loading.value = false;
 	};
-	
+	// 前往歌单详情
+	const detail = (e) => {
+		uni.navigateTo({
+			url:`/pages/album/album?type=1&id=${e.id}&rank=${e.rank||0}`
+		})
+	}
 	watch([()=>currentCategory.value,()=>page.value],()=>{
 		if(+currentCategory.value === 0){
 			getRankList()

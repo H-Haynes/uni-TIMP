@@ -1,4 +1,4 @@
-<script>
+<script>	
 	export default {
 		globalData:{
 			audioSrc:"http://m7.music.126.net/20220223165847/2515f43e9b9f6afc43cf0e7ad9e2f795/ymusic/obj/w5zDlMODwrDDiGjCn8Ky/3355921739/46f4/f5d9/4418/50d29712324d57b466ed78cc8f7b1892.mp3",
@@ -15,7 +15,6 @@
 		onHide: function() {
 			console.log('App Hide')
 		},
-		
 	}
 </script>
 

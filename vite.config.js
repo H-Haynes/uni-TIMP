@@ -1,6 +1,6 @@
 import WindiCSS from 'vite-plugin-windicss'
 import uni from '@dcloudio/vite-plugin-uni'
-
+import path from 'path'
 export default {
 	plugins: [
 		WindiCSS({
@@ -11,7 +11,10 @@ export default {
 		}),
 		uni(),
 	],
-	alias:{
-		'@':'/'
+	resolve:{
+		alias:{
+			'@': path.resolve(__dirname)
+		}
 	}
+	
 }
