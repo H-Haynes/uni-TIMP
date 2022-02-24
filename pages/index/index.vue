@@ -28,14 +28,16 @@
 	import NeteaseList from '@/components/NeteaseList.vue'
 	import QQList from '@/components/QQList.vue'
 	import KuwoList from '@/components/kuwoList.vue'
+	import KugouList from '@/components/kugouList.vue'
 	import {ref,computed} from 'vue';
-	const platform = ref(3);
+	const platform = ref(4);
 	const platformComp = computed(()=>{
 		switch(platform.value){
 			case 0: return mine;
 			case 1: return NeteaseList;
 			case 2: return QQList;
 			case 3: return KuwoList;
+			case 4: return KugouList;
 			default: return mine;
 		}
 	})
