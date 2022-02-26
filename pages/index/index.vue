@@ -5,7 +5,7 @@
 			<input class="flex-1 rounded-2xl bg-gradient-to-r from-blue-100 to-purple-100 px-2 text-sm h-8" placeholder="请输入歌曲名" />
 			<text class="iconfont text-2xl linear-text icon-tinggeshiqu text-blue-500 px-2"></text>
 		</view>
-		<scroll-view scroll-x="true" class="whitespace-nowrap flex leading-10 text-gray-600">
+		<scroll-view scroll-x="true" :show-scrollbar="false" class="hide-scroll-bar whitespace-nowrap flex leading-10 text-gray-600">
 			<view @click="platform=0" :class="{'linear-text font-bold border-b-2  border-purple-500':platform === 0}" class="inline-block text-base mx-3">我的</view>
 			<view @click="platform=1" :class="{'linear-text font-bold border-b-2 border-purple-500':platform === 1}" class="inline-block text-base mx-3">网易云音乐</view>
 			<view @click="platform=2"  :class="{'linear-text font-bold border-b-2 border-purple-500':platform === 2}" class="inline-block text-base mx-3">QQ音乐</view>
@@ -14,9 +14,21 @@
 		</scroll-view>
 
 		<view class="flex-1 overflow-hidden pb-12">
-			<!-- <keep-alive> -->
+			<!-- #ifdef H5 -->
+				<keep-alive>
+					<component :key="platform" :is="platformComp"></component>
+				</keep-alive>
+			<!-- #endif -->
+			<!-- #ifdef APP-PLUS -->
 				<component :key="platform" :is="platformComp"></component>
-			<!-- </keep-alive> -->
+			<!-- #endif -->
+			<!-- #ifdef MP -->
+				<mine v-show="platform===0"/>
+				<NeteaseList v-show="platform===1"/>
+				<QQList v-show="platform===2"/>
+				<KuwoList v-show="platform===3"/>
+				<KugouList v-show="platform===4"/>
+			<!-- #endif -->
 		</view>
 		<timp-audio></timp-audio>
 	</view>

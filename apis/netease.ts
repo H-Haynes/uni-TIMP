@@ -66,3 +66,14 @@ export const getAlbumDetailWy = (id: string) => {
 		methods:'GET'
 	})
 };
+
+// 获取播放地址
+export const getSongUrlWy = (id: string|number) => {
+    return request({url:`${prefix}/song/url?id=${id}`});
+};
+
+// 获取歌曲详情
+
+export const getSongDetailWy = (id: string|number) => {
+    return request({url:`${prefix}/song/detail?ids=${id}`});
+};

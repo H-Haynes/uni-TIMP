@@ -6,10 +6,10 @@
 			<text @click="changeCategory(0)" :class="{'current-category border-gray-100':currentCategory === 0}"  class="inline-block text-sm text-red-500 border border-red-500 mr-1 px-2 mb-2">排行榜</text>
 			<text @click="changeCategory(category.id)" :class="{'current-category':currentCategory === category.id}" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2" v-for="category in categoryList.slice(0,10)" :key="category.id">{{category.name}}</text>
 
-			<text @click="changeCategory(category.id)" :class="{'current-category':currentCategory === category.id}" v-show="showAllCategory" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2" v-for="category in categoryList.slice(10,categoryList.length-1)" :key="category.id">{{category.name}}</text>
+			<text @click="changeCategory(category.id)" :class="{'current-category':currentCategory === category.id,'hidden':!showAllCategory}" v-show="showAllCategory" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2" v-for="category in categoryList.slice(10,categoryList.length-1)" :key="category.id">{{category.name}}</text>
 
-			<text v-show="!showAllCategory" @click="showAllCategory=true" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2">···</text>
-			<text v-show="showAllCategory" @click="showAllCategory=false" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2">收起</text>
+			<text v-if="!showAllCategory" @click="showAllCategory=true" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2">···</text>
+			<text v-else @click="showAllCategory=false" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2">收起</text>
 		</view>
 		<view class="flex flex-wrap justify-around ">
 			<view @click="detail(album)" class="w-28" v-for="album in albumList" :key="album.id">
@@ -35,6 +35,8 @@
 	const page = ref(1);
 	const loading = ref(false);
 	const loadingRef = ref(null);
+	
+	getApp().globalData.audioInfo.name="8888";
 	//获取推荐歌单
 	getRecommendWy().then(res=>{
 		if(res.data.result){

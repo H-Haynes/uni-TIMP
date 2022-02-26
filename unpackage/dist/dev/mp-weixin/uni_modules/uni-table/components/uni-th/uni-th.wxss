@@ -1,0 +1,59 @@
+.uni-table-th {
+  padding: 12rpx 10px;
+  display: table-cell;
+  box-sizing: border-box;
+  font-size: 14rpx;
+  font-weight: bold;
+  color: #909399;
+  border-bottom: 1rpx #ebeef5 solid;
+}
+.uni-table-th-row {
+  display: flex;
+  flex-direction: row;
+}
+.table--border {
+  border-right: 1rpx #ebeef5 solid;
+}
+.uni-table-th-content {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+.arrow {
+  display: block;
+  position: relative;
+  width: 10rpx;
+  height: 8rpx;
+  left: 5rpx;
+  overflow: hidden;
+  cursor: pointer;
+}
+.down {
+  top: 3rpx;
+}
+.down ::after {
+  content: "";
+  width: 8rpx;
+  height: 8rpx;
+  position: absolute;
+  left: 2rpx;
+  top: -5rpx;
+  transform: rotate(45deg);
+  background-color: #ccc;
+}
+.down.active ::after {
+  background-color: #007aff;
+}
+.up ::after {
+  content: "";
+  width: 8rpx;
+  height: 8rpx;
+  position: absolute;
+  left: 2rpx;
+  top: 5rpx;
+  transform: rotate(45deg);
+  background-color: #ccc;
+}
+.up.active ::after {
+  background-color: #007aff;
+}

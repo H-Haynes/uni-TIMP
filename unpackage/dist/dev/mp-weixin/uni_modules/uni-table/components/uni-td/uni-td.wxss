@@ -1,0 +1,13 @@
+.uni-table-td {
+  display: table-cell;
+  padding: 8rpx 10px;
+  font-size: 14rpx;
+  border-bottom: 1rpx #EBEEF5 solid;
+  font-weight: 400;
+  color: #606266;
+  line-height: 23rpx;
+  box-sizing: border-box;
+}
+.table--border {
+  border-right: 1rpx #EBEEF5 solid;
+}

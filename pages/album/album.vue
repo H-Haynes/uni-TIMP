@@ -13,7 +13,7 @@
 					<text class="text-xs text-gray-400 truncate">{{$filters.dateFormat(albumInfo.updateTime)}}</text>
 				</view>
 				<scroll-view scroll-y class="text-xs flex-1 h-14 text-gray-500  mt-2">
-					<text v-html="albumInfo.desc"></text>
+					<text>{{albumInfo.desc}}</text>
 				</scroll-view>
 			</view>
 		</view>
@@ -23,10 +23,12 @@
 						<uni-th align="left">歌曲</uni-th>
 						<uni-th align="right" class="w-24">操作</uni-th>
 				</uni-tr>
-				<uni-tr v-for="song in songList" :key="song.id">
-						<uni-td class="flex flex-col">
-							<view class="text-sm font-bold ">{{song.name}}</view>
-							<text class="text-xs ">{{song.author.map(ele=>ele.nickname).join('/')}} - {{song.album}}</text>
+				<uni-tr v-for="song in songList" :key="song.id"  >
+						<uni-td >
+							<view class="flex flex-col" @click="playSong(song)">
+								<view class="text-sm font-bold ">{{song.name}}</view>
+								<text class="text-xs text-gray-400">{{song.author.map(ele=>ele.nickname).join('/')}} - {{song.album}}</text>
+							</view>
 						</uni-td>
 						<uni-td align="right">
 							<text class="inline-block iconfont icon-gengduomore10  mr-2"></text>
@@ -45,6 +47,7 @@
 	import {ref,watch,inject} from 'vue';
 	import {onLoad,} from '@dcloudio/uni-app' 
 	import wLoading from "@/components/w-loading/w-loading.vue"
+	import {useStore} from 'vuex';
 	const defaultImg = 'http://preferyou.cn/freed/icon.png'
 	const loadingRef = ref(null);
 	const loading = ref(false);
@@ -60,7 +63,8 @@
 		nickname:'',
 		avatar:'',
 	});
-	const songList = ref([])
+	const songList = ref([]);
+	const store = useStore();
 	onLoad(params=>{
 		platform.value = +params.type;
 		isRank.value = Boolean(+params.rank);
@@ -340,6 +344,14 @@
 				await getKGAlbum(albumId.value);
 			}
 		}
+	}
+	
+	const playSong = song => {
+		console.log(song,111)
+		store.dispatch('changeAudioBaseInfo',{
+			id:song.id,
+			platform:platform.value
+		})
 	}
 	
 	watch([() => albumId.value],()=>{

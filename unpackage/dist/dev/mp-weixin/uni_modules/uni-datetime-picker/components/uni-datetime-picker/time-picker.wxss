@@ -1,0 +1,97 @@
+.uni-datetime-picker-view {
+  height: 130rpx;
+  width: 270rpx;
+  cursor: pointer;
+}
+.uni-datetime-picker-item {
+  height: 50rpx;
+  line-height: 50rpx;
+  text-align: center;
+  font-size: 14rpx;
+}
+.uni-datetime-picker-btn {
+  margin-top: 60rpx;
+  display: flex;
+  cursor: pointer;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.uni-datetime-picker-btn-text {
+  font-size: 14rpx;
+  color: #007AFF;
+}
+.uni-datetime-picker-btn-group {
+  display: flex;
+  flex-direction: row;
+}
+.uni-datetime-picker-cancel {
+  margin-right: 30rpx;
+}
+.uni-datetime-picker-mask {
+  position: fixed;
+  bottom: 0rpx;
+  top: 0rpx;
+  left: 0rpx;
+  right: 0rpx;
+  background-color: rgba(0, 0, 0, 0.4);
+  transition-duration: 0.3s;
+  z-index: 998;
+}
+.uni-datetime-picker-popup {
+  border-radius: 8rpx;
+  padding: 30rpx;
+  width: 270rpx;
+  background-color: #fff;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition-duration: 0.3s;
+  z-index: 999;
+}
+.uni-datetime-picker-time {
+  color: grey;
+}
+.uni-datetime-picker-column {
+  height: 50rpx;
+}
+.uni-datetime-picker-timebox {
+  border: 1rpx solid #E5E5E5;
+  border-radius: 5rpx;
+  padding: 7rpx 10px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.uni-datetime-picker-timebox-pointer {
+  cursor: pointer;
+}
+.uni-datetime-picker-disabled {
+  opacity: 0.4;
+}
+.uni-datetime-picker-text {
+  font-size: 14rpx;
+}
+.uni-datetime-picker-sign {
+  position: absolute;
+  top: 53rpx;
+  color: #999;
+}
+.sign-left {
+  left: 86rpx;
+}
+.sign-right {
+  right: 86rpx;
+}
+.sign-center {
+  left: 135rpx;
+}
+.uni-datetime-picker__container-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40rpx;
+}
+.time-hide-second {
+  width: 180rpx;
+}

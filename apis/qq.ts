@@ -67,5 +67,21 @@ export const getRankDetailQQ = (id:number) => {
 	})
 };
 
+// 获取播放地址
 
+export const getSongUrlQQ = (id:string|number) => {
+    return request({url:`${prefix}/getMusicPlay?songmid=${id}`});
+};
+
+// 获取歌曲信息
+
+export const getSongInfoQQ = (id:string|number) => {
+    return request({url:`${prefix}/getSongInfo?songmid=${id}`});
+};
+
+// 获取歌曲+专辑+图片
+
+export const getSongPicQQ = (id:string|number) => {
+    return request({url:`${prefix}/getImageUrl?id=${id}`});
+};
 

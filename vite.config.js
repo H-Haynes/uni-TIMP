@@ -5,8 +5,8 @@ export default {
 	plugins: [
 		WindiCSS({
 			scan: {
-				dirs: ['.'], // 当前目录下所有文件
-				fileExtensions: ['vue', 'js', 'ts'], // 同时启用扫描vue/js/ts
+				dirs: ['./pages','./components',], // 当前目录下所有文件
+				fileExtensions: ['vue'], // 同时启用扫描vue/js/ts
 			},
 		}),
 		uni(),

@@ -1,0 +1,19 @@
+.uni-table-tr {
+  display: table-row;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+.checkbox {
+  padding: 0 8rpx;
+  width: 26rpx;
+  padding-left: 12rpx;
+  display: table-cell;
+  vertical-align: center;
+  color: #333;
+  font-weight: 500;
+  border-bottom: 1rpx #ebeef5 solid;
+  font-size: 14rpx;
+}
+.tr-table--border {
+  border-right: 1rpx #ebeef5 solid;
+}

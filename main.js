@@ -1,5 +1,6 @@
 import App from './App'
 import 'virtual:windi.css'
+import mitt from 'mitt'
 // #ifndef VUE3
 import Vue from 'vue'
 Vue.config.productionTip = false
@@ -11,10 +12,9 @@ app.$mount()
 // #endif
 
 // #ifdef VUE3
-
-import {
-	createSSRApp,
-} from 'vue'
+// import { createPinia } from 'pinia'
+import store from '@/store/index';
+import {createSSRApp} from 'vue'
 const filters = {
 	timeFormat: (value) => {
 		if (!value) return '-';
@@ -66,7 +66,10 @@ const filters = {
 }
 export function createApp() {
 	const app = createSSRApp(App);
+	// app.use(createPinia());
+	app.use(store);
 	app.provide('$filters', filters);
+	app.provide('$eventBus',mitt());
 	return {
 		app
 	}

@@ -64,3 +64,11 @@ export const getRankMusicListKG = (id:string|number) => {
 		method:'GET'
 	})
 };
+
+// 获取音乐信息
+
+export const getSongDetailKG = (id:string|number) => {
+    return request({
+		url:`${prefix}/kugou/playInfo?id=${id}`
+	})
+};

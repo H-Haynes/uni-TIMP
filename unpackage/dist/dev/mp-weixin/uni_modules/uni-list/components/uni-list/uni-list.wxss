@@ -1,0 +1,29 @@
+.uni-list.data-v-5009d455 {
+  display: flex;
+  background-color: #ffffff;
+  position: relative;
+  flex-direction: column;
+}
+.uni-list--border.data-v-5009d455 {
+  position: relative;
+  z-index: -1;
+}
+.uni-list--border-top.data-v-5009d455 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1rpx;
+  transform: scaleY(0.5);
+  background-color: #e5e5e5;
+  z-index: 1;
+}
+.uni-list--border-bottom.data-v-5009d455 {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 1rpx;
+  transform: scaleY(0.5);
+  background-color: #e5e5e5;
+}

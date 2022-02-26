@@ -1,0 +1,99 @@
+.uni-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+.uni-table {
+  position: relative;
+  width: 100%;
+  border-radius: 5rpx;
+  background-color: #fff;
+  box-sizing: border-box;
+  display: table;
+  overflow-x: auto;
+}
+.table--border {
+  border: 1rpx #ebeef5 solid;
+  border-right: none;
+}
+.border-none {
+  border-bottom: none;
+}
+.table--stripe .uni-table-tr:nth-child(2n+3) {
+  background-color: #fafafa;
+}
+.uni-table-loading {
+  position: relative;
+  display: table-row;
+  height: 50rpx;
+  line-height: 50rpx;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.empty-border {
+  border-right: 1rpx #ebeef5 solid;
+}
+.uni-table-text {
+  position: absolute;
+  right: 0;
+  left: 0;
+  text-align: center;
+  font-size: 14rpx;
+  color: #999;
+}
+.uni-table-mask {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 99;
+  display: flex;
+  margin: auto;
+  transition: all 0.5s;
+  justify-content: center;
+  align-items: center;
+}
+.uni-table--loader {
+  width: 30rpx;
+  height: 30rpx;
+  border: 2rpx solid #aaa;
+  border-radius: 50%;
+  animation: 2s uni-table--loader linear infinite;
+  position: relative;
+}
+@keyframes uni-table--loader {
+0% {
+    transform: rotate(360deg);
+}
+10% {
+    border-left-color: transparent;
+}
+20% {
+    border-bottom-color: transparent;
+}
+30% {
+    border-right-color: transparent;
+}
+40% {
+    border-top-color: transparent;
+}
+50% {
+    transform: rotate(0deg);
+}
+60% {
+    border-top-color: transparent;
+}
+70% {
+    border-left-color: transparent;
+}
+80% {
+    border-bottom-color: transparent;
+}
+90% {
+    border-right-color: transparent;
+}
+100% {
+    transform: rotate(-360deg);
+}
+}

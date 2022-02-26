@@ -1,13 +1,27 @@
-<script>	
+<script >
+	import {inject} from 'vue';
+	import {useStore} from 'vuex';
 	export default {
 		globalData:{
-			audioSrc:"http://m7.music.126.net/20220223165847/2515f43e9b9f6afc43cf0e7ad9e2f795/ymusic/obj/w5zDlMODwrDDiGjCn8Ky/3355921739/46f4/f5d9/4418/50d29712324d57b466ed78cc8f7b1892.mp3",
+			audioSrc:"",
 			audioInfo:{
+				name:"ss",
 				pic:"https://p2.music.126.net/qpvBqYIqkRhO9Ry2qOCdJQ==/2942293117852634.jpg",
-			}
+			},
+			audioName:"yyyy"
 		},
 		onLaunch: function() {
-			console.log('App Launch')
+			const store = useStore();
+			console.log('App Launch',store);
+			// #ifndef H5
+			const bgAudioManager = uni.getBackgroundAudioManager();
+			store.commit('setAudioManager',bgAudioManager);
+			// #endif
+			// #ifdef H5
+				const audio = document.createElement('audio');
+				document.body.appendChild(audio);
+				store.commit('setAudioManager',audio);
+			// #endif
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -15,10 +29,15 @@
 		onHide: function() {
 			console.log('App Hide')
 		},
+		onLoad: function(){
+			console.log(9999)
+		}
 	}
 </script>
 
 <style>
+	@import url("~@/static/iconfont.css");
+	@import 'tailwindcss/tailwind.css';
 	/*每个页面公共css */
 	uni-page-body{
 		overflow: hidden;
@@ -31,5 +50,8 @@
 	}
 	.linear-bg{
 		background-image:linear-gradient(to right,rgb(106,177,214),rgb(93,125,220),rgb(140,105,230));
+	}
+	.hide-scroll-bar::-webkit-scrollbar{
+		display: none;
 	}
 </style>

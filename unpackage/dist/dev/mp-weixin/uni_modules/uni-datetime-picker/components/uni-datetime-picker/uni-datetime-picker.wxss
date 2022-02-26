@@ -1,0 +1,157 @@
+.uni-date-x {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10rpx;
+  border-radius: 4rpx;
+  background-color: #fff;
+  color: #666;
+  font-size: 14rpx;
+}
+.uni-date-x--border {
+  box-sizing: border-box;
+  border-radius: 4rpx;
+  border: 1rpx solid #dcdfe6;
+}
+.uni-date-editor--x {
+  position: relative;
+}
+.uni-date-editor--x .uni-date__icon-clear {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-block;
+  box-sizing: border-box;
+  border: 9rpx solid transparent;
+}
+.uni-date__x-input {
+  padding: 0 8rpx;
+  height: 40rpx;
+  width: 100%;
+  line-height: 40rpx;
+  font-size: 14rpx;
+}
+.t-c {
+  text-align: center;
+}
+.uni-date__input {
+  height: 40rpx;
+  width: 100%;
+  line-height: 40rpx;
+  font-size: 14rpx;
+}
+.uni-date-range__input {
+  text-align: center;
+  max-width: 142rpx;
+}
+.uni-date-picker__container {
+  position: relative;
+}
+.uni-date-mask {
+  position: fixed;
+  bottom: 0rpx;
+  top: 0rpx;
+  left: 0rpx;
+  right: 0rpx;
+  background-color: rgba(0, 0, 0, 0);
+  transition-duration: 0.3s;
+  z-index: 996;
+}
+.uni-date-single--x {
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  border: 1rpx solid #EBEEF5;
+  box-shadow: 0 2rpx 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 4rpx;
+}
+.uni-date-range--x {
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  z-index: 999;
+  border: 1rpx solid #EBEEF5;
+  box-shadow: 0 2rpx 12px 0 rgba(0, 0, 0, 0.1);
+  border-radius: 4rpx;
+}
+.uni-date-editor--x__disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.uni-date-editor--logo {
+  width: 16rpx;
+  height: 16rpx;
+  vertical-align: center;
+}
+.popup-x-header {
+  display: flex;
+  flex-direction: row;
+}
+.popup-x-header--datetime {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+.popup-x-body {
+  display: flex;
+}
+.popup-x-footer {
+  padding: 0 15rpx;
+  border-top-color: #F1F1F1;
+  border-top-style: solid;
+  border-top-width: 1rpx;
+  line-height: 40rpx;
+  text-align: right;
+  color: #666;
+}
+.popup-x-footer .confirm {
+  margin-left: 20rpx;
+  color: #007aff;
+}
+.uni-date-changed {
+  text-align: center;
+  color: #333;
+  border-bottom-color: #F1F1F1;
+  border-bottom-style: solid;
+  border-bottom-width: 1rpx;
+}
+.uni-date-changed--time text {
+  height: 50rpx;
+  line-height: 50rpx;
+}
+.uni-date-changed .uni-date-changed--time {
+  flex: 1;
+}
+.uni-date-changed--time-date {
+  color: #333;
+  opacity: 0.6;
+}
+.mr-50 {
+  margin-right: 50rpx;
+}
+.uni-popper__arrow, .uni-popper__arrow::after {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 6rpx;
+}
+.uni-popper__arrow {
+  filter: drop-shadow(0 2rpx 12px rgba(0, 0, 0, 0.03));
+  top: -6rpx;
+  left: 10%;
+  margin-right: 3rpx;
+  border-top-width: 0;
+  border-bottom-color: #EBEEF5;
+}
+.uni-popper__arrow::after {
+  content: " ";
+  top: 1rpx;
+  margin-left: -6rpx;
+  border-top-width: 0;
+  border-bottom-color: #fff;
+}

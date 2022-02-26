@@ -1,0 +1,68 @@
+.uni-badge--x.data-v-7c66581c {
+  display: inline-block;
+  position: relative;
+}
+.uni-badge--absolute.data-v-7c66581c {
+  position: absolute;
+}
+.uni-badge--small.data-v-7c66581c {
+  transform: scale(0.8);
+  transform-origin: center center;
+}
+.uni-badge.data-v-7c66581c {
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+  justify-content: center;
+  flex-direction: row;
+  height: 20rpx;
+  line-height: 18rpx;
+  color: #fff;
+  border-radius: 100rpx;
+  background-color: #909399;
+  background-color: transparent;
+  border: 1rpx solid #fff;
+  text-align: center;
+  font-family: "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 12rpx;
+}
+.uni-badge--info.data-v-7c66581c {
+  color: #fff;
+  background-color: #909399;
+}
+.uni-badge--primary.data-v-7c66581c {
+  background-color: #2979ff;
+}
+.uni-badge--success.data-v-7c66581c {
+  background-color: #4cd964;
+}
+.uni-badge--warning.data-v-7c66581c {
+  background-color: #f0ad4e;
+}
+.uni-badge--error.data-v-7c66581c {
+  background-color: #dd524d;
+}
+.uni-badge--inverted.data-v-7c66581c {
+  padding: 0 5rpx 0 0;
+  color: #909399;
+}
+.uni-badge--info-inverted.data-v-7c66581c {
+  color: #909399;
+  background-color: transparent;
+}
+.uni-badge--primary-inverted.data-v-7c66581c {
+  color: #2979ff;
+  background-color: transparent;
+}
+.uni-badge--success-inverted.data-v-7c66581c {
+  color: #4cd964;
+  background-color: transparent;
+}
+.uni-badge--warning-inverted.data-v-7c66581c {
+  color: #f0ad4e;
+  background-color: transparent;
+}
+.uni-badge--error-inverted.data-v-7c66581c {
+  color: #dd524d;
+  background-color: transparent;
+}

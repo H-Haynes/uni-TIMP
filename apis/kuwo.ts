@@ -74,3 +74,13 @@ export const getRankMusicListKW = (id:string|number) => {
 	})
 };
 
+
+// 获取音乐地址
+export const getMusicUrlKW = (id:string|number,format='mp3') => {
+    return request({url:`${prefix}/kuwo/musicUrl?mid=${id}&format=${format}`});
+};
+
+// 获取音乐信息
+export const getSongDetailKW = (id:string|number) => {
+    return request({url:`${prefix}/kuwo/musicInfo?mid=${id}`});
+};
