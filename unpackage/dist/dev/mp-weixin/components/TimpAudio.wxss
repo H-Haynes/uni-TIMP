@@ -1,0 +1,11 @@
+.album-rotate {
+  animation: albumRotate 5s linear infinite;
+}
+@keyframes albumRotate {
+from {
+    transform: rotateZ(0deg);
+}
+to {
+    transform: rotateZ(360deg);
+}
+}

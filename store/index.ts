@@ -15,7 +15,8 @@ const store = createStore({
 			audioIdBaseInfo:{
 				id:"",
 				platform:""
-			}
+			},
+			audioPlaying:false
 		}
 	},
 	mutations:{
@@ -27,17 +28,32 @@ const store = createStore({
 			state.audioInfo = info;
 			state.audioManager.src = info.src;
 			state.audioManager.title = info.name;
+			// 监听事件
 			// 小canplay针对h5创建的audio元素
 			state.audioManager.oncanplay = state.audioManager.onCanplay = () => {
 				state.audioManager.play();
+				state.audioPlaying = true;
 			}
+			state.audioManager.onplay = state.audioManager.onPlay = () => {
+				state.audioPlaying = true;
+			}
+			state.audioManager.onpause = state.audioManager.onPause = () => {
+				state.audioPlaying = false;
+			}
+			state.audioManager.onstop = state.audioManager.onStop = () => {
+				state.audioPlaying = false;
+			}
+			state.audioManager.onended = state.audioManager.onEnded = () =>{
+				state.audioPlaying = false;
+			}
+			
 		},
 		setAudioBaseInfo(state,info){
 			state.audioIdBaseInfo = info;
 		}
 	},
 	actions:{
-		async changeAudioBaseInfo({commit},info){
+		async changeAudioBaseInfo({commit,state},info){
 			commit('setAudioBaseInfo',info);
 			// 获取音频信息
 			const songInfo = await getSongInfo(info.id,info.platform);
@@ -50,6 +66,9 @@ const store = createStore({
 			}
 			songInfo.src = songUrl;
 			commit('setAduioInfo',songInfo);
+			state.audioManager.singer = songInfo.art.map(ele=>ele).join('&');
+			state.audioManager.coverImgUrl = songInfo.picUrl;
+			state.audioManager.webUrl = 'http://preferyou.cn/netease';
 		}
 	}
 })

@@ -5,13 +5,14 @@
 		</view>
 		<view class='absolute left-0 top-0 w-full h-full flex px-2 text-white'>
 			<view class="w-12 h-12 border rounded-full overflow-hidden mr-2 relative -top-2">
-				<image class="w-full h-full" :src="store.state.audioInfo.picUrl"></image>
+				<image :class="{'album-rotate':store.state.audioPlaying}" class=" w-full h-full" :src="store.state.audioInfo.picUrl"></image>
 			</view>
-			<view class="flex flex-col justify-center items-center flex-1">
-				<text class="text-sm text-gray-200">{{store.state.audioInfo.name || 'TIMP,你想听的都在这里!'}}</text>
+			<view class="flex flex-col justify-center items-center flex-1 truncate">
+				<text class="text-sm text-gray-200 truncate">{{store.state.audioInfo.name || 'TIMP,你想听的都在这里!'}}</text>
 				<text class="text-xs text-gray-300">{{store.state.audioInfo.name ? store.state.audioInfo.art.map(ele=>ele.name).join('&') : '暂无歌曲'}}</text>
 			</view>
-			<text class="iconfont icon-bofang2  text-3xl"></text>
+			<text v-if="!store.state.audioPlaying" class="iconfont icon-bofang2  text-3xl" @click="play"></text>
+			<text v-else class="iconfont icon-zantingtingzhi ml-2 text-3xl" @click="pause"></text>
 			<text class="iconfont icon-liebiao_o ml-2 text-3xl"></text>
 		</view>
 		
@@ -23,9 +24,25 @@
 	import {useStore} from 'vuex'
 	
 	const store = useStore();
+	const pause = () => {
+		store.state.audioManager.pause();
+	}
+	const play = () => {
+		store.state.audioManager.play();
+	}
 
 </script>
 
 <style>
-
+	.album-rotate{
+		animation: albumRotate 5s linear infinite;
+	}
+	@keyframes albumRotate{
+		from{
+			transform:rotateZ(0deg)
+		}
+		to{
+			transform: rotateZ(360deg);
+		}
+	}
 </style>

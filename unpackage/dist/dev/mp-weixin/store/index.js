@@ -16,7 +16,8 @@ const store = common_vendor.createStore({
       audioIdBaseInfo: {
         id: "",
         platform: ""
-      }
+      },
+      audioPlaying: false
     };
   },
   mutations: {
@@ -30,6 +31,19 @@ const store = common_vendor.createStore({
       state.audioManager.title = info.name;
       state.audioManager.oncanplay = state.audioManager.onCanplay = () => {
         state.audioManager.play();
+        state.audioPlaying = true;
+      };
+      state.audioManager.onplay = state.audioManager.onPlay = () => {
+        state.audioPlaying = true;
+      };
+      state.audioManager.onpause = state.audioManager.onPause = () => {
+        state.audioPlaying = false;
+      };
+      state.audioManager.onstop = state.audioManager.onStop = () => {
+        state.audioPlaying = false;
+      };
+      state.audioManager.onended = state.audioManager.onEnded = () => {
+        state.audioPlaying = false;
       };
     },
     setAudioBaseInfo(state, info) {
@@ -37,7 +51,7 @@ const store = common_vendor.createStore({
     }
   },
   actions: {
-    async changeAudioBaseInfo({ commit }, info) {
+    async changeAudioBaseInfo({ commit, state }, info) {
       commit("setAudioBaseInfo", info);
       const songInfo = await hooks_usePlayInfo.getSongInfo(info.id, info.platform);
       const songUrl = await hooks_usePlayInfo.getSongUrl(info.id, info.platform);
@@ -49,6 +63,9 @@ const store = common_vendor.createStore({
       }
       songInfo.src = songUrl;
       commit("setAduioInfo", songInfo);
+      state.audioManager.singer = songInfo.art.map((ele) => ele).join("&");
+      state.audioManager.coverImgUrl = songInfo.picUrl;
+      state.audioManager.webUrl = "http://preferyou.cn/netease";
     }
   }
 });

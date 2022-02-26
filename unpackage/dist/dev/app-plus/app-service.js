@@ -1098,9 +1098,22 @@ var __spreadValues = (a, b) => {
     this._committing = committing;
   };
   Object.defineProperties(Store.prototype, prototypeAccessors);
+  var _export_sfc = (sfc, props) => {
+    const target = sfc.__vccOpts || sfc;
+    for (const [key, val] of props) {
+      target[key] = val;
+    }
+    return target;
+  };
   const _sfc_main$o = {
     setup(__props) {
       const store2 = useStore();
+      const pause = () => {
+        store2.state.audioManager.pause();
+      };
+      const play = () => {
+        store2.state.audioManager.play();
+      };
       return (_ctx, _cache) => {
         return vue.openBlock(), vue.createElementBlock("view", { class: "fixed bottom-0 shadow-sm shadow-inner w-full left-0 h-12 flex items-center" }, [
           vue.createElementVNode("view", {
@@ -1110,21 +1123,30 @@ var __spreadValues = (a, b) => {
           vue.createElementVNode("view", { class: "absolute left-0 top-0 w-full h-full flex px-2 text-white" }, [
             vue.createElementVNode("view", { class: "w-12 h-12 border rounded-full overflow-hidden mr-2 relative -top-2" }, [
               vue.createElementVNode("image", {
-                class: "w-full h-full",
+                class: vue.normalizeClass([{ "album-rotate": vue.unref(store2).state.audioPlaying }, "w-full h-full"]),
                 src: vue.unref(store2).state.audioInfo.picUrl
-              }, null, 8, ["src"])
+              }, null, 10, ["src"])
             ]),
-            vue.createElementVNode("view", { class: "flex flex-col justify-center items-center flex-1" }, [
-              vue.createElementVNode("text", { class: "text-sm text-gray-200" }, vue.toDisplayString(vue.unref(store2).state.audioInfo.name || "TIMP,\u4F60\u60F3\u542C\u7684\u90FD\u5728\u8FD9\u91CC!"), 1),
+            vue.createElementVNode("view", { class: "flex flex-col justify-center items-center flex-1 truncate" }, [
+              vue.createElementVNode("text", { class: "text-sm text-gray-200 truncate" }, vue.toDisplayString(vue.unref(store2).state.audioInfo.name || "TIMP,\u4F60\u60F3\u542C\u7684\u90FD\u5728\u8FD9\u91CC!"), 1),
               vue.createElementVNode("text", { class: "text-xs text-gray-300" }, vue.toDisplayString(vue.unref(store2).state.audioInfo.name ? vue.unref(store2).state.audioInfo.art.map((ele) => ele.name).join("&") : "\u6682\u65E0\u6B4C\u66F2"), 1)
             ]),
-            vue.createElementVNode("text", { class: "iconfont icon-bofang2 text-3xl" }),
+            !vue.unref(store2).state.audioPlaying ? (vue.openBlock(), vue.createElementBlock("text", {
+              key: 0,
+              class: "iconfont icon-bofang2 text-3xl",
+              onClick: play
+            })) : (vue.openBlock(), vue.createElementBlock("text", {
+              key: 1,
+              class: "iconfont icon-zantingtingzhi ml-2 text-3xl",
+              onClick: pause
+            })),
             vue.createElementVNode("text", { class: "iconfont icon-liebiao_o ml-2 text-3xl" })
           ])
         ]);
       };
     }
   };
+  var TimpAudio = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["__scopeId", "data-v-d1c9d3da"]]);
   var icons = {
     "id": "2852637",
     "name": "uniui\u56FE\u6807\u5E93",
@@ -2295,13 +2317,6 @@ var __spreadValues = (a, b) => {
         "unicode_decimal": 58929
       }
     ]
-  };
-  var _export_sfc = (sfc, props) => {
-    const target = sfc.__vccOpts || sfc;
-    for (const [key, val] of props) {
-      target[key] = val;
-    }
-    return target;
   };
   const getVal = (val) => {
     const reg = /^[0-9]*$/g;
@@ -3987,7 +4002,7 @@ var __spreadValues = (a, b) => {
           vue.createElementVNode("view", { class: "flex-1 overflow-hidden pb-12" }, [
             (vue.openBlock(), vue.createBlock(vue.resolveDynamicComponent(vue.unref(platformComp)), { key: platform2.value }))
           ]),
-          vue.createVNode(_sfc_main$o)
+          vue.createVNode(TimpAudio)
         ]);
       };
     }
@@ -8420,7 +8435,8 @@ var __spreadValues = (a, b) => {
         audioIdBaseInfo: {
           id: "",
           platform: ""
-        }
+        },
+        audioPlaying: false
       };
     },
     mutations: {
@@ -8428,12 +8444,25 @@ var __spreadValues = (a, b) => {
         state.audioManager = manager;
       },
       setAduioInfo(state, info) {
-        formatAppLog("log", "at store/index.ts:26", info);
+        formatAppLog("log", "at store/index.ts:27", info);
         state.audioInfo = info;
         state.audioManager.src = info.src;
         state.audioManager.title = info.name;
         state.audioManager.oncanplay = state.audioManager.onCanplay = () => {
           state.audioManager.play();
+          state.audioPlaying = true;
+        };
+        state.audioManager.onplay = state.audioManager.onPlay = () => {
+          state.audioPlaying = true;
+        };
+        state.audioManager.onpause = state.audioManager.onPause = () => {
+          state.audioPlaying = false;
+        };
+        state.audioManager.onstop = state.audioManager.onStop = () => {
+          state.audioPlaying = false;
+        };
+        state.audioManager.onended = state.audioManager.onEnded = () => {
+          state.audioPlaying = false;
         };
       },
       setAudioBaseInfo(state, info) {

@@ -1,3 +1,14 @@
+.album-rotate[data-v-d1c9d3da] {
+  animation: albumRotate-d1c9d3da 5s linear infinite;
+}
+@keyframes albumRotate-d1c9d3da {
+from {
+    transform: rotateZ(0deg);
+}
+to {
+    transform: rotateZ(360deg);
+}
+}
 .uniui-color[data-v-a2e81f6e]:before {
   content: "\e6cf";
 }
