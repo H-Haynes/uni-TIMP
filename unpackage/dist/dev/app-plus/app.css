@@ -740,6 +740,12 @@ uni-input::-ms-input-placeholder {
 .h-24 {
   height: 6rem;
 }
+.h-96 {
+  height: 24rem;
+}
+.h-16 {
+  height: 4rem;
+}
 .\.h-full {
   height: 100%;
 }
@@ -868,6 +874,10 @@ uni-input::-ms-input-placeholder {
   padding-left: 2rem;
   padding-right: 2rem;
 }
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
 .pl-2 {
   padding-left: 0.5rem;
 }
@@ -980,6 +990,20 @@ uni-input::-ms-input-placeholder {
 }
 .w-24 {
   width: 6rem;
+}
+.w-56 {
+  width: 14rem;
+}
+.w-48 {
+  width: 12rem;
+}
+.gap-4 {
+  grid-gap: 1rem;
+  gap: 1rem;
+}
+.\.gap-4 {
+  grid-gap: 1rem;
+  gap: 1rem;
 }
 .gap-5 {
   grid-gap: 1.25rem;

@@ -78,65 +78,6 @@
 				} 
 			// #endif
 			
-			// 监听播放器
-			
-			// store.state.audioManager.oncanplay = () => {
-			// 	store.state.audioManager.play();
-			// 	store.commit('changeAudioPlaying',true);
-			// };
-			// store.state.audioManager.onCanplay && store.state.audioManager.onCanplay(()=>{
-			// 	store.state.audioManager.play();
-			// 	store.commit('changeAudioPlaying',true);
-			// });
-			
-			// store.state.audioManager.onplay = () =>{
-			// 	store.state.audioManager.play();
-			// 	store.commit('changeAudioPlaying',true);
-			// };
-			// // store.state.audioManager.onPlay && store.state.audioManager.onPlay(()=>{
-			// 	store.state.audioManager.play();
-			// 	store.commit('changeAudioPlaying',true);
-			// })
-			 
-			 
-			 
-			// store.state.audioManager.onpause = () => {
-			// 	store.commit('changeAudioPlaying',false);
-			// } 
-			// store.state.audioManager.onPause && store.state.audioManager.onPause(()=>{
-			// 	store.commit('changeAudioPlaying',false);
-			// });
-			
-			
-			// store.state.audioManager.onstop = () =>{
-			// 	store.commit('changeAudioPlaying',false);
-			// };
-			// store.state.audioManager.onStophandlePlay &&store.state.audioManager.onStophandlePlay(()=>{
-			// 	store.commit('changeAudioPlaying',false);
-			// })
-			
-			
-			// store.state.audioManager.onended = () => {
-			// 	store.commit('changeAudioPlaying',false);
-			// 	//自动切歌
-			// 	$eventBus.emit('playNext');
-			// }  
-			// store.state.audioManager.onEnded && store.state.audioManager.onEnded(()=>{
-			// 	store.commit('changeAudioPlaying',false);
-			// 	//自动切歌
-			// 	$eventBus.emit('playNext');
-			// })
-			
-			
-			// store.state.audioManager.ontimeupdate = () => {
-			// 	store.commit('changeCurrentTime',store.state.audioManager.currentTime);
-			// } 
-			// store.state.audioManager.onTimeUpdate && store.state.audioManager.onTimeUpdate(() => {
-			// 	store.commit('changeCurrentTime',store.state.audioManager.currentTime);
-			// });
-			
-			
-			
 			// uni.clearStorageSync();
 			
 			// 初始化用户私人数据
@@ -230,6 +171,7 @@
 			// 3. 在播放列表中添加该歌曲(区分自动切歌，非自动切歌需要将歌曲加入播放列表)
 			// auto代表自动切歌，force代表强制切歌(用于单曲循环);
 			$eventBus.on('playSong',async({id,platform,auto=false,force=false})=>{
+				if(!id) return; // 无歌曲id不进行操作
 				if(store.state.audioIdBaseInfo.id == id && !force){
 					// 当前正在播放此歌曲
 					return;
@@ -319,7 +261,20 @@
 					force:playMode == 2
 				})
 			})
-		
+			
+			// 监听暂停播放
+			$eventBus.on('pause',() => {
+				if(!store.state.audioIdBaseInfo.id) return; // 无id不操作
+				store.state.audioManager.pause();
+				store.commit('changeAudioPlaying',false)
+			})
+			
+			// 监听继续播放
+			$eventBus.on('play',() =>{
+				if(!store.state.audioIdBaseInfo.id) return; // 无id不操作
+				store.state.audioManager.play();
+				store.commit('changeAudioPlaying',true)
+			})
 		
 			// TODO 歌词界面
 			// TODO 添加歌曲到我的歌单

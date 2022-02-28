@@ -19,10 +19,13 @@
 		</scroll-view>
 		
 		<view class="mt-5 flex flex-1 items-center justify-around ">
-			<text @click="prev" class="iconfont icon-xiayishou"></text>
-			<text class="iconfont icon-bofang"></text>
+			<text @click="prev" class="iconfont icon-shangyishou"></text>
+			<text v-if="store.state.audioPlaying" @click="togglePlay" class="iconfont icon-zantingtingzhi"></text>
+			<text v-else  @click="togglePlay" class="iconfont icon-bofang"></text>
 			<text @click="next" class="iconfont icon-xiayishou"></text>
-			<text class="iconfont icon-xunhuan"></text>
+			<text @click="toggleMode" v-if="store.state.playMode==0" class="iconfont icon-xunhuan"></text>
+			<text @click="toggleMode" v-else-if="store.state.playMode == 1" class="iconfont icon-suijibofang"></text>
+			<text @click="toggleMode" v-else-if="store.state.playMode == 2" class="iconfont icon-danquxunhuan"></text>
 		</view>
 		
 	</view>
@@ -34,7 +37,6 @@
 	const store = useStore();
 	
 	const $eventBus = inject('$eventBus');
-	const lyricRef = ref()
 	const next = () =>{
 		$eventBus.emit('playNext');
 	}
@@ -69,28 +71,14 @@
 		});
 		return index;
 	});
-	const scrollDis = ref(0);
-	// 计算高亮行距离居中需要的滚动距离
-	  // watch(()=>highlightLine.value,()=>{
-		 //  const query = uni.createSelectorQuery().in(this);
-		 // //  query.select('.highlight-line').boundingClientRect(data => {
-		 // //    if(data){
-			// // 	if(data.top < 700 / 2){
-			// // 		scrollDis.value = 0
-			// // 	}else{
-			// // 		scrollDis.value = data.top - 700/2;
-			// // 	}
-			// // }
-		 // //  }).exec()
-		 //  query.select('.highlight-line').fields({
-			//   computedStyle:true,
-		 //  },(res)=>{
-			//   // 歌词容器高度：700rpx;
-			//   // 当前行距离顶部距离小于容器一半时，不做调整
-			//   // 当前行距离顶部距离大于容器一半时，设置滚动为：当前行距离顶部距离 - 容器一半
-			//   console.log(res)
-		 //  }).exec();
-	  // })
+
+	const toggleMode = ()=>{
+		store.commit('changeMode');
+	}
+	const togglePlay = () =>{
+
+		$eventBus.emit(store.state.audioPlaying ? 'pause' : 'play')
+	}
 		
 	
 </script>

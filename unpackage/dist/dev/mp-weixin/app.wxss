@@ -872,6 +872,10 @@ input::-ms-input-placeholder {
   padding-left: 2rem;
   padding-right: 2rem;
 }
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
 .pl-2 {
   padding-left: 0.5rem;
 }

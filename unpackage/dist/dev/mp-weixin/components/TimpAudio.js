@@ -19,10 +19,10 @@ const _sfc_main = {
       });
     };
     const pause = () => {
-      store.state.audioManager.pause();
+      $eventBus.emit("pause");
     };
     const play = () => {
-      store.state.audioManager.play();
+      $eventBus.emit("play");
     };
     const showPlayList = () => {
       console.log(drawRef.value.open);
@@ -30,6 +30,12 @@ const _sfc_main = {
       drawRef.vlaue && drawRef.value.open();
     };
     const toLyric = () => {
+      if (!store.state.audioIdBaseInfo.id) {
+        return common_vendor.index.showToast({
+          title: "\u6682\u65E0\u64AD\u653E\u66F2\u76EE",
+          icon: "none"
+        });
+      }
       common_vendor.index.navigateTo({
         url: "/pages/lyric/lyric"
       });

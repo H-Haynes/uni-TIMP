@@ -39,6 +39,9 @@ const store = createStore({
 		setLyric(state,lyric){
 			state.lyric = lyric;
 		},
+		changeMode(state){
+			state.playMode = (state.playMode+1) % 3;
+		},
 		setAduioInfo(state,info){
 			state.audioInfo = info;
 			state.audioManager.src = info.src;

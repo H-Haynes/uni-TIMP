@@ -113,6 +113,8 @@ const _sfc_main = {
       }
     });
     $eventBus.on("playSong", async ({ id, platform, auto = false, force = false }) => {
+      if (!id)
+        return;
       if (store.state.audioIdBaseInfo.id == id && !force) {
         return;
       }
@@ -189,6 +191,18 @@ const _sfc_main = {
         auto: true,
         force: playMode == 2
       });
+    });
+    $eventBus.on("pause", () => {
+      if (!store.state.audioIdBaseInfo.id)
+        return;
+      store.state.audioManager.pause();
+      store.commit("changeAudioPlaying", false);
+    });
+    $eventBus.on("play", () => {
+      if (!store.state.audioIdBaseInfo.id)
+        return;
+      store.state.audioManager.play();
+      store.commit("changeAudioPlaying", true);
     });
   },
   onShow: function() {

@@ -12,19 +12,19 @@
 				<text class="text-xs text-gray-300 truncate">{{store.state.audioInfo.name ? store.state.audioInfo.author.map(ele=>ele.name).join('&') : '暂无歌曲'}}</text>
 			</view>
 			<text v-if="!store.state.audioPlaying" class="iconfont icon-bofang2  text-3xl" @click="play"></text>
-			<text v-else class="iconfont icon-zantingtingzhi ml-2 text-3xl" @click="pause"></text>
+			<text v-else class="iconfont icon-zantingtingzhi ml-2 text-2xl" @click="pause"></text>
 			<text @click="showPlayList" class="iconfont icon-liebiao_o ml-2 text-3xl"></text>
 		</view>
 
 		<Drawer ref='drawRef' :show="showDrawer" @close="showDrawer = false">
 			<view class="w-64 h-full  bg-gray-50 flex flex-col">
-				<view class="flex justify-between text-sm linear-bg text-white py-1 px-2">
+				<view class="flex justify-between text-sm linear-bg text-white py-3 px-3">
 					<text>歌曲名</text>
 					<text>歌手</text>
 				</view>
 				<scroll-view class="flex-1 overflow-hidden" scroll-y="true">
 					<view v-for="(song,index) in store.state.playList"
-						class="py-3 text-gray-500 px-2 flex justify-between text-xs"
+						class="py-3 text-gray-500 px-3 flex justify-between text-xs"
 						:class="{
 							'bg-gray-200':index%2==0,
 							'text-red':store.state.audioIdBaseInfo.id == song.id && store.state.audioIdBaseInfo.platform == song.platform
@@ -62,10 +62,12 @@
 	}
 	
 	const pause = () => {
-		store.state.audioManager.pause();
+		// store.state.audioManager.pause();
+		$eventBus.emit('pause');
 	}
 	const play = () => {
-		store.state.audioManager.play();
+		// store.state.audioManager.play();
+		$eventBus.emit('play')
 	}
 	const showPlayList = () => {
 		console.log(drawRef.value.open)
@@ -74,6 +76,12 @@
 	}
 
 	const toLyric = () => {
+		if(!store.state.audioIdBaseInfo.id){
+			return uni.showToast({
+				title:'暂无播放曲目',
+				icon:'none'
+			})
+		}
 		uni.navigateTo({
 			url:'/pages/lyric/lyric'
 		});

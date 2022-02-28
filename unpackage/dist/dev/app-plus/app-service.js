@@ -1186,17 +1186,23 @@ var __spreadValues = (a, b) => {
         });
       };
       const pause = () => {
-        store2.state.audioManager.pause();
+        $eventBus.emit("pause");
       };
       const play = () => {
-        store2.state.audioManager.play();
+        $eventBus.emit("play");
       };
       const showPlayList = () => {
-        formatAppLog("log", "at components/TimpAudio.vue:71", drawRef.value.open);
+        formatAppLog("log", "at components/TimpAudio.vue:73", drawRef.value.open);
         showDrawer.value = true;
         drawRef.vlaue && drawRef.value.open();
       };
       const toLyric = () => {
+        if (!store2.state.audioIdBaseInfo.id) {
+          return uni.showToast({
+            title: "\u6682\u65E0\u64AD\u653E\u66F2\u76EE",
+            icon: "none"
+          });
+        }
         uni.navigateTo({
           url: "/pages/lyric/lyric"
         });
@@ -1225,7 +1231,7 @@ var __spreadValues = (a, b) => {
               onClick: play
             })) : (vue.openBlock(), vue.createElementBlock("text", {
               key: 1,
-              class: "iconfont icon-zantingtingzhi ml-2 text-3xl",
+              class: "iconfont icon-zantingtingzhi ml-2 text-2xl",
               onClick: pause
             })),
             vue.createElementVNode("text", {
@@ -1241,7 +1247,7 @@ var __spreadValues = (a, b) => {
           }, {
             default: vue.withCtx(() => [
               vue.createElementVNode("view", { class: "w-64 h-full bg-gray-50 flex flex-col" }, [
-                vue.createElementVNode("view", { class: "flex justify-between text-sm linear-bg text-white py-1 px-2" }, [
+                vue.createElementVNode("view", { class: "flex justify-between text-sm linear-bg text-white py-3 px-3" }, [
                   vue.createElementVNode("text", null, "\u6B4C\u66F2\u540D"),
                   vue.createElementVNode("text", null, "\u6B4C\u624B")
                 ]),
@@ -1251,7 +1257,7 @@ var __spreadValues = (a, b) => {
                 }, [
                   (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(store2).state.playList, (song, index) => {
                     return vue.openBlock(), vue.createElementBlock("view", {
-                      class: vue.normalizeClass(["py-3 text-gray-500 px-2 flex justify-between text-xs", {
+                      class: vue.normalizeClass(["py-3 text-gray-500 px-3 flex justify-between text-xs", {
                         "bg-gray-200": index % 2 == 0,
                         "text-red": vue.unref(store2).state.audioIdBaseInfo.id == song.id && vue.unref(store2).state.audioIdBaseInfo.platform == song.platform
                       }]),
@@ -8036,7 +8042,6 @@ var __spreadValues = (a, b) => {
     setup(__props) {
       const store2 = useStore();
       const $eventBus = vue.inject("$eventBus");
-      vue.ref();
       const next = () => {
         $eventBus.emit("playNext");
       };
@@ -8061,7 +8066,12 @@ var __spreadValues = (a, b) => {
         });
         return index;
       });
-      vue.ref(0);
+      const toggleMode = () => {
+        store2.commit("changeMode");
+      };
+      const togglePlay = () => {
+        $eventBus.emit(store2.state.audioPlaying ? "pause" : "play");
+      };
       return (_ctx, _cache) => {
         return vue.openBlock(), vue.createElementBlock("view", { class: "bg-gray-800 h-full w-full flex flex-col text-gray-300 gap-5 border-red-500" }, [
           vue.createElementVNode("view", { class: "flex justify-around items-center px-8" }, [
@@ -8091,14 +8101,34 @@ var __spreadValues = (a, b) => {
           vue.createElementVNode("view", { class: "mt-5 flex flex-1 items-center justify-around" }, [
             vue.createElementVNode("text", {
               onClick: prev,
-              class: "iconfont icon-xiayishou"
+              class: "iconfont icon-shangyishou"
             }),
-            vue.createElementVNode("text", { class: "iconfont icon-bofang" }),
+            vue.unref(store2).state.audioPlaying ? (vue.openBlock(), vue.createElementBlock("text", {
+              key: 0,
+              onClick: togglePlay,
+              class: "iconfont icon-zantingtingzhi"
+            })) : (vue.openBlock(), vue.createElementBlock("text", {
+              key: 1,
+              onClick: togglePlay,
+              class: "iconfont icon-bofang"
+            })),
             vue.createElementVNode("text", {
               onClick: next,
               class: "iconfont icon-xiayishou"
             }),
-            vue.createElementVNode("text", { class: "iconfont icon-xunhuan" })
+            vue.unref(store2).state.playMode == 0 ? (vue.openBlock(), vue.createElementBlock("text", {
+              key: 2,
+              onClick: toggleMode,
+              class: "iconfont icon-xunhuan"
+            })) : vue.unref(store2).state.playMode == 1 ? (vue.openBlock(), vue.createElementBlock("text", {
+              key: 3,
+              onClick: toggleMode,
+              class: "iconfont icon-suijibofang"
+            })) : vue.unref(store2).state.playMode == 2 ? (vue.openBlock(), vue.createElementBlock("text", {
+              key: 4,
+              onClick: toggleMode,
+              class: "iconfont icon-danquxunhuan"
+            })) : vue.createCommentVNode("v-if", true)
           ])
         ]);
       };
@@ -8326,7 +8356,7 @@ var __spreadValues = (a, b) => {
       store2.commit("setAlbumList", uni.getStorageSync("albumList"));
       store2.commit("setCollectList", uni.getStorageSync("collectList"));
       $eventBus.on("addLike", (song) => {
-        formatAppLog("log", "at App.vue:156", 1);
+        formatAppLog("log", "at App.vue:97", 1);
         if (store2.state.likeList.some((ele) => ele.id == song.id && ele.platform == song.platform)) {
           uni.showToast({
             title: "\u6B4C\u66F2\u5DF2\u5B58\u5728",
@@ -8353,7 +8383,7 @@ var __spreadValues = (a, b) => {
         }
       });
       $eventBus.on("addCollect", (album) => {
-        formatAppLog("log", "at App.vue:189", vue.toRaw(store2.state.collectList), album);
+        formatAppLog("log", "at App.vue:130", vue.toRaw(store2.state.collectList), album);
         if (store2.state.collectList.some((ele) => ele.id == album.id && ele.platform == album.platform)) {
           return uni.showToast({
             title: "\u91CD\u590D\u6536\u85CF!",
@@ -8388,6 +8418,8 @@ var __spreadValues = (a, b) => {
         }
       });
       $eventBus.on("playSong", async ({ id, platform: platform2, auto = false, force = false }) => {
+        if (!id)
+          return;
         if (store2.state.audioIdBaseInfo.id == id && !force) {
           return;
         }
@@ -8465,15 +8497,27 @@ var __spreadValues = (a, b) => {
           force: playMode == 2
         });
       });
+      $eventBus.on("pause", () => {
+        if (!store2.state.audioIdBaseInfo.id)
+          return;
+        store2.state.audioManager.pause();
+        store2.commit("changeAudioPlaying", false);
+      });
+      $eventBus.on("play", () => {
+        if (!store2.state.audioIdBaseInfo.id)
+          return;
+        store2.state.audioManager.play();
+        store2.commit("changeAudioPlaying", true);
+      });
     },
     onShow: function() {
-      formatAppLog("log", "at App.vue:330", "App Show");
+      formatAppLog("log", "at App.vue:285", "App Show");
     },
     onHide: function() {
-      formatAppLog("log", "at App.vue:333", "App Hide");
+      formatAppLog("log", "at App.vue:288", "App Hide");
     },
     onLoad: function() {
-      formatAppLog("log", "at App.vue:336", 9999);
+      formatAppLog("log", "at App.vue:291", 9999);
     }
   };
   function mitt(n) {
@@ -8530,6 +8574,9 @@ var __spreadValues = (a, b) => {
       },
       setLyric(state, lyric) {
         state.lyric = lyric;
+      },
+      changeMode(state) {
+        state.playMode = (state.playMode + 1) % 3;
       },
       setAduioInfo(state, info) {
         state.audioInfo = info;

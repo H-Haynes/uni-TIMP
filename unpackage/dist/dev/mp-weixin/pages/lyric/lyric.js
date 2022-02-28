@@ -4,7 +4,6 @@ const _sfc_main = {
   setup(__props) {
     const store = common_vendor.useStore();
     const $eventBus = common_vendor.inject("$eventBus");
-    common_vendor.ref();
     const next = () => {
       $eventBus.emit("playNext");
     };
@@ -29,9 +28,14 @@ const _sfc_main = {
       });
       return index;
     });
-    common_vendor.ref(0);
+    const toggleMode = () => {
+      store.commit("changeMode");
+    };
+    const togglePlay = () => {
+      $eventBus.emit(store.state.audioPlaying ? "pause" : "play");
+    };
     return (_ctx, _cache) => {
-      return {
+      return common_vendor.e({
         a: common_vendor.unref(store).state.audioInfo.picUrl,
         b: common_vendor.t(common_vendor.unref(store).state.audioInfo.name),
         c: common_vendor.t(common_vendor.unref(store).state.audioInfo.author && common_vendor.unref(store).state.audioInfo.author.map((ele) => ele.name).join("&")),
@@ -45,8 +49,24 @@ const _sfc_main = {
         }),
         e: "lyric" + (common_vendor.unref(highlightLine) - 5),
         f: common_vendor.o(prev),
-        g: common_vendor.o(next)
-      };
+        g: common_vendor.unref(store).state.audioPlaying
+      }, common_vendor.unref(store).state.audioPlaying ? {
+        h: common_vendor.o(togglePlay)
+      } : {
+        i: common_vendor.o(togglePlay)
+      }, {
+        j: common_vendor.o(next),
+        k: common_vendor.unref(store).state.playMode == 0
+      }, common_vendor.unref(store).state.playMode == 0 ? {
+        l: common_vendor.o(toggleMode)
+      } : common_vendor.unref(store).state.playMode == 1 ? {
+        n: common_vendor.o(toggleMode)
+      } : common_vendor.unref(store).state.playMode == 2 ? {
+        p: common_vendor.o(toggleMode)
+      } : {}, {
+        m: common_vendor.unref(store).state.playMode == 1,
+        o: common_vendor.unref(store).state.playMode == 2
+      });
     };
   }
 };
