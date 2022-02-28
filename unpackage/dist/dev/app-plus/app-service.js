@@ -1105,7 +1105,7 @@ var __spreadValues = (a, b) => {
     }
     return target;
   };
-  const _sfc_main$m = {
+  const _sfc_main$n = {
     name: "fui-drawer",
     emits: ["close"],
     props: {
@@ -1170,14 +1170,21 @@ var __spreadValues = (a, b) => {
       ], 6)
     ], 38)) : vue.createCommentVNode("v-if", true);
   }
-  var Drawer = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["render", _sfc_render$d], ["__scopeId", "data-v-755fb578"]]);
-  const _sfc_main$l = {
+  var Drawer = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$d], ["__scopeId", "data-v-755fb578"]]);
+  const _sfc_main$m = {
     setup(__props) {
       const defaultPic = vue.readonly("http://preferyou.cn/freed/icon.png");
       const store2 = useStore();
-      vue.inject("$eventBus");
+      const $eventBus = vue.inject("$eventBus");
       const drawRef = vue.ref(null);
       const showDrawer = vue.ref(false);
+      const playSong = (song) => {
+        $eventBus.emit("playSong", {
+          id: song.id,
+          platform: song.platform,
+          auto: true
+        });
+      };
       const pause = () => {
         store2.state.audioManager.pause();
       };
@@ -1185,9 +1192,14 @@ var __spreadValues = (a, b) => {
         store2.state.audioManager.play();
       };
       const showPlayList = () => {
-        formatAppLog("log", "at components/TimpAudio.vue:59", drawRef.value.open);
+        formatAppLog("log", "at components/TimpAudio.vue:71", drawRef.value.open);
         showDrawer.value = true;
         drawRef.vlaue && drawRef.value.open();
+      };
+      const toLyric = () => {
+        uni.navigateTo({
+          url: "/pages/lyric/lyric"
+        });
       };
       return (_ctx, _cache) => {
         return vue.openBlock(), vue.createElementBlock("view", { class: "fixed bottom-0 shadow-sm shadow-inner w-full left-0 h-12 flex items-center" }, [
@@ -1198,13 +1210,14 @@ var __spreadValues = (a, b) => {
           vue.createElementVNode("view", { class: "absolute left-0 top-0 w-full h-full items-center flex px-2 text-white" }, [
             vue.createElementVNode("view", { class: "w-12 h-12 border rounded-full overflow-hidden mr-2 relative -top-2" }, [
               vue.createElementVNode("image", {
+                onClick: toLyric,
                 class: vue.normalizeClass([{ "album-rotate": vue.unref(store2).state.audioPlaying }, "w-full h-full"]),
                 src: vue.unref(store2).state.audioInfo.picUrl || vue.unref(defaultPic)
               }, null, 10, ["src"])
             ]),
             vue.createElementVNode("view", { class: "flex flex-col justify-center items-center flex-1 truncate" }, [
               vue.createElementVNode("text", { class: "text-sm text-gray-200 truncate" }, vue.toDisplayString(vue.unref(store2).state.audioInfo.name || "TIMP,\u4F60\u60F3\u542C\u7684\u90FD\u5728\u8FD9\u91CC!"), 1),
-              vue.createElementVNode("text", { class: "text-xs text-gray-300" }, vue.toDisplayString(vue.unref(store2).state.audioInfo.name ? vue.unref(store2).state.audioInfo.art.map((ele) => ele.name).join("&") : "\u6682\u65E0\u6B4C\u66F2"), 1)
+              vue.createElementVNode("text", { class: "text-xs text-gray-300 truncate" }, vue.toDisplayString(vue.unref(store2).state.audioInfo.name ? vue.unref(store2).state.audioInfo.author.map((ele) => ele.name).join("&") : "\u6682\u65E0\u6B4C\u66F2"), 1)
             ]),
             !vue.unref(store2).state.audioPlaying ? (vue.openBlock(), vue.createElementBlock("text", {
               key: 0,
@@ -1220,7 +1233,6 @@ var __spreadValues = (a, b) => {
               class: "iconfont icon-liebiao_o ml-2 text-3xl"
             })
           ]),
-          vue.createCommentVNode(' 	<uni-drawer mode="right" ref="drawRef">\n			\n		</uni-drawer> '),
           vue.createVNode(Drawer, {
             ref_key: "drawRef",
             ref: drawRef,
@@ -1237,15 +1249,19 @@ var __spreadValues = (a, b) => {
                   class: "flex-1 overflow-hidden",
                   "scroll-y": "true"
                 }, [
-                  (vue.openBlock(), vue.createElementBlock(vue.Fragment, null, vue.renderList(100, (item) => {
-                    return vue.createElementVNode("view", {
-                      class: vue.normalizeClass([{ "bg-gray-200": item % 2 == 0 }, "py-3 text-gray-500 px-2 flex justify-between text-xs"]),
-                      key: item
+                  (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(store2).state.playList, (song, index) => {
+                    return vue.openBlock(), vue.createElementBlock("view", {
+                      class: vue.normalizeClass(["py-3 text-gray-500 px-2 flex justify-between text-xs", {
+                        "bg-gray-200": index % 2 == 0,
+                        "text-red": vue.unref(store2).state.audioIdBaseInfo.id == song.id && vue.unref(store2).state.audioIdBaseInfo.platform == song.platform
+                      }]),
+                      key: song.id,
+                      onClick: ($event) => playSong(song)
                     }, [
-                      vue.createElementVNode("text", { class: "truncate mr-2" }, "\u8FD9\u662F\u4E00\u9996\u6B4C\u66F2\u7684\u540D\u56DB\u4F1A\u54C8\u54C8\u54C8\u54C8\u54C8\u54C8\u5B57"),
-                      vue.createElementVNode("text", { class: "truncate" }, "\u8FD9\u662F\u6B4C\u624B\u7684\u540D\u5B57\u54C8\u54C8\u54C8\u54C8\u54C8")
-                    ], 2);
-                  }), 64))
+                      vue.createElementVNode("text", { class: "truncate mr-2 flex-2 flex-shrink-0" }, vue.toDisplayString(song.name), 1),
+                      vue.createElementVNode("text", { class: "truncate flex-1 text-right" }, vue.toDisplayString(song.author.map((ele) => ele.name).join("&")), 1)
+                    ], 10, ["onClick"]);
+                  }), 128))
                 ])
               ])
             ]),
@@ -1255,17 +1271,47 @@ var __spreadValues = (a, b) => {
       };
     }
   };
-  var TimpAudio = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["__scopeId", "data-v-d1c9d3da"]]);
-  const _sfc_main$k = /* @__PURE__ */ vue.defineComponent({
+  var TimpAudio = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["__scopeId", "data-v-d1c9d3da"]]);
+  var promisify = (api) => {
+    return (options, ...params) => {
+      return new Promise((resolve, reject) => {
+        api(Object.assign({}, options, {
+          success: resolve,
+          fail: reject
+        }), ...params);
+      });
+    };
+  };
+  const _sfc_main$l = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const store2 = useStore();
-      const myAlbumList = vue.ref([
-        {
-          name: "\u8F7B\u97F3\u4E50",
-          id: 1,
-          pic: ""
-        }
-      ]);
+      const createAlbum = () => {
+        promisify(uni.showModal)({
+          title: "\u521B\u5EFA\u6B4C\u5355",
+          editable: true,
+          placeholderText: "\u8BF7\u8F93\u5165\u6B4C\u5355\u540D\u79F0(20\u5B57\u5185)"
+        }).then((res) => {
+          if (res.confirm) {
+            if (res.content.trim().length > 20) {
+              return uni.showToast({
+                title: "\u540D\u79F020\u5B57\u5185",
+                icon: "none"
+              });
+            }
+            const albumInfo = {
+              id: Math.random().toString(36).substr(2),
+              platform: 0,
+              pic: "http://preferyou.cn/freed/icon.png",
+              name: res.content.trim(),
+              list: []
+            };
+            const albumList = store2.state.albumList.slice(0);
+            albumList.push(albumInfo);
+            uni.setStorageSync("albumList", albumList);
+            store2.commit("setAlbumList", albumList);
+          }
+        });
+      };
       return (_ctx, _cache) => {
         return vue.openBlock(), vue.createElementBlock("view", null, [
           vue.createElementVNode("view", { class: "my-2 px-4 mt-5" }, [
@@ -1284,11 +1330,14 @@ var __spreadValues = (a, b) => {
             vue.createElementVNode("view", { class: "flex justify-between mb-2" }, [
               vue.createElementVNode("text", { class: "text-xl font-bold" }, "\u6211\u7684\u6B4C\u5355"),
               vue.createElementVNode("view", { class: "flex items-center text-gray-400" }, [
-                vue.createElementVNode("text", { class: "iconfont icon-plus text-xl" }),
+                vue.createElementVNode("text", {
+                  onClick: createAlbum,
+                  class: "iconfont icon-plus text-xl"
+                }),
                 vue.createElementVNode("text", { class: "iconfont icon-guanbi text-lg ml-3" })
               ])
             ]),
-            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(myAlbumList.value, (item) => {
+            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(store2).state.albumList, (item) => {
               return vue.openBlock(), vue.createElementBlock("view", {
                 key: item.id,
                 class: "flex px-5 items-center py-2 border-b"
@@ -1320,7 +1369,7 @@ var __spreadValues = (a, b) => {
       };
     }
   });
-  const _sfc_main$j = {
+  const _sfc_main$k = {
     name: "w-loading",
     props: {
       text: String,
@@ -1370,17 +1419,7 @@ var __spreadValues = (a, b) => {
       vue.createCommentVNode(" \u906E\u7F69\u5C42")
     ], 2112);
   }
-  var wLoading = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$c], ["__scopeId", "data-v-85c3a0dc"]]);
-  var promisify = (api) => {
-    return (options, ...params) => {
-      return new Promise((resolve, reject) => {
-        api(Object.assign({}, options, {
-          success: resolve,
-          fail: reject
-        }), ...params);
-      });
-    };
-  };
+  var wLoading = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$c], ["__scopeId", "data-v-85c3a0dc"]]);
   const prefix$3 = "http://preferyou.cn/wy";
   const request$3 = promisify(uni.request);
   const getRecommendWy = () => {
@@ -1425,7 +1464,10 @@ var __spreadValues = (a, b) => {
   const getSongDetailWy = (id) => {
     return request$3({ url: `${prefix$3}/song/detail?ids=${id}` });
   };
-  const _sfc_main$i = {
+  const getLyricWy = (id) => {
+    return request$3({ url: `${prefix$3}/lyric?id=${id}` });
+  };
+  const _sfc_main$j = {
     emits: ["bannerClick"],
     props: {
       bannerList: {
@@ -1530,8 +1572,8 @@ var __spreadValues = (a, b) => {
       ], 40, ["indicator-dots", "indicator-color", "indicator-active-color", "autoplay", "interval", "duration", "circular", "previous-margin", "next-margin"])
     ]);
   }
-  var myBanner = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["render", _sfc_render$b], ["__scopeId", "data-v-5562298d"]]);
-  const _sfc_main$h = /* @__PURE__ */ vue.defineComponent({
+  var myBanner = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$b], ["__scopeId", "data-v-5562298d"]]);
+  const _sfc_main$i = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const albumList = vue.ref([]);
       const bannerList = vue.ref([]);
@@ -1710,7 +1752,7 @@ var __spreadValues = (a, b) => {
       };
     }
   });
-  var NeteaseList = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["__scopeId", "data-v-f2301884"]]);
+  var NeteaseList = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["__scopeId", "data-v-f2301884"]]);
   const prefix$2 = "http://preferyou.cn/qq";
   const request$2 = promisify(uni.request);
   const getRecommendQQ = () => {
@@ -1758,7 +1800,10 @@ var __spreadValues = (a, b) => {
   const getSongPicQQ = (id) => {
     return request$2({ url: `${prefix$2}/getImageUrl?id=${id}` });
   };
-  const _sfc_main$g = /* @__PURE__ */ vue.defineComponent({
+  const getLyricQQ = (id) => {
+    return request$2({ url: `${prefix$2}/getLyric?songmid=${id}` });
+  };
+  const _sfc_main$h = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const albumList = vue.ref([]);
       const bannerList = vue.ref([]);
@@ -1935,7 +1980,7 @@ var __spreadValues = (a, b) => {
       };
     }
   });
-  var QQList = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["__scopeId", "data-v-9242fe4e"]]);
+  var QQList = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["__scopeId", "data-v-9242fe4e"]]);
   const prefix$1 = "http://preferyou.cn/kuwo";
   const request$1 = promisify(uni.request);
   const getBannerKW = () => {
@@ -1986,7 +2031,10 @@ var __spreadValues = (a, b) => {
   const getSongDetailKW = (id) => {
     return request$1({ url: `${prefix$1}/kuwo/musicInfo?mid=${id}` });
   };
-  const _sfc_main$f = /* @__PURE__ */ vue.defineComponent({
+  const getLyricKW = (id) => {
+    return request$1({ url: `${prefix$1}/kuwo/lrc?musicId=${id}` });
+  };
+  const _sfc_main$g = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const albumList = vue.ref([]);
       const bannerList = vue.ref([]);
@@ -2171,7 +2219,7 @@ var __spreadValues = (a, b) => {
       };
     }
   });
-  var KuwoList = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["__scopeId", "data-v-0fb611bb"]]);
+  var KuwoList = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["__scopeId", "data-v-0fb611bb"]]);
   const prefix = "http://preferyou.cn/kuwo";
   const request = promisify(uni.request);
   const getRecommendKG = (page = 1) => {
@@ -2215,7 +2263,7 @@ var __spreadValues = (a, b) => {
       url: `${prefix}/kugou/playInfo?id=${id}`
     });
   };
-  const _sfc_main$e = /* @__PURE__ */ vue.defineComponent({
+  const _sfc_main$f = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const albumList = vue.ref([]);
       const categoryList = vue.ref([]);
@@ -2378,14 +2426,14 @@ var __spreadValues = (a, b) => {
       };
     }
   });
-  var KugouList = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["__scopeId", "data-v-f7898a14"]]);
-  const _sfc_main$d = {
+  var KugouList = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["__scopeId", "data-v-f7898a14"]]);
+  const _sfc_main$e = {
     setup(__props) {
-      const platform2 = vue.ref(1);
+      const platform2 = vue.ref(0);
       const platformComp = vue.computed(() => {
         switch (platform2.value) {
           case 0:
-            return _sfc_main$k;
+            return _sfc_main$l;
           case 1:
             return NeteaseList;
           case 2:
@@ -2395,7 +2443,7 @@ var __spreadValues = (a, b) => {
           case 4:
             return KugouList;
           default:
-            return _sfc_main$k;
+            return _sfc_main$l;
         }
       });
       return (_ctx, _cache) => {
@@ -3617,7 +3665,7 @@ var __spreadValues = (a, b) => {
     const reg = /^[0-9]*$/g;
     return typeof val === "number" || reg.test(val) ? val + "px" : val;
   };
-  const _sfc_main$c = {
+  const _sfc_main$d = {
     name: "UniIcons",
     emits: ["click"],
     props: {
@@ -3668,7 +3716,7 @@ var __spreadValues = (a, b) => {
       onClick: _cache[0] || (_cache[0] = (...args) => $options._onClick && $options._onClick(...args))
     }, null, 6);
   }
-  var __easycom_0$2 = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$a], ["__scopeId", "data-v-a2e81f6e"]]);
+  var __easycom_0$2 = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$a], ["__scopeId", "data-v-a2e81f6e"]]);
   class Calendar {
     constructor({
       date,
@@ -3964,7 +4012,7 @@ var __spreadValues = (a, b) => {
       this.weeks = weeks;
     }
   }
-  const _sfc_main$b = {
+  const _sfc_main$c = {
     props: {
       weeks: {
         type: Object,
@@ -4034,7 +4082,7 @@ var __spreadValues = (a, b) => {
       }, null, 2)
     ], 34);
   }
-  var calendarItem = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$9], ["__scopeId", "data-v-39ec3f8e"]]);
+  var calendarItem = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$9], ["__scopeId", "data-v-39ec3f8e"]]);
   const isArray = Array.isArray;
   const isObject = (val) => val !== null && typeof val === "object";
   const defaultDelimiters = ["{", "}"];
@@ -4379,7 +4427,7 @@ var __spreadValues = (a, b) => {
     "zh-Hant": zhHant
   };
   const { t: t$2 } = initVueI18n(messages);
-  const _sfc_main$a = {
+  const _sfc_main$b = {
     name: "UniDatetimePicker",
     components: {},
     data() {
@@ -5058,11 +5106,11 @@ var __spreadValues = (a, b) => {
       ], 6)) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  var timePicker = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$8], ["__scopeId", "data-v-60a1244c"]]);
+  var timePicker = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$8], ["__scopeId", "data-v-60a1244c"]]);
   const {
     t: t$1
   } = initVueI18n(messages);
-  const _sfc_main$9 = {
+  const _sfc_main$a = {
     components: {
       calendarItem,
       timePicker
@@ -5643,11 +5691,11 @@ var __spreadValues = (a, b) => {
       ], 2)) : vue.createCommentVNode("v-if", true)
     ], 32);
   }
-  var calendar = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$7], ["__scopeId", "data-v-94becebc"]]);
+  var calendar = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$7], ["__scopeId", "data-v-94becebc"]]);
   const {
     t
   } = initVueI18n(messages);
-  const _sfc_main$8 = {
+  const _sfc_main$9 = {
     name: "UniDatetimePicker",
     components: {
       calendar,
@@ -6526,8 +6574,8 @@ var __spreadValues = (a, b) => {
       ])
     ]);
   }
-  var __easycom_0$1 = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$6], ["__scopeId", "data-v-6e13d7e2"]]);
-  const _sfc_main$7 = {
+  var __easycom_0$1 = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$6], ["__scopeId", "data-v-6e13d7e2"]]);
+  const _sfc_main$8 = {
     name: "TableCheckbox",
     emits: ["checkboxSelected"],
     props: {
@@ -6610,7 +6658,7 @@ var __spreadValues = (a, b) => {
       ]))
     ]);
   }
-  var tableCheckbox = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$5], ["__scopeId", "data-v-68100fa0"]]);
+  var tableCheckbox = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$5], ["__scopeId", "data-v-68100fa0"]]);
   const resource = {
     "reset": "\u91CD\u7F6E",
     "search": "\u641C\u7D22",
@@ -6627,7 +6675,7 @@ var __spreadValues = (a, b) => {
     Date: "date",
     Timestamp: "timestamp"
   };
-  const _sfc_main$6 = {
+  const _sfc_main$7 = {
     name: "FilterDropdown",
     emits: ["change"],
     components: {
@@ -6978,8 +7026,8 @@ var __spreadValues = (a, b) => {
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  var dropdown = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$4], ["__scopeId", "data-v-609c3cee"]]);
-  const _sfc_main$5 = {
+  var dropdown = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$4], ["__scopeId", "data-v-609c3cee"]]);
+  const _sfc_main$6 = {
     name: "uniTh",
     options: {
       virtualHost: true
@@ -7118,8 +7166,8 @@ var __spreadValues = (a, b) => {
       vue.renderSlot(_ctx.$slots, "default", {}, void 0, true)
     ], 6);
   }
-  var __easycom_0 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$3], ["__scopeId", "data-v-511e81f9"]]);
-  const _sfc_main$4 = {
+  var __easycom_0 = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$3], ["__scopeId", "data-v-511e81f9"]]);
+  const _sfc_main$5 = {
     name: "uniTr",
     components: { tableCheckbox },
     props: {
@@ -7219,8 +7267,8 @@ var __spreadValues = (a, b) => {
       vue.renderSlot(_ctx.$slots, "default", {}, void 0, true)
     ]);
   }
-  var __easycom_1 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$2], ["__scopeId", "data-v-c2c83a8e"]]);
-  const _sfc_main$3 = {
+  var __easycom_1 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$2], ["__scopeId", "data-v-c2c83a8e"]]);
+  const _sfc_main$4 = {
     name: "uniTd",
     options: {
       virtualHost: true
@@ -7277,8 +7325,8 @@ var __spreadValues = (a, b) => {
       ], 6)
     ], 2112);
   }
-  var __easycom_2 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render$1], ["__scopeId", "data-v-321f8e79"]]);
-  const _sfc_main$2 = {
+  var __easycom_2 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$1], ["__scopeId", "data-v-321f8e79"]]);
+  const _sfc_main$3 = {
     name: "uniTable",
     options: {
       virtualHost: true
@@ -7523,8 +7571,8 @@ var __spreadValues = (a, b) => {
       ], 6)
     ], 2);
   }
-  var __easycom_3 = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["render", _sfc_render], ["__scopeId", "data-v-6cd49106"]]);
-  const _sfc_main$1 = /* @__PURE__ */ vue.defineComponent({
+  var __easycom_3 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render], ["__scopeId", "data-v-6cd49106"]]);
+  const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const defaultImg = "http://preferyou.cn/freed/icon.png";
       const loadingRef = vue.ref(null);
@@ -7801,7 +7849,7 @@ var __spreadValues = (a, b) => {
         }
       };
       const playSong = (song) => {
-        store2.dispatch("changeAudioBaseInfo", {
+        $eventBus.emit("playSong", {
           id: song.id,
           platform: platform2.value
         });
@@ -7833,6 +7881,23 @@ var __spreadValues = (a, b) => {
         $eventBus.emit("unCollect", {
           id: albumId.value,
           platform: platform2.value
+        });
+      };
+      const playAll = () => {
+        promisify(uni.showModal)({
+          title: "\u5168\u90E8\u64AD\u653E",
+          content: "\u64AD\u653E\u5168\u90E8\u4F1A\u66FF\u6362\u5F53\u524D\u64AD\u653E\u5217\u8868\uFF0C\u662F\u5426\u7EE7\u7EED?",
+          showCancel: true,
+          confirmText: "\u7EE7\u7EED"
+        }).then((res) => {
+          if (res.confirm) {
+            $eventBus.emit("playAll", songList.value.map((ele) => ({
+              id: ele.id,
+              platform: platform2.value,
+              author: vue.toRaw(ele.author).map((ele2) => ({ name: ele2.nickname, id: ele2.id })),
+              name: ele.name
+            })));
+          }
         });
       };
       vue.watch([() => albumId.value], () => {
@@ -7883,7 +7948,10 @@ var __spreadValues = (a, b) => {
             ])
           ]),
           vue.createElementVNode("view", { class: "px-4 text-sm flex mb-4" }, [
-            vue.createElementVNode("text", { class: "rounded bg-red-500 hover:bg-red-600 text-white py-1 px-4 mr-5" }, "\u64AD\u653E\u5168\u90E8"),
+            vue.createElementVNode("text", {
+              onClick: playAll,
+              class: "rounded bg-red-500 hover:bg-red-600 text-white py-1 px-4 mr-5"
+            }, "\u64AD\u653E\u5168\u90E8"),
             vue.unref(store2).state.collectList.some((ele) => ele.id == albumId.value && ele.platform == platform2.value) ? (vue.openBlock(), vue.createElementBlock("text", {
               key: 0,
               onClick: unCollect,
@@ -7964,6 +8032,78 @@ var __spreadValues = (a, b) => {
       };
     }
   });
+  const _sfc_main$1 = {
+    setup(__props) {
+      const store2 = useStore();
+      const $eventBus = vue.inject("$eventBus");
+      vue.ref();
+      const next = () => {
+        $eventBus.emit("playNext");
+      };
+      const prev = () => {
+        $eventBus.emit("playPrev");
+      };
+      const currentTime = vue.ref(store2.state.currentTime);
+      store2.state.audioManager.onPlay && store2.state.audioManager.onPlay(() => {
+        currentTime.value = store2.state.audioManager.currentTime;
+      });
+      store2.state.audioManager.ontimeupdate = () => {
+        currentTime.value = store2.state.audioManager.currentTime;
+      };
+      store2.state.audioManager.onTimeUpdate && store2.state.audioManager.onTimeUpdate(() => {
+        currentTime.value = store2.state.audioManager.currentTime;
+      });
+      const lyric = store2.state.lyric;
+      vue.ref(store2.state.audioInfo.time);
+      const highlightLine = vue.computed(() => {
+        let index = lyric.findIndex((ele, index2) => {
+          return currentTime.value > ele.time && (lyric[index2 + 1] ? currentTime.value < lyric[index2 + 1].time : true);
+        });
+        return index;
+      });
+      vue.ref(0);
+      return (_ctx, _cache) => {
+        return vue.openBlock(), vue.createElementBlock("view", { class: "bg-gray-800 h-full w-full flex flex-col text-gray-300 gap-5 border-red-500" }, [
+          vue.createElementVNode("view", { class: "flex justify-around items-center px-8" }, [
+            vue.createElementVNode("image", {
+              class: "w-24 h-24 rounded",
+              src: vue.unref(store2).state.audioInfo.picUrl
+            }, null, 8, ["src"]),
+            vue.createElementVNode("view", { class: "flex-1 truncate ml-5 flex flex-col justify-around" }, [
+              vue.createElementVNode("text", { class: "text-xl" }, vue.toDisplayString(vue.unref(store2).state.audioInfo.name), 1),
+              vue.createElementVNode("text", { class: "text-sm mt-3" }, vue.toDisplayString(vue.unref(store2).state.audioInfo.author && vue.unref(store2).state.audioInfo.author.map((ele) => ele.name).join("&")), 1)
+            ])
+          ]),
+          vue.createElementVNode("scroll-view", {
+            "scroll-into-view": "lyric" + (vue.unref(highlightLine) - 5),
+            "scroll-with-animation": "",
+            "scroll-y": "",
+            class: "gap-top lyric-container text-center text-base"
+          }, [
+            (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(store2).state.lyric, (item, index) => {
+              return vue.openBlock(), vue.createElementBlock("view", {
+                class: vue.normalizeClass([{ "linear-text highlight-line font-bold": vue.unref(highlightLine) == index }, "text-center leading-8"]),
+                id: "lyric" + index,
+                key: item.time + index
+              }, vue.toDisplayString(item.words), 11, ["id"]);
+            }), 128))
+          ], 8, ["scroll-into-view"]),
+          vue.createElementVNode("view", { class: "mt-5 flex flex-1 items-center justify-around" }, [
+            vue.createElementVNode("text", {
+              onClick: prev,
+              class: "iconfont icon-xiayishou"
+            }),
+            vue.createElementVNode("text", { class: "iconfont icon-bofang" }),
+            vue.createElementVNode("text", {
+              onClick: next,
+              class: "iconfont icon-xiayishou"
+            }),
+            vue.createElementVNode("text", { class: "iconfont icon-xunhuan" })
+          ])
+        ]);
+      };
+    }
+  };
   if (typeof Promise !== "undefined" && !Promise.prototype.finally) {
     Promise.prototype.finally = function(callback) {
       const promise = this.constructor;
@@ -7975,116 +8115,9 @@ var __spreadValues = (a, b) => {
   if (uni.restoreGlobal) {
     uni.restoreGlobal(vue__namespace, weex, plus, setTimeout, clearTimeout, setInterval, clearInterval);
   }
-  __definePage("pages/index/index", _sfc_main$d);
-  __definePage("pages/album/album", _sfc_main$1);
-  const _sfc_main = {
-    globalData: {
-      audioSrc: "",
-      audioInfo: {
-        name: "ss",
-        pic: "https://p2.music.126.net/qpvBqYIqkRhO9Ry2qOCdJQ==/2942293117852634.jpg"
-      },
-      audioName: "yyyy"
-    },
-    onLaunch: function() {
-      const store2 = useStore();
-      const $eventBus = vue.inject("$eventBus");
-      formatAppLog("log", "at App.vue:20", "App Launch");
-      const bgAudioManager = uni.getBackgroundAudioManager();
-      store2.commit("setAudioManager", bgAudioManager);
-      store2.commit("setPlayList", uni.getStorageSync("playList"));
-      store2.commit("setLikeList", uni.getStorageSync("likeList"));
-      store2.commit("setAlbumList", uni.getStorageSync("albumList"));
-      store2.commit("setCollectList", uni.getStorageSync("collectList"));
-      $eventBus.on("addLike", (song) => {
-        formatAppLog("log", "at App.vue:47", 1);
-        if (store2.state.likeList.some((ele) => ele.id == song.id && ele.platform == song.platform)) {
-          uni.showToast({
-            title: "\u6B4C\u66F2\u5DF2\u5B58\u5728",
-            icon: "none"
-          });
-          return;
-        }
-        const list = [...store2.state.likeList, song];
-        uni.setStorageSync("likeList", list);
-        store2.commit("setLikeList", list);
-      });
-      $eventBus.on("unlike", (song) => {
-        let list = store2.state.likeList.slice(0);
-        let index = list.findIndex((ele) => ele.id == song.id && ele.platform == song.platform);
-        if (index == -1) {
-          return uni.showToast({
-            title: "\u5217\u8868\u4E2D\u65E0\u6B64\u6B4C\u66F2",
-            icon: "none"
-          });
-        } else {
-          list.splice(index, 1);
-          uni.setStorageSync("likeList", list);
-          store2.commit("setLikeList", list);
-        }
-      });
-      $eventBus.on("addCollect", (album) => {
-        formatAppLog("log", "at App.vue:80", vue.toRaw(store2.state.collectList), album);
-        if (store2.state.collectList.some((ele) => ele.id == album.id && ele.platform == album.platform)) {
-          return uni.showToast({
-            title: "\u91CD\u590D\u6536\u85CF!",
-            icon: "none"
-          });
-        } else {
-          let list = [...store2.state.collectList, album];
-          uni.setStorageSync("collectList", list);
-          store2.commit("setCollectList", list);
-          uni.showToast({
-            title: "\u6536\u85CF\u6210\u529F",
-            icon: "none"
-          });
-        }
-      });
-      $eventBus.on("unCollect", (album) => {
-        let list = store2.state.collectList;
-        let index = list.findIndex((ele) => ele.id == album.id && ele.platform == album.platform);
-        if (index == -1) {
-          return uni.showToast({
-            title: "\u5217\u8868\u4E2D\u65E0\u6B64\u6B4C\u5355",
-            icon: "none"
-          });
-        } else {
-          list.splice(index, 1);
-          uni.setStorageSync("collectList", list);
-          store2.commit("setCollectList", list);
-          uni.showToast({
-            title: "\u5DF2\u53D6\u6D88\u6536\u85CF",
-            icon: "none"
-          });
-        }
-      });
-    },
-    onShow: function() {
-      formatAppLog("log", "at App.vue:119", "App Show");
-    },
-    onHide: function() {
-      formatAppLog("log", "at App.vue:122", "App Hide");
-    },
-    onLoad: function() {
-      formatAppLog("log", "at App.vue:125", 9999);
-    }
-  };
-  function mitt(n) {
-    return { all: n = n || new Map(), on: function(t2, e) {
-      var i = n.get(t2);
-      i ? i.push(e) : n.set(t2, [e]);
-    }, off: function(t2, e) {
-      var i = n.get(t2);
-      i && (e ? i.splice(i.indexOf(e) >>> 0, 1) : n.set(t2, []));
-    }, emit: function(t2, e) {
-      var i = n.get(t2);
-      i && i.slice().map(function(n2) {
-        n2(e);
-      }), (i = n.get("*")) && i.slice().map(function(n2) {
-        n2(t2, e);
-      });
-    } };
-  }
+  __definePage("pages/index/index", _sfc_main$e);
+  __definePage("pages/album/album", _sfc_main$2);
+  __definePage("pages/lyric/lyric", _sfc_main$1);
   var platform;
   (function(platform2) {
     platform2[platform2["wy"] = 1] = "wy";
@@ -8093,11 +8126,19 @@ var __spreadValues = (a, b) => {
     platform2[platform2["kw"] = 3] = "kw";
     platform2[platform2["mg"] = 5] = "mg";
   })(platform || (platform = {}));
+  function durationTransSec(value) {
+    if (!value)
+      return 0;
+    const temp = value.split(":");
+    const minute = temp[0];
+    const second = temp[1];
+    return +minute * 60 + +second;
+  }
   const getSongInfo = async (id, platformType) => {
     var _a, _b, _c, _d;
     let songInfo = {
       name: "",
-      art: [],
+      author: [],
       time: 0,
       picUrl: "",
       albumId: ""
@@ -8106,14 +8147,14 @@ var __spreadValues = (a, b) => {
       const result = await getSongDetailWy(id);
       if (result.data.code === 200) {
         songInfo.name = result.data.songs[0].name;
-        songInfo.art = result.data.songs[0].ar;
+        songInfo.author = result.data.songs[0].ar;
         songInfo.picUrl = result.data.songs[0].al.picUrl;
         songInfo.time = result.data.songs[0].dt;
       }
     } else if (platformType == 2) {
       const infoResult = await getSongInfoQQ(id);
       if (infoResult.data.response.code === 0) {
-        songInfo.art = infoResult.data.response.songinfo.data.track_info.singer.map((ele) => {
+        songInfo.author = infoResult.data.response.songinfo.data.track_info.singer.map((ele) => {
           return {
             name: ele.name,
             id: ele.mid
@@ -8133,7 +8174,7 @@ var __spreadValues = (a, b) => {
       if (result.data.code === 200) {
         songInfo = {
           name: result.data.data.name,
-          art: [{
+          author: [{
             name: result.data.data.artist,
             id: result.data.data.artistid
           }],
@@ -8147,7 +8188,7 @@ var __spreadValues = (a, b) => {
         name: result.data.songName,
         time: result.data.timeLength * 1e3,
         picUrl: (_c = (_b = result.data) == null ? void 0 : _b.imgUrl) == null ? void 0 : _c.replace("{size}", "400"),
-        art: Array.isArray(result.data.authors) ? (_d = result.data.authors) == null ? void 0 : _d.map((ele) => ({
+        author: Array.isArray(result.data.authors) ? (_d = result.data.authors) == null ? void 0 : _d.map((ele) => ({
           name: ele.author_name,
           id: ele.author_id
         })) : [{
@@ -8188,10 +8229,274 @@ var __spreadValues = (a, b) => {
       return result.data.url || result.data.backup_url[0];
     }
   };
+  const getLyric = async (id, platformType) => {
+    let list = [{
+      time: 0,
+      words: "\u6B4C\u8BCD\u83B7\u53D6\u5931\u8D25!"
+    }];
+    if (platformType === 1) {
+      const result = await getLyricWy(id);
+      if (result.data.code == 200) {
+        let lyricArr = result.data.lrc.lyric.split("\n").filter((ele) => ele.trim());
+        list = lyricArr.map((ele) => {
+          let temp = ele.split("]");
+          let words = temp[1].trim();
+          let time = temp[0].replace("[", "").trim();
+          return {
+            time: durationTransSec(time),
+            words
+          };
+        });
+      }
+    } else if (platformType === 2) {
+      const result = await getLyricQQ(id);
+      if (result.data.response.code === 0) {
+        let lyricArr = result.data.response.lyric.split("\n").filter((ele) => ele.trim());
+        list = lyricArr.map((ele) => {
+          let temp = ele.split("]");
+          let words = temp[1].trim();
+          let time = temp[0].replace("[", "").trim();
+          return {
+            time: durationTransSec(time),
+            words
+          };
+        });
+      }
+    } else if (platformType === 3) {
+      const result = await getLyricKW(id);
+      if (result.data.status === 200) {
+        list = result.data.data.lrclist.map((ele) => {
+          return {
+            time: +ele.time,
+            words: ele.lineLyric
+          };
+        });
+      }
+    } else if (platformType === 4) {
+      const result = await getKGLyric(id);
+      if (result.data.code === 200) {
+        let lyricArr = result.data.result.split("\r\n").filter((ele) => ele[ele.length - 1] !== "]" && ele.trim());
+        list = lyricArr.map((ele) => {
+          let temp = ele.split("]");
+          let words = temp[1].trim();
+          let time = temp[0].replace("[", "").trim();
+          return {
+            time: durationTransSec(time),
+            words
+          };
+        });
+      }
+    }
+    return list;
+  };
+  const _sfc_main = {
+    globalData: {
+      audioSrc: "",
+      audioInfo: {
+        name: "ss",
+        pic: "https://p2.music.126.net/qpvBqYIqkRhO9Ry2qOCdJQ==/2942293117852634.jpg"
+      },
+      audioName: "yyyy"
+    },
+    onLaunch: function() {
+      const store2 = useStore();
+      const $eventBus = vue.inject("$eventBus");
+      formatAppLog("log", "at App.vue:20", "App Launch");
+      const bgAudioManager = uni.getBackgroundAudioManager();
+      store2.commit("setAudioManager", bgAudioManager);
+      bgAudioManager.onCanplay(() => {
+        bgAudioManager.play();
+        store2.commit("changeAudioPlaying", true);
+      });
+      bgAudioManager.onPause(() => {
+        store2.commit("changeAudioPlaying", false);
+      });
+      bgAudioManager.onStop(() => {
+        store2.commit("changeAudioPlaying", false);
+      });
+      bgAudioManager.onEnded(() => {
+        store2.commit("changeAudioPlaying", false);
+        $eventBus.emit("playNext");
+      });
+      bgAudioManager.onTimeUpdate(() => {
+        store2.commit("changeCurrentTime", bgAudioManager.currentTime);
+      });
+      store2.commit("setPlayList", uni.getStorageSync("playList"));
+      store2.commit("setLikeList", uni.getStorageSync("likeList"));
+      store2.commit("setAlbumList", uni.getStorageSync("albumList"));
+      store2.commit("setCollectList", uni.getStorageSync("collectList"));
+      $eventBus.on("addLike", (song) => {
+        formatAppLog("log", "at App.vue:156", 1);
+        if (store2.state.likeList.some((ele) => ele.id == song.id && ele.platform == song.platform)) {
+          uni.showToast({
+            title: "\u6B4C\u66F2\u5DF2\u5B58\u5728",
+            icon: "none"
+          });
+          return;
+        }
+        const list = [...store2.state.likeList, song];
+        uni.setStorageSync("likeList", list);
+        store2.commit("setLikeList", list);
+      });
+      $eventBus.on("unlike", (song) => {
+        let list = store2.state.likeList.slice(0);
+        let index = list.findIndex((ele) => ele.id == song.id && ele.platform == song.platform);
+        if (index == -1) {
+          return uni.showToast({
+            title: "\u5217\u8868\u4E2D\u65E0\u6B64\u6B4C\u66F2",
+            icon: "none"
+          });
+        } else {
+          list.splice(index, 1);
+          uni.setStorageSync("likeList", list);
+          store2.commit("setLikeList", list);
+        }
+      });
+      $eventBus.on("addCollect", (album) => {
+        formatAppLog("log", "at App.vue:189", vue.toRaw(store2.state.collectList), album);
+        if (store2.state.collectList.some((ele) => ele.id == album.id && ele.platform == album.platform)) {
+          return uni.showToast({
+            title: "\u91CD\u590D\u6536\u85CF!",
+            icon: "none"
+          });
+        } else {
+          let list = [...store2.state.collectList, album];
+          uni.setStorageSync("collectList", list);
+          store2.commit("setCollectList", list);
+          uni.showToast({
+            title: "\u6536\u85CF\u6210\u529F",
+            icon: "none"
+          });
+        }
+      });
+      $eventBus.on("unCollect", (album) => {
+        let list = store2.state.collectList;
+        let index = list.findIndex((ele) => ele.id == album.id && ele.platform == album.platform);
+        if (index == -1) {
+          return uni.showToast({
+            title: "\u5217\u8868\u4E2D\u65E0\u6B64\u6B4C\u5355",
+            icon: "none"
+          });
+        } else {
+          list.splice(index, 1);
+          uni.setStorageSync("collectList", list);
+          store2.commit("setCollectList", list);
+          uni.showToast({
+            title: "\u5DF2\u53D6\u6D88\u6536\u85CF",
+            icon: "none"
+          });
+        }
+      });
+      $eventBus.on("playSong", async ({ id, platform: platform2, auto = false, force = false }) => {
+        if (store2.state.audioIdBaseInfo.id == id && !force) {
+          return;
+        }
+        const songUrl = await getSongUrl(id, platform2);
+        if (!songUrl) {
+          return uni.showToast({
+            title: "\u6682\u65E0\u64AD\u653E\u5730\u5740",
+            icon: ""
+          });
+        }
+        const songInfo = await getSongInfo(id, platform2);
+        songInfo.src = songUrl;
+        store2.commit("setAudioInfo", {
+          id,
+          platform: platform2,
+          songInfo
+        });
+        const lyric = await getLyric(id, platform2);
+        store2.commit("setLyric", lyric);
+        if (!auto) {
+          let list = store2.state.playList.slice(0);
+          let index = list.findIndex((ele) => ele.id == id && ele.platform == platform2);
+          if (index !== -1) {
+            list.splice(index, 1);
+          }
+          list.unshift({
+            id,
+            platform: platform2,
+            name: songInfo.name,
+            author: songInfo.author
+          });
+          uni.setStorageSync("playList", list);
+          store2.commit("setPlayList", list);
+        }
+      });
+      $eventBus.on("playAll", async (songList) => {
+        uni.setStorageSync("playList", songList);
+        store2.commit("setPlayList", songList);
+        $eventBus.emit("playSong", {
+          id: songList[0].id,
+          platform: songList[0].platform
+        });
+      });
+      $eventBus.on("playNext", () => {
+        let playList = store2.state.playList;
+        let current = store2.state.audioIdBaseInfo;
+        let playMode = store2.state.playMode;
+        let index = playList.findIndex((ele) => ele.id == current.id && ele.platform == current.platform);
+        if (playMode == 0) {
+          index = index == playList.length - 1 ? 0 : index + 1;
+        } else if (playMode == 1) {
+          index = Math.floor(Math.random() * (playList.length + 1));
+        }
+        $eventBus.emit("playSong", {
+          id: playList[index].id,
+          platform: playList[index].platform,
+          auto: true,
+          force: playMode == 2
+        });
+      });
+      $eventBus.on("playPrev", () => {
+        let playList = store2.state.playList;
+        let current = store2.state.audioIdBaseInfo;
+        let playMode = store2.state.playMode;
+        let index = playList.findIndex((ele) => ele.id == current.id && ele.platform == current.platform);
+        if (playMode == 0) {
+          index = index == 0 ? playList.length - 1 : index - 1;
+        } else if (playMode == 1) {
+          index = Math.floor(Math.random() * (playList.length + 1));
+        }
+        $eventBus.emit("playSong", {
+          id: playList[index].id,
+          platform: playList[index].platform,
+          auto: true,
+          force: playMode == 2
+        });
+      });
+    },
+    onShow: function() {
+      formatAppLog("log", "at App.vue:330", "App Show");
+    },
+    onHide: function() {
+      formatAppLog("log", "at App.vue:333", "App Hide");
+    },
+    onLoad: function() {
+      formatAppLog("log", "at App.vue:336", 9999);
+    }
+  };
+  function mitt(n) {
+    return { all: n = n || new Map(), on: function(t2, e) {
+      var i = n.get(t2);
+      i ? i.push(e) : n.set(t2, [e]);
+    }, off: function(t2, e) {
+      var i = n.get(t2);
+      i && (e ? i.splice(i.indexOf(e) >>> 0, 1) : n.set(t2, []));
+    }, emit: function(t2, e) {
+      var i = n.get(t2);
+      i && i.slice().map(function(n2) {
+        n2(e);
+      }), (i = n.get("*")) && i.slice().map(function(n2) {
+        n2(t2, e);
+      });
+    } };
+  }
   const store = createStore({
     state() {
       return {
         audioManager: null,
+        currentTime: 0,
         audioInfo: {
           name: "",
           art: [],
@@ -8208,34 +8513,28 @@ var __spreadValues = (a, b) => {
         playList: [],
         likeList: [],
         albumList: [],
-        collectList: []
+        collectList: [],
+        playMode: 0,
+        lyric: []
       };
     },
     mutations: {
       setAudioManager(state, manager) {
         state.audioManager = manager;
       },
+      setPlayMode(state, mode) {
+        state.playMode = mode;
+      },
+      changeCurrentTime(state, time) {
+        state.currentTime = time;
+      },
+      setLyric(state, lyric) {
+        state.lyric = lyric;
+      },
       setAduioInfo(state, info) {
-        formatAppLog("log", "at store/index.ts:32", info);
         state.audioInfo = info;
         state.audioManager.src = info.src;
         state.audioManager.title = info.name;
-        state.audioManager.oncanplay = state.audioManager.onCanplay = () => {
-          state.audioManager.play();
-          state.audioPlaying = true;
-        };
-        state.audioManager.onplay = state.audioManager.onPlay = () => {
-          state.audioPlaying = true;
-        };
-        state.audioManager.onpause = state.audioManager.onPause = () => {
-          state.audioPlaying = false;
-        };
-        state.audioManager.onstop = state.audioManager.onStop = () => {
-          state.audioPlaying = false;
-        };
-        state.audioManager.onended = state.audioManager.onEnded = () => {
-          state.audioPlaying = false;
-        };
       },
       setAudioBaseInfo(state, info) {
         state.audioIdBaseInfo = info;
@@ -8251,26 +8550,18 @@ var __spreadValues = (a, b) => {
       },
       setCollectList(state, list) {
         state.collectList = list || [];
+      },
+      setAudioInfo(state, info) {
+        state.audioIdBaseInfo = { id: info.id, platform: info.platform };
+        state.audioInfo = info.songInfo;
+        state.audioManager.src = info.songInfo.src;
+        state.audioManager.title = info.songInfo.name;
+      },
+      changeAudioPlaying(state, playing) {
+        state.audioPlaying = playing;
       }
     },
-    actions: {
-      async changeAudioBaseInfo({ commit, state }, info) {
-        commit("setAudioBaseInfo", info);
-        const songInfo = await getSongInfo(info.id, info.platform);
-        const songUrl = await getSongUrl(info.id, info.platform);
-        if (!songUrl) {
-          return uni.showToast({
-            title: "\u6682\u65E0\u64AD\u653E\u5730\u5740",
-            icon: "none"
-          });
-        }
-        songInfo.src = songUrl;
-        commit("setAduioInfo", songInfo);
-        state.audioManager.singer = songInfo.art.map((ele) => ele).join("&");
-        state.audioManager.coverImgUrl = songInfo.picUrl;
-        state.audioManager.webUrl = "http://preferyou.cn/netease";
-      }
-    }
+    actions: {}
   });
   const filters = {
     timeFormat: (value) => {

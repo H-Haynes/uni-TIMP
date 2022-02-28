@@ -1,0 +1,90 @@
+.uni-calendar-item__weeks-box.data-v-39ec3f8e {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 1px 0;
+  position: relative;
+}
+.uni-calendar-item__weeks-box-text.data-v-39ec3f8e {
+  font-size: 14px;
+  font-weight: bold;
+  color: #455997;
+}
+.uni-calendar-item__weeks-lunar-text.data-v-39ec3f8e {
+  font-size: 12px;
+  color: #333;
+}
+.uni-calendar-item__weeks-box-item.data-v-39ec3f8e {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+}
+.uni-calendar-item__weeks-box-circle.data-v-39ec3f8e {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  background-color: #dd524d;
+}
+.uni-calendar-item__weeks-box .uni-calendar-item--disable.data-v-39ec3f8e {
+  cursor: default;
+}
+.uni-calendar-item--disable .uni-calendar-item__weeks-box-text-disable.data-v-39ec3f8e {
+  color: #D1D1D1;
+}
+.uni-calendar-item--isDay.data-v-39ec3f8e {
+  position: absolute;
+  top: 10px;
+  right: 17%;
+  background-color: #dd524d;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.uni-calendar-item--extra.data-v-39ec3f8e {
+  color: #dd524d;
+  opacity: 0.8;
+}
+.uni-calendar-item__weeks-box .uni-calendar-item--checked.data-v-39ec3f8e {
+  background-color: #007aff;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 3px solid #fff;
+}
+.uni-calendar-item--checked .uni-calendar-item--checked-text.data-v-39ec3f8e {
+  color: #fff;
+}
+.uni-calendar-item--multiple .uni-calendar-item--checked-range-text.data-v-39ec3f8e {
+  color: #333;
+}
+.uni-calendar-item--multiple.data-v-39ec3f8e {
+  background-color: #F6F7FC;
+}
+.uni-calendar-item--multiple .uni-calendar-item--before-checked.data-v-39ec3f8e, .uni-calendar-item--multiple .uni-calendar-item--after-checked.data-v-39ec3f8e {
+  background-color: #409eff;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 3px solid #F6F7FC;
+}
+.uni-calendar-item--before-checked .uni-calendar-item--checked-text.data-v-39ec3f8e, .uni-calendar-item--after-checked .uni-calendar-item--checked-text.data-v-39ec3f8e {
+  color: #fff;
+}
+.uni-calendar-item--before-checked-x.data-v-39ec3f8e {
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  box-sizing: border-box;
+  background-color: #F6F7FC;
+}
+.uni-calendar-item--after-checked-x.data-v-39ec3f8e {
+  border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px;
+  background-color: #F6F7FC;
+}

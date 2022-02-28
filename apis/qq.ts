@@ -85,3 +85,8 @@ export const getSongPicQQ = (id:string|number) => {
     return request({url:`${prefix}/getImageUrl?id=${id}`});
 };
 
+
+
+export const getLyricQQ = (id:number|string) => {
+    return request({url:`${prefix}/getLyric?songmid=${id}`});
+};

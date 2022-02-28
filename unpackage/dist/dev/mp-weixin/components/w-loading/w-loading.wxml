@@ -1,0 +1,1 @@
+<view wx:if="{{a}}" class="{{['mask', c]}}" bindtap="{{d}}" catchtouchmove="{{e}}"><view class="preloader"><view class="loader"></view></view><view class="title">{{b}}</view></view>

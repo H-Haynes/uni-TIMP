@@ -1,7 +1,7 @@
 <script>
 	import {inject,toRaw} from 'vue';
 	import {useStore} from 'vuex';
-	import {getSongInfo,getSongUrl} from '@/hooks/usePlayInfo';
+	import {getSongInfo,getSongUrl,getLyric} from '@/hooks/usePlayInfo';
 
 	
 	
@@ -21,33 +21,119 @@
 			// #ifndef H5
 			const bgAudioManager = uni.getBackgroundAudioManager();
 			store.commit('setAudioManager',bgAudioManager);
+			
+			bgAudioManager.onCanplay(()=>{
+				bgAudioManager.play();
+				store.commit('changeAudioPlaying',true);
+			});
+			// onplay会一直调用
+			// bgAudioManager.onPlay(()=>{
+			// 	bgAudioManager.play();
+			// 	store.commit('changeAudioPlaying',true);
+			// })
+			bgAudioManager.onPause(()=>{
+				store.commit('changeAudioPlaying',false);
+			});
+			bgAudioManager.onStop(()=>{
+				store.commit('changeAudioPlaying',false);
+			})
+			bgAudioManager.onEnded(()=>{
+				store.commit('changeAudioPlaying',false);
+				//自动切歌
+				$eventBus.emit('playNext');
+			})
+			bgAudioManager.onTimeUpdate(() => {
+				store.commit('changeCurrentTime',bgAudioManager.currentTime);
+			});
+			 
 			// #endif
 			// #ifdef H5
 				const audio = document.createElement('audio');
 				document.body.appendChild(audio);
 				store.commit('setAudioManager',audio);
+				audio.oncanplay = () => {
+					audio.play();
+					store.commit('changeAudioPlaying',true);
+				};
+				
+				audio.onplay = () =>{
+					audio.play();
+					store.commit('changeAudioPlaying',true);
+				};
+				
+				audio.onpause = () => {
+					store.commit('changeAudioPlaying',false);
+				} 
+				audio.onstop = () =>{
+					store.commit('changeAudioPlaying',false);
+				};
+				audio.onended = () => {
+					store.commit('changeAudioPlaying',false);
+					//自动切歌
+					$eventBus.emit('playNext');
+				}  
+				
+				audio.ontimeupdate = () => {
+					store.commit('changeCurrentTime',audio.currentTime);
+				} 
 			// #endif
 			
-			
 			// 监听播放器
-			store.state.audioManager.oncanplay = store.state.audioManager.onCanplay = () => {
-				store.state.audioManager.play();
-				store.commit('changeAudioPlaying',true)
-			}
-			store.state.audioManager.onplay = store.state.audioManager.onPlay = () => {
-				store.commit('changeAudioPlaying',true)
-			}
-			store.state.audioManager.onpause = store.state.audioManager.onPause = () => {
-				store.commit('changeAudioPlaying',false)
-			}
-			store.state.audioManager.onstop = store.state.audioManager.onStop = () => {
-				store.commit('changeAudioPlaying',false)
-			}
-			store.state.audioManager.onended = store.state.audioManager.onEnded = () =>{
-				store.commit('changeAudioPlaying',false);
-				//自动切歌
-				$eventBus.emit('playNext');
-			}
+			
+			// store.state.audioManager.oncanplay = () => {
+			// 	store.state.audioManager.play();
+			// 	store.commit('changeAudioPlaying',true);
+			// };
+			// store.state.audioManager.onCanplay && store.state.audioManager.onCanplay(()=>{
+			// 	store.state.audioManager.play();
+			// 	store.commit('changeAudioPlaying',true);
+			// });
+			
+			// store.state.audioManager.onplay = () =>{
+			// 	store.state.audioManager.play();
+			// 	store.commit('changeAudioPlaying',true);
+			// };
+			// // store.state.audioManager.onPlay && store.state.audioManager.onPlay(()=>{
+			// 	store.state.audioManager.play();
+			// 	store.commit('changeAudioPlaying',true);
+			// })
+			 
+			 
+			 
+			// store.state.audioManager.onpause = () => {
+			// 	store.commit('changeAudioPlaying',false);
+			// } 
+			// store.state.audioManager.onPause && store.state.audioManager.onPause(()=>{
+			// 	store.commit('changeAudioPlaying',false);
+			// });
+			
+			
+			// store.state.audioManager.onstop = () =>{
+			// 	store.commit('changeAudioPlaying',false);
+			// };
+			// store.state.audioManager.onStophandlePlay &&store.state.audioManager.onStophandlePlay(()=>{
+			// 	store.commit('changeAudioPlaying',false);
+			// })
+			
+			
+			// store.state.audioManager.onended = () => {
+			// 	store.commit('changeAudioPlaying',false);
+			// 	//自动切歌
+			// 	$eventBus.emit('playNext');
+			// }  
+			// store.state.audioManager.onEnded && store.state.audioManager.onEnded(()=>{
+			// 	store.commit('changeAudioPlaying',false);
+			// 	//自动切歌
+			// 	$eventBus.emit('playNext');
+			// })
+			
+			
+			// store.state.audioManager.ontimeupdate = () => {
+			// 	store.commit('changeCurrentTime',store.state.audioManager.currentTime);
+			// } 
+			// store.state.audioManager.onTimeUpdate && store.state.audioManager.onTimeUpdate(() => {
+			// 	store.commit('changeCurrentTime',store.state.audioManager.currentTime);
+			// });
 			
 			
 			
@@ -163,6 +249,8 @@
 					songInfo
 				});
 				
+				const lyric = await getLyric(id,platform);
+				store.commit('setLyric',lyric);
 				if(!auto){ // 非自动切歌，加入播放列表
 					let list = store.state.playList.slice(0);
 					let index = list.findIndex(ele=>ele.id == id && ele.platform == platform)
@@ -201,7 +289,7 @@
 				let playMode = store.state.playMode;
 				let index = playList.findIndex(ele=>ele.id == current.id && ele.platform == current.platform);
 				if(playMode == 0){
-					index = index  == playList.length ? 0 : index + 1;
+					index = index  == playList.length-1 ? 0 : index + 1;
 				}else if(playMode == 1){
 					index = Math.floor(Math.random() * (playList.length +1));
 				}

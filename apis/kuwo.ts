@@ -84,3 +84,9 @@ export const getMusicUrlKW = (id:string|number,format='mp3') => {
 export const getSongDetailKW = (id:string|number) => {
     return request({url:`${prefix}/kuwo/musicInfo?mid=${id}`});
 };
+
+// 获取歌词
+
+export const getLyricKW = (id:string|number) => {
+    return request({url:`${prefix}/kuwo/lrc?musicId=${id}`});
+};

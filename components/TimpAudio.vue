@@ -9,15 +9,13 @@
 			</view>
 			<view class="flex flex-col justify-center items-center flex-1 truncate">
 				<text class="text-sm text-gray-200 truncate">{{store.state.audioInfo.name || 'TIMP,你想听的都在这里!'}}</text>
-				<text class="text-xs text-gray-300">{{store.state.audioInfo.name ? store.state.audioInfo.author.map(ele=>ele.name).join('&') : '暂无歌曲'}}</text>
+				<text class="text-xs text-gray-300 truncate">{{store.state.audioInfo.name ? store.state.audioInfo.author.map(ele=>ele.name).join('&') : '暂无歌曲'}}</text>
 			</view>
 			<text v-if="!store.state.audioPlaying" class="iconfont icon-bofang2  text-3xl" @click="play"></text>
 			<text v-else class="iconfont icon-zantingtingzhi ml-2 text-3xl" @click="pause"></text>
 			<text @click="showPlayList" class="iconfont icon-liebiao_o ml-2 text-3xl"></text>
 		</view>
-	<!-- 	<uni-drawer mode="right" ref="drawRef">
-			
-		</uni-drawer> -->
+
 		<Drawer ref='drawRef' :show="showDrawer" @close="showDrawer = false">
 			<view class="w-64 h-full  bg-gray-50 flex flex-col">
 				<view class="flex justify-between text-sm linear-bg text-white py-1 px-2">

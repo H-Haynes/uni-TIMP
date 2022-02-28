@@ -72,3 +72,10 @@ export const getSongDetailKG = (id:string|number) => {
 		url:`${prefix}/kugou/playInfo?id=${id}`
 	})
 };
+
+
+// 获取歌词
+export const getKGLyric = (id:string) =>{
+    return request({url:`${prefix}/kugou/lyric?id=${id}`});
+};
+

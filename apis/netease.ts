@@ -77,3 +77,9 @@ export const getSongUrlWy = (id: string|number) => {
 export const getSongDetailWy = (id: string|number) => {
     return request({url:`${prefix}/song/detail?ids=${id}`});
 };
+
+// 获取歌词
+
+export const getLyricWy = (id) => {
+    return request({url:`${prefix}/lyric?id=${id}`});
+};

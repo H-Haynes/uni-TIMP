@@ -4,6 +4,7 @@ const store = createStore({
 	state(){
 		return {
 			audioManager:null,
+			currentTime:0,
 			audioInfo:{
 				name:'',
 				art:[],
@@ -22,7 +23,7 @@ const store = createStore({
 			albumList:[], // 我的歌单列表
 			collectList:[], // 收藏列表,
 			playMode:0, // 0列表循环 1随机播放 2单曲循环
-			
+			lyric:[],
 		}
 	},
 	mutations:{
@@ -31,6 +32,12 @@ const store = createStore({
 		},
 		setPlayMode(state,mode){
 			state.playMode = mode;
+		},
+		changeCurrentTime(state,time){
+			state.currentTime = time;
+		},
+		setLyric(state,lyric){
+			state.lyric = lyric;
 		},
 		setAduioInfo(state,info){
 			state.audioInfo = info;

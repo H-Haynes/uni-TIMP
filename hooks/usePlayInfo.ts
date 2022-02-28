@@ -1,7 +1,7 @@
-import {getSongUrlWy,getSongDetailWy} from '@/apis/netease';
-import { getSongUrlQQ, getSongPicQQ, getSongInfoQQ} from '@/apis/qq';
-import {  getMusicUrlKW,getSongDetailKW } from '@/apis/kuwo';
-import { getSongDetailKG } from '@/apis/kugou';
+import {getSongUrlWy,getSongDetailWy,getLyricWy} from '@/apis/netease';
+import { getSongUrlQQ, getSongPicQQ, getSongInfoQQ,getLyricQQ} from '@/apis/qq';
+import {  getMusicUrlKW,getSongDetailKW,getLyricKW } from '@/apis/kuwo';
+import { getSongDetailKG ,getLyricKG} from '@/apis/kugou';
 
 enum platform {
     wy = 1,
@@ -10,6 +10,15 @@ enum platform {
     kw = 3,
     mg = 5
 }
+
+function durationTransSec(value) {
+		if (!value) return 0;
+		const temp = value.split(':');
+		const minute = temp[0];
+		const second = temp[1];
+		return (+minute) * 60 + (+second);
+}
+
 export const getSongInfo = async (id:string|number,platformType:platform) =>{
     let songInfo = {
       name:'',
@@ -109,3 +118,65 @@ export const getSongUrl = async (id:string|number,platformType:platform)=>{
     }
 };
 
+  // 获取歌词
+export const getLyric = async (id:string,platformType:platform) => {
+    let list = [{
+      time:0,
+      words:'歌词获取失败!',
+    }];
+    if(platformType === platform.wy ){
+      const result = await getLyricWy(id);
+      if(result.data.code == 200){
+        let lyricArr = result.data.lrc.lyric.split('\n').filter(ele=>ele.trim()); // 去除空的
+        list = lyricArr.map(ele=>{
+          let temp = ele.split(']');
+          let words = temp[1].trim();
+          let time = temp[0].replace('[','').trim();
+          return {
+            time:durationTransSec(time),
+            words,
+          };
+        });
+      }
+    }else if(platformType === platform.qq){
+      const result = await getLyricQQ(id);
+      if(result.data.response.code === 0){
+        let lyricArr = result.data.response.lyric.split('\n').filter(ele=>ele.trim());
+        list = lyricArr.map(ele=>{
+          let temp = ele.split(']');
+          let words = temp[1].trim();
+          let time = temp[0].replace('[','').trim();
+          return {
+            time:durationTransSec(time),
+            words,
+          };
+        });
+      }
+    }else if(platformType === platform.kw){
+      const result = await getLyricKW(id);
+      if(result.data.status === 200){
+        list = result.data.data.lrclist.map(ele=>{
+          return {
+            time:+ele.time,
+            words:ele.lineLyric,
+          };
+        });
+      }
+    }else if(platformType === platform.kg){
+      const result = await getKGLyric(id);
+      if(result.data.code === 200){
+        let lyricArr = result.data.result.split('\r\n').filter(ele=>ele[ele.length-1]!==']' && ele.trim());
+        list = lyricArr.map(ele=>{
+          let temp = ele.split(']');
+          let words = temp[1].trim();
+          let time = temp[0].replace('[','').trim();
+          return {
+            time:durationTransSec(time),
+            words,
+          };
+        });
+
+      }
+    }
+    return list;
+  };

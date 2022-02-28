@@ -1,0 +1,15 @@
+.h-full {
+  height: 100vh;
+}
+.lyric-head {
+  height: 280rpx;
+}
+.gap-top {
+  margin-top: 30rpx;
+}
+.gap-5 {
+  padding: 30rpx;
+}
+.lyric-container {
+  height: 700rpx;
+}
