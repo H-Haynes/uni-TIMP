@@ -87,6 +87,7 @@ export default {
   margin: -75rpx 0 0 -75rpx;
   border-radius: 50%;
   border: 3rpx solid transparent;
+
   border-top-color: #9370db;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
@@ -100,6 +101,7 @@ export default {
   bottom: 5rpx;
   border-radius: 50%;
   border: 3rpx solid transparent;
+
   border-top-color: #ba55d3;
   -webkit-animation: spin 3s linear infinite;
   animation: spin 3s linear infinite;
@@ -113,6 +115,7 @@ export default {
   bottom: 15rpx;
   border-radius: 50%;
   border: 3rpx solid transparent;
+
   border-top-color: #ff00ff;
   -webkit-animation: spin 1.5s linear infinite;
   animation: spin 1.5s linear infinite;

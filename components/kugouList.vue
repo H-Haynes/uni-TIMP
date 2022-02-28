@@ -90,6 +90,7 @@
 			const result = await getAlbumListKG(category,page.value);
 			if(result.data.errcode === 0 && result.data.data.info){
 				const list = result.data.data.info.map((ele:any)=>({
+
 					name:ele.specialname,
 					pic:ele.imgurl.replace('{size}','400'),
 					id:ele.specialid,
@@ -103,6 +104,7 @@
 	};
 	// 前往歌单详情
 	const detail = (e:{id:string,rank:string}) => {
+
 		uni.navigateTo({
 			url:`/pages/album/album?type=4&id=${e.id}&rank=${e.rank||0}`
 		})
@@ -118,6 +120,7 @@
 		}
 	});
 	const scroll = () => {
+
 		if(loading.value ||  currentCategory.value == '0') return;
 		page.value += 1;
 	}

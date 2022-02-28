@@ -13,7 +13,7 @@ enum platform {
 export const getSongInfo = async (id:string|number,platformType:platform) =>{
     let songInfo = {
       name:'',
-      art:[],
+      author:[],
       time:0,
       picUrl:'',
       albumId:'',
@@ -22,7 +22,7 @@ export const getSongInfo = async (id:string|number,platformType:platform) =>{
       const result = await getSongDetailWy(id);
       if(result.data.code === 200){
         songInfo.name = result.data.songs[0].name;
-        songInfo.art = result.data.songs[0].ar;
+        songInfo.author = result.data.songs[0].ar;
         songInfo.picUrl = result.data.songs[0].al.picUrl;
         songInfo.time = result.data.songs[0].dt;
       }
@@ -30,7 +30,7 @@ export const getSongInfo = async (id:string|number,platformType:platform) =>{
       // 获取歌曲信息
       const infoResult = await getSongInfoQQ(id);
       if(infoResult.data.response.code === 0){
-        songInfo.art = infoResult.data.response.songinfo.data.track_info.singer.map(ele=>{
+        songInfo.author = infoResult.data.response.songinfo.data.track_info.singer.map(ele=>{
           return {
             name:ele.name,
             id:ele.mid,
@@ -50,7 +50,7 @@ export const getSongInfo = async (id:string|number,platformType:platform) =>{
       if(result.data.code === 200){
         songInfo = {
           name:result.data.data.name,
-          art:[{
+          author:[{
             name: result.data.data.artist,
             id: result.data.data.artistid,
           }],
@@ -64,7 +64,7 @@ export const getSongInfo = async (id:string|number,platformType:platform) =>{
         name:result.data.songName,
         time:result.data.timeLength * 1000,
         picUrl:result.data?.imgUrl?.replace('{size}','400'),
-        art:Array.isArray(result.data.authors)?result.data.authors?.map(ele=>({
+        author:Array.isArray(result.data.authors)?result.data.authors?.map(ele=>({
           name:ele.author_name,
           id:ele.author_id,
         })) : [{

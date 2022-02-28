@@ -3,6 +3,7 @@
 		<w-loading mask="true" click="true" ref="loadingRef"></w-loading>
 		<my-banner scaleY="1.1" scaleX="1.1" @bannerClick="handleBannerClick" :bannerList="bannerList"></my-banner>
 		<view class="my-3 px-2">
+
 			<text @click="changeCategory(0)" :class="{'current-category border-gray-100':currentCategory === 0}"  class="inline-block text-sm text-red-500 border border-red-500 mr-1 px-2 mb-2">排行榜</text>
 			<text @click="changeCategory(category.id)" :class="{'current-category':currentCategory === category.id}" class="inline-block text-gray-500 text-sm mr-1 border px-2 mb-2" v-for="category in categoryList.slice(0,10)" :key="category.id">{{category.name}}</text>
 
@@ -126,6 +127,7 @@
 		}
 	});
 	const scroll = () => {
+
 		if(loading.value || !currentCategory.value || currentCategory.value == '0') return;
 		page.value += 1;
 	}

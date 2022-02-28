@@ -125,7 +125,9 @@
 		// }
 	};
 	// 前往歌单详情
+
 	const detail = (e:{id:string,rank:string}) => {
+
 		uni.navigateTo({
 			url:`/pages/album/album?type=3&id=${e.id}&rank=${e.rank||0}`
 		})

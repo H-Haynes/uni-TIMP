@@ -42,7 +42,7 @@
 	import KuwoList from '@/components/kuwoList.vue'
 	import KugouList from '@/components/kugouList.vue'
 	import {ref,computed} from 'vue';
-	const platform = ref(1);
+	const platform = ref(0);
 	const platformComp = computed(()=>{
 		switch(platform.value){
 			case 0: return mine;

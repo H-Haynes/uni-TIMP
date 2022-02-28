@@ -1,6 +1,10 @@
-<script >
-	import {inject} from 'vue';
+<script>
+	import {inject,toRaw} from 'vue';
 	import {useStore} from 'vuex';
+	import {getSongInfo,getSongUrl} from '@/hooks/usePlayInfo';
+
+	
+	
 	export default {
 		globalData:{
 			audioSrc:"",
@@ -12,7 +16,8 @@
 		},
 		onLaunch: function() {
 			const store = useStore();
-			console.log('App Launch',store);
+			const $eventBus = inject('$eventBus');
+			console.log('App Launch');
 			// #ifndef H5
 			const bgAudioManager = uni.getBackgroundAudioManager();
 			store.commit('setAudioManager',bgAudioManager);
@@ -22,6 +27,216 @@
 				document.body.appendChild(audio);
 				store.commit('setAudioManager',audio);
 			// #endif
+			
+			
+			// 监听播放器
+			store.state.audioManager.oncanplay = store.state.audioManager.onCanplay = () => {
+				store.state.audioManager.play();
+				store.commit('changeAudioPlaying',true)
+			}
+			store.state.audioManager.onplay = store.state.audioManager.onPlay = () => {
+				store.commit('changeAudioPlaying',true)
+			}
+			store.state.audioManager.onpause = store.state.audioManager.onPause = () => {
+				store.commit('changeAudioPlaying',false)
+			}
+			store.state.audioManager.onstop = store.state.audioManager.onStop = () => {
+				store.commit('changeAudioPlaying',false)
+			}
+			store.state.audioManager.onended = store.state.audioManager.onEnded = () =>{
+				store.commit('changeAudioPlaying',false);
+				//自动切歌
+				$eventBus.emit('playNext');
+			}
+			
+			
+			
+			// uni.clearStorageSync();
+			
+			// 初始化用户私人数据
+			// 获取用户播放列表
+			store.commit('setPlayList',uni.getStorageSync('playList'))
+			// 获取用户喜欢列表
+			store.commit('setLikeList',uni.getStorageSync('likeList'))
+			// 获取用户歌单列表
+			store.commit('setAlbumList',uni.getStorageSync('albumList'))
+			// 获取用户收藏列表
+			store.commit('setCollectList',uni.getStorageSync('collectList'));
+			
+			// 监听用户喜欢歌曲事件
+			$eventBus.on('addLike',song => {
+				// 获取到当前喜欢列表，将其push，然后重设vuex
+				// 安全起见先检查是否重复
+				console.log(1)
+				if(store.state.likeList.some(ele=>ele.id == song.id && ele.platform == song.platform)){
+				   uni.showToast({
+						title:'歌曲已存在',
+						icon:'none'
+				   })
+				   return ;
+				}
+				const list = [...store.state.likeList,song]
+				uni.setStorageSync('likeList',list);
+				// TODO: ?在vuex设置mutation每次从storage获取还是从这里赋值好？
+				store.commit('setLikeList',list);
+			})
+			
+			// 监听用户取消喜欢事件
+			$eventBus.on('unlike',song => {
+				let list = store.state.likeList.slice(0);
+				let index = list.findIndex(ele => ele.id == song.id && ele.platform == song.platform);
+				if(index == -1){
+					return uni.showToast({
+						title:'列表中无此歌曲',
+						icon:'none'
+					})
+				}else{
+					list.splice(index,1);
+					uni.setStorageSync('likeList',list);
+					store.commit('setLikeList',list);
+				}
+			})
+		
+			// 监听收藏歌单事件
+			$eventBus.on('addCollect',album => {
+				//album 包含: pic,id,platform,name
+				console.log(toRaw(store.state.collectList),album);
+				if(store.state.collectList.some(ele=>ele.id == album.id && ele.platform == album.platform)){
+					return uni.showToast({
+						title:'重复收藏!',
+						icon:'none'
+					})
+				}else{
+					let list = [...store.state.collectList,album];
+					uni.setStorageSync('collectList',list);
+					store.commit('setCollectList',list);
+					uni.showToast({
+						title:'收藏成功',
+						icon:'none'
+					})
+				}
+			})
+			
+			// 监听取消收藏歌单事件
+			$eventBus.on('unCollect',album => {
+				// album 包含id,platform
+				let list = store.state.collectList;
+				let index = list.findIndex(ele => ele.id == album.id && ele.platform == album.platform);
+				if(index == -1){
+					return uni.showToast({
+						title:'列表中无此歌单',
+						icon:'none'
+					})
+				}else{
+					list.splice(index,1);
+					uni.setStorageSync('collectList',list);
+					store.commit('setCollectList',list);
+					uni.showToast({
+						title:'已取消收藏',
+						icon:'none'
+					})
+				}
+			})
+		
+			// 监听播放歌曲
+			// 1. 获取歌曲信息及播放地址
+			// 2. 设置当前播放信息到vuex
+			// 3. 在播放列表中添加该歌曲(区分自动切歌，非自动切歌需要将歌曲加入播放列表)
+			// auto代表自动切歌，force代表强制切歌(用于单曲循环);
+			$eventBus.on('playSong',async({id,platform,auto=false,force=false})=>{
+				if(store.state.audioIdBaseInfo.id == id && !force){
+					// 当前正在播放此歌曲
+					return;
+				}
+				const songUrl = await getSongUrl(id,platform);
+				if(!songUrl){
+					return uni.showToast({
+						title:'暂无播放地址',
+						icon:''
+					})
+				}
+				const songInfo = await getSongInfo(id,platform);
+				songInfo.src = songUrl;
+				store.commit('setAudioInfo',{
+					id,
+					platform,
+					songInfo
+				});
+				
+				if(!auto){ // 非自动切歌，加入播放列表
+					let list = store.state.playList.slice(0);
+					let index = list.findIndex(ele=>ele.id == id && ele.platform == platform)
+
+					if(index!==-1){
+						// 存在此歌曲，在原列表删除
+						list.splice(index,1);
+					}
+					list.unshift({
+						id,
+						platform,
+						name:songInfo.name,
+						author:songInfo.author
+					});
+					//设置到缓存
+					uni.setStorageSync('playList',list);
+					store.commit('setPlayList',list);
+				}
+			})
+			
+			// 监听播放全部
+			$eventBus.on('playAll',async(songList)=>{
+				uni.setStorageSync('playList',songList);
+				store.commit('setPlayList',songList);
+				$eventBus.emit('playSong',{
+					id:songList[0].id,
+					platform:songList[0].platform,
+				})
+			})
+			
+			// 监听切换下一首
+			
+			$eventBus.on('playNext',()=>{
+				let playList = store.state.playList;
+				let current = store.state.audioIdBaseInfo;
+				let playMode = store.state.playMode;
+				let index = playList.findIndex(ele=>ele.id == current.id && ele.platform == current.platform);
+				if(playMode == 0){
+					index = index  == playList.length ? 0 : index + 1;
+				}else if(playMode == 1){
+					index = Math.floor(Math.random() * (playList.length +1));
+				}
+				$eventBus.emit('playSong',{
+					id:playList[index].id,
+					platform:playList[index].platform,
+					auto:true,
+					force:playMode == 2
+				})
+			})
+			
+			// 监听切换上一首
+			$eventBus.on('playPrev',()=>{
+				let playList = store.state.playList;
+				let current = store.state.audioIdBaseInfo;
+				let playMode = store.state.playMode;
+				let index = playList.findIndex(ele=>ele.id == current.id && ele.platform == current.platform);
+				if(playMode == 0){
+					index = index ==  0 ? playList.length-1 : index - 1;
+				}else if(playMode == 1){
+					index = Math.floor(Math.random() * (playList.length +1));
+				}
+				$eventBus.emit('playSong',{
+					id:playList[index].id,
+					platform:playList[index].platform,
+					auto:true,
+					force:playMode == 2
+				})
+			})
+		
+		
+			// TODO 歌词界面
+			// TODO 添加歌曲到我的歌单
+			// TODO 手动切歌
+			// TODO 播放进度
 		},
 		onShow: function() {
 			console.log('App Show')
@@ -53,5 +268,11 @@
 	}
 	.hide-scroll-bar::-webkit-scrollbar{
 		display: none;
+	}
+	.flex-2{
+		flex:2;
+	}
+	.text-red{
+		color:#f40 !important;
 	}
 </style>

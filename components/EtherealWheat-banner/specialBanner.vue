@@ -115,6 +115,7 @@ export default {
 	  // height: 260rpx;
 	  width:90%;
 	  height:90%;
+
 	  z-index: 200;
 	  border-radius:10rpx;
 	}

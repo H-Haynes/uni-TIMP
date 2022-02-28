@@ -15,6 +15,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/lyric/lyric",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		// #ifdef H5 

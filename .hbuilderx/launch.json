@@ -2,10 +2,27 @@
   // launchtype项可配置值为local或remote, local代表前端连本地云函数，remote代表前端连云端云函数
     "version": "0.0",
     "configurations": [{
+<<<<<<< HEAD
             "type": "uniCloud",
             "default": {
                 "launchtype": "local"
             }
         }
+=======
+     	"app-plus" : 
+     	{
+     		"launchtype" : "local"
+     	},
+     	"default" : 
+     	{
+     		"launchtype" : "local"
+     	},
+     	"mp-weixin" : 
+     	{
+     		"launchtype" : "local"
+     	},
+     	"type" : "uniCloud"
+     }
+>>>>>>> 4ae8f4863c2a94b91b0f6b4ed77349e147ead3a0
     ]
 }
