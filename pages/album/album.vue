@@ -20,14 +20,18 @@
 
 		<view class="px-4 text-sm flex mb-4">
 			<text @click="playAll" class="rounded bg-red-500 hover:bg-red-600 text-white py-1 px-4 mr-5">播放全部</text>
+
 			<text
 				@click="unCollect"
+				v-show="platform !=0"
 				v-if="store.state.collectList.some(ele => ele.id == albumId && ele.platform == platform)"
 				class="rounded bg-gray-600 hover:bg-gray-700 text-white py-1 px-4"
 			>
 				取消收藏
 			</text>
-			<text @click="collect" v-else class="rounded bg-gray-600 hover:bg-gray-700 text-white py-1 px-4">收藏歌单</text>
+			<text v-show="platform !=0" @click="collect" v-else class="rounded bg-gray-600 hover:bg-gray-700 text-white py-1 px-4">收藏歌单</text>
+			
+			<text v-show="platform==0" @click="delAlbum" class="rounded bg-red-600 hover:bg-red-700 text-white py-1 px-4">删除歌单</text>
 		</view>
 
 		<view class="flex-1 overflow-y-scroll">
@@ -93,7 +97,7 @@ const operateSong = ref({});
 onLoad(params => {
 	platform.value = +params.type;
 	isRank.value = Boolean(+params.rank);
-	albumId.value = +params.id;
+	albumId.value = params.id;
 });
 
 const getWyAlbum = async (id: string) => {
@@ -214,6 +218,30 @@ const getKGAlbum = async (id: string) => {
 		}));
 	}
 };
+
+const getMyAlbum = async(id:string) => {
+	let albumList = uni.getStorageSync('albumList');
+	let index = albumList.findIndex(ele => ele.id == id);
+	if(index!=-1){
+		albumInfo.value = {
+			name:albumList[index].name,
+			desc:'用户自建歌单',
+			pic:albumList[index].pic,
+			updateTime:'',
+			avatar:'',
+			nickname:'我'
+		}
+		songList.value = albumList[index].list.map(ele=>({
+			name: ele.name,
+			id: ele.id,
+			mv: ele.mv,
+			time: ele.duration * 1000,
+			album: ele.album,
+			pic: ele.pic,
+			author: ele.author
+		}))
+	}
+}
 
 const getKWRankDetail = async (id: number | string) => {
 	try {
@@ -356,6 +384,8 @@ const getAlbumInfo = async () => {
 		} else {
 			await getKGAlbum(albumId.value);
 		}
+	}else if(platform.value == 0){
+		return await getMyAlbum(albumId.value);
 	}
 };
 
@@ -384,6 +414,7 @@ const unlike = song => {
 };
 
 const collect = () => {
+	if(!albumInfo.name) return; // 还未获取到信息
 	$eventBus.emit('addCollect', {
 		id: albumId.value,
 		pic: albumInfo.value.pic,
@@ -419,13 +450,27 @@ const playAll = () => {
 }
 
 
+const delAlbum = () => {
+	promisify(uni.showModal)({
+		title:'删除歌单',
+		content:'确定要删除该歌单吗?',
+		showCancel:true,
+	}).then(res=>{
+		if(res.confirm){
+			$eventBus.emit('delAlbum',albumId.value);
+			uni.navigateTo({
+				url:'/pages/index/index'
+			})
+		}
+	})
+}
+
 const addCollect = song => {
 	operateSong.value = toRaw(song);
 	showCollectDialog.value = true;
 }
 
 const confirm = id => {
-	console.log(id);
 	// 添加到歌单;
 	$eventBus.emit('addSongToAlbum',{
 		song:{
@@ -433,10 +478,14 @@ const confirm = id => {
 			platform:platform.value || operateSong.value.platform,
 			name:operateSong.value.name,
 			author:toRaw(operateSong.value.author),
+			album:operateSong.value.album,
+			mv:operateSong.value.mv,
+			time:operateSong.value.time
 		},
 		albumId:id
 	})
 }
+
 
 watch([() => albumId.value], () => {
 	getAlbumInfo();

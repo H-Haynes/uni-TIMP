@@ -14,11 +14,11 @@
 				<text class="text-xl font-bold">我的歌单</text>
 				<view class="flex items-center text-gray-400">
 					<text @click="createAlbum" class="iconfont icon-plus text-xl"></text>
-					<text class="iconfont icon-guanbi text-lg ml-3" @click="show = true"></text>
+					<!-- <text class="iconfont icon-guanbi text-lg ml-3"></text> -->
 				</view>
 			</view>
 			
-			<view v-for="item in store.state.albumList" :key="item.id" class="flex px-5 items-center py-2 border-b">
+			<view @click="toAlbum(item.id,0,0)" v-for="item in store.state.albumList" :key="item.id" class="flex px-5 items-center py-2 border-b">
 				<image class="w-12 h-12 rounded mr-3" :src="item.pic || 'http://preferyou.cn/freed/icon.png'" />
 				<text class="text-sm text-gray-500">{{item.name}}</text>
 			</view>

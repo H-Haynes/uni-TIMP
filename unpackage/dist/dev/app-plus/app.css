@@ -693,6 +693,18 @@ uni-input::-ms-input-placeholder {
   --tw-bg-opacity: 1;
   background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
 }
+.bg-red-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(153, 27, 27, var(--tw-bg-opacity));
+}
+.bg-red-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(220, 38, 38, var(--tw-bg-opacity));
+}
+.hover\:bg-red-700:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(185, 28, 28, var(--tw-bg-opacity));
+}
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
@@ -811,6 +823,12 @@ uni-input::-ms-input-placeholder {
 }
 .h-24 {
   height: 6rem;
+}
+.h-96 {
+  height: 24rem;
+}
+.h-16 {
+  height: 4rem;
 }
 .\.h-full {
   height: 100%;
@@ -1098,6 +1116,12 @@ uni-input::-ms-input-placeholder {
 .w-24 {
   width: 6rem;
 }
+.w-56 {
+  width: 14rem;
+}
+.w-48 {
+  width: 12rem;
+}
 .w-1\/2 {
   width: 50%;
 }
@@ -1118,6 +1142,14 @@ uni-input::-ms-input-placeholder {
 }
 .z-10 {
   z-index: 10;
+}
+.gap-4 {
+  grid-gap: 1rem;
+  gap: 1rem;
+}
+.\.gap-4 {
+  grid-gap: 1rem;
+  gap: 1rem;
 }
 .gap-5 {
   grid-gap: 1.25rem;

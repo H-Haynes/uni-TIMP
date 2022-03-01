@@ -1364,14 +1364,12 @@ var __spreadValues = (a, b) => {
                   onClick: createAlbum,
                   class: "iconfont icon-plus text-xl"
                 }),
-                vue.createElementVNode("text", {
-                  class: "iconfont icon-guanbi text-lg ml-3",
-                  onClick: _cache[0] || (_cache[0] = ($event) => _ctx.show = true)
-                })
+                vue.createCommentVNode(' <text class="iconfont icon-guanbi text-lg ml-3"></text> ')
               ])
             ]),
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(store2).state.albumList, (item) => {
               return vue.openBlock(), vue.createElementBlock("view", {
+                onClick: ($event) => toAlbum(item.id, 0, 0),
                 key: item.id,
                 class: "flex px-5 items-center py-2 border-b"
               }, [
@@ -1380,7 +1378,7 @@ var __spreadValues = (a, b) => {
                   src: item.pic || "http://preferyou.cn/freed/icon.png"
                 }, null, 8, ["src"]),
                 vue.createElementVNode("text", { class: "text-sm text-gray-500" }, vue.toDisplayString(item.name), 1)
-              ]);
+              ], 8, ["onClick"]);
             }), 128))
           ]),
           vue.createElementVNode("view", { class: "my-2 px-4" }, [
@@ -7694,7 +7692,7 @@ var __spreadValues = (a, b) => {
       onLoad((params) => {
         platform2.value = +params.type;
         isRank.value = Boolean(+params.rank);
-        albumId.value = +params.id;
+        albumId.value = params.id;
       });
       const getWyAlbum = async (id) => {
         loading.value = true;
@@ -7808,6 +7806,29 @@ var __spreadValues = (a, b) => {
                 id: 0
               }
             ]
+          }));
+        }
+      };
+      const getMyAlbum = async (id) => {
+        let albumList = uni.getStorageSync("albumList");
+        let index = albumList.findIndex((ele) => ele.id == id);
+        if (index != -1) {
+          albumInfo.value = {
+            name: albumList[index].name,
+            desc: "\u7528\u6237\u81EA\u5EFA\u6B4C\u5355",
+            pic: albumList[index].pic,
+            updateTime: "",
+            avatar: "",
+            nickname: "\u6211"
+          };
+          songList.value = albumList[index].list.map((ele) => ({
+            name: ele.name,
+            id: ele.id,
+            mv: ele.mv,
+            time: ele.duration * 1e3,
+            album: ele.album,
+            pic: ele.pic,
+            author: ele.author
           }));
         }
       };
@@ -7945,6 +7966,8 @@ var __spreadValues = (a, b) => {
           } else {
             await getKGAlbum(albumId.value);
           }
+        } else if (platform2.value == 0) {
+          return await getMyAlbum(albumId.value);
         }
       };
       const playSong = (song) => {
@@ -7969,6 +7992,8 @@ var __spreadValues = (a, b) => {
         });
       };
       const collect = () => {
+        if (!albumInfo.name)
+          return;
         $eventBus.emit("addCollect", {
           id: albumId.value,
           pic: albumInfo.value.pic,
@@ -8000,18 +8025,34 @@ var __spreadValues = (a, b) => {
           }
         });
       };
+      const delAlbum = () => {
+        promisify(uni.showModal)({
+          title: "\u5220\u9664\u6B4C\u5355",
+          content: "\u786E\u5B9A\u8981\u5220\u9664\u8BE5\u6B4C\u5355\u5417?",
+          showCancel: true
+        }).then((res) => {
+          if (res.confirm) {
+            $eventBus.emit("delAlbum", albumId.value);
+            uni.navigateTo({
+              url: "/pages/index/index"
+            });
+          }
+        });
+      };
       const addCollect = (song) => {
         operateSong.value = vue.toRaw(song);
         showCollectDialog.value = true;
       };
       const confirm = (id) => {
-        formatAppLog("log", "at pages/album/album.vue:428", id);
         $eventBus.emit("addSongToAlbum", {
           song: {
             id: operateSong.value.id,
             platform: platform2.value || operateSong.value.platform,
             name: operateSong.value.name,
-            author: vue.toRaw(operateSong.value.author)
+            author: vue.toRaw(operateSong.value.author),
+            album: operateSong.value.album,
+            mv: operateSong.value.mv,
+            time: operateSong.value.time
           },
           albumId: id
         });
@@ -8068,15 +8109,25 @@ var __spreadValues = (a, b) => {
               onClick: playAll,
               class: "rounded bg-red-500 hover:bg-red-600 text-white py-1 px-4 mr-5"
             }, "\u64AD\u653E\u5168\u90E8"),
-            vue.unref(store2).state.collectList.some((ele) => ele.id == albumId.value && ele.platform == platform2.value) ? (vue.openBlock(), vue.createElementBlock("text", {
+            vue.unref(store2).state.collectList.some((ele) => ele.id == albumId.value && ele.platform == platform2.value) ? vue.withDirectives((vue.openBlock(), vue.createElementBlock("text", {
               key: 0,
               onClick: unCollect,
               class: "rounded bg-gray-600 hover:bg-gray-700 text-white py-1 px-4"
-            }, " \u53D6\u6D88\u6536\u85CF ")) : (vue.openBlock(), vue.createElementBlock("text", {
+            }, " \u53D6\u6D88\u6536\u85CF ", 512)), [
+              [vue.vShow, platform2.value != 0]
+            ]) : vue.withDirectives((vue.openBlock(), vue.createElementBlock("text", {
               key: 1,
               onClick: collect,
               class: "rounded bg-gray-600 hover:bg-gray-700 text-white py-1 px-4"
-            }, "\u6536\u85CF\u6B4C\u5355"))
+            }, "\u6536\u85CF\u6B4C\u5355", 512)), [
+              [vue.vShow, platform2.value != 0]
+            ]),
+            vue.withDirectives(vue.createElementVNode("text", {
+              onClick: delAlbum,
+              class: "rounded bg-red-600 hover:bg-red-700 text-white py-1 px-4"
+            }, "\u5220\u9664\u6B4C\u5355", 512), [
+              [vue.vShow, platform2.value == 0]
+            ])
           ]),
           vue.createElementVNode("view", { class: "flex-1 overflow-y-scroll" }, [
             vue.createVNode(_component_uni_table, {
@@ -8592,6 +8643,19 @@ var __spreadValues = (a, b) => {
           icon: "none"
         });
       });
+      $eventBus.on("delAlbum", (id) => {
+        const albumList = uni.getStorageSync("albumList");
+        let index = albumList.findIndex((ele) => ele.id == id);
+        if (index != -1) {
+          albumList.splice(index, 1);
+          uni.setStorageSync("albumList", albumList);
+          store2.commit("setAlbumList", albumList);
+          uni.showToast({
+            title: "\u5220\u9664\u6210\u529F",
+            icon: "none"
+          });
+        }
+      });
       $eventBus.on("playSong", async ({ id, platform: platform2, auto = false, force = false }) => {
         if (!id)
           return;
@@ -8695,13 +8759,13 @@ var __spreadValues = (a, b) => {
       });
     },
     onShow: function() {
-      formatAppLog("log", "at App.vue:332", "App Show");
+      formatAppLog("log", "at App.vue:349", "App Show");
     },
     onHide: function() {
-      formatAppLog("log", "at App.vue:335", "App Hide");
+      formatAppLog("log", "at App.vue:352", "App Hide");
     },
     onLoad: function() {
-      formatAppLog("log", "at App.vue:338", 9999);
+      formatAppLog("log", "at App.vue:355", 9999);
     }
   };
   function mitt(n) {

@@ -189,6 +189,23 @@
 				})
 			})
 		
+		
+			$eventBus.on('delAlbum',id=>{
+				const albumList = uni.getStorageSync('albumList');
+				let index = albumList.findIndex(ele=>ele.id == id);
+				if(index!=-1){
+					albumList.splice(index,1);
+					// 重设缓存
+					uni.setStorageSync('albumList',albumList);
+					// 更新仓库
+					store.commit('setAlbumList',albumList);
+					uni.showToast({
+						title:'删除成功',
+						icon:'none'
+					})
+				}
+				
+			})
 			// 监听播放歌曲
 			// 1. 获取歌曲信息及播放地址
 			// 2. 设置当前播放信息到vuex

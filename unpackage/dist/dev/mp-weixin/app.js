@@ -129,6 +129,19 @@ const _sfc_main = {
         icon: "none"
       });
     });
+    $eventBus.on("delAlbum", (id) => {
+      const albumList = common_vendor.index.getStorageSync("albumList");
+      let index = albumList.findIndex((ele) => ele.id == id);
+      if (index != -1) {
+        albumList.splice(index, 1);
+        common_vendor.index.setStorageSync("albumList", albumList);
+        store.commit("setAlbumList", albumList);
+        common_vendor.index.showToast({
+          title: "\u5220\u9664\u6210\u529F",
+          icon: "none"
+        });
+      }
+    });
     $eventBus.on("playSong", async ({ id, platform, auto = false, force = false }) => {
       if (!id)
         return;

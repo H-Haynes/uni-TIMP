@@ -46,7 +46,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     common_vendor.onLoad((params) => {
       platform.value = +params.type;
       isRank.value = Boolean(+params.rank);
-      albumId.value = +params.id;
+      albumId.value = params.id;
     });
     const getWyAlbum = async (id) => {
       loading.value = true;
@@ -160,6 +160,29 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
               id: 0
             }
           ]
+        }));
+      }
+    };
+    const getMyAlbum = async (id) => {
+      let albumList = common_vendor.index.getStorageSync("albumList");
+      let index = albumList.findIndex((ele) => ele.id == id);
+      if (index != -1) {
+        albumInfo.value = {
+          name: albumList[index].name,
+          desc: "\u7528\u6237\u81EA\u5EFA\u6B4C\u5355",
+          pic: albumList[index].pic,
+          updateTime: "",
+          avatar: "",
+          nickname: "\u6211"
+        };
+        songList.value = albumList[index].list.map((ele) => ({
+          name: ele.name,
+          id: ele.id,
+          mv: ele.mv,
+          time: ele.duration * 1e3,
+          album: ele.album,
+          pic: ele.pic,
+          author: ele.author
         }));
       }
     };
@@ -297,6 +320,8 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         } else {
           await getKGAlbum(albumId.value);
         }
+      } else if (platform.value == 0) {
+        return await getMyAlbum(albumId.value);
       }
     };
     const playSong = (song) => {
@@ -321,6 +346,8 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       });
     };
     const collect = () => {
+      if (!albumInfo.name)
+        return;
       $eventBus.emit("addCollect", {
         id: albumId.value,
         pic: albumInfo.value.pic,
@@ -352,18 +379,34 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         }
       });
     };
+    const delAlbum = () => {
+      promisify.promisify(common_vendor.index.showModal)({
+        title: "\u5220\u9664\u6B4C\u5355",
+        content: "\u786E\u5B9A\u8981\u5220\u9664\u8BE5\u6B4C\u5355\u5417?",
+        showCancel: true
+      }).then((res) => {
+        if (res.confirm) {
+          $eventBus.emit("delAlbum", albumId.value);
+          common_vendor.index.navigateTo({
+            url: "/pages/index/index"
+          });
+        }
+      });
+    };
     const addCollect = (song) => {
       operateSong.value = common_vendor.toRaw(song);
       showCollectDialog.value = true;
     };
     const confirm = (id) => {
-      console.log(id);
       $eventBus.emit("addSongToAlbum", {
         song: {
           id: operateSong.value.id,
           platform: platform.value || operateSong.value.platform,
           name: operateSong.value.name,
-          author: common_vendor.toRaw(operateSong.value.author)
+          author: common_vendor.toRaw(operateSong.value.author),
+          album: operateSong.value.album,
+          mv: operateSong.value.mv,
+          time: operateSong.value.time
         },
         albumId: id
       });
@@ -396,17 +439,21 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         i: common_vendor.o(playAll),
         j: common_vendor.unref(store).state.collectList.some((ele) => ele.id == albumId.value && ele.platform == platform.value)
       }, common_vendor.unref(store).state.collectList.some((ele) => ele.id == albumId.value && ele.platform == platform.value) ? {
-        k: common_vendor.o(unCollect)
+        k: common_vendor.o(unCollect),
+        l: platform.value != 0
       } : {
-        l: common_vendor.o(collect)
+        m: platform.value != 0,
+        n: common_vendor.o(collect)
       }, {
-        m: common_vendor.p({
+        o: platform.value == 0,
+        p: common_vendor.o(delAlbum),
+        q: common_vendor.p({
           align: "left"
         }),
-        n: common_vendor.p({
+        r: common_vendor.p({
           align: "right"
         }),
-        o: common_vendor.f(songList.value, (song, k0, i0) => {
+        s: common_vendor.f(songList.value, (song, k0, i0) => {
           return common_vendor.e({
             a: common_vendor.t(song.name),
             b: common_vendor.t(song.author.map((ele) => ele.nickname).join("/")),
@@ -425,16 +472,16 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
             l: "312fc82d-5-" + i0 + ",312fc82d-1"
           });
         }),
-        p: common_vendor.p({
+        t: common_vendor.p({
           align: "right"
         }),
-        q: common_vendor.p({
+        v: common_vendor.p({
           stripe: true,
           emptyText: "\u6682\u65E0\u66F4\u591A\u6570\u636E"
         }),
-        r: common_vendor.o(confirm),
-        s: common_vendor.o((e) => showCollectDialog.value = e),
-        t: common_vendor.p({
+        w: common_vendor.o(confirm),
+        x: common_vendor.o((e) => showCollectDialog.value = e),
+        y: common_vendor.p({
           show: showCollectDialog.value
         })
       });
