@@ -243,6 +243,28 @@ const getMyAlbum = async(id:string) => {
 	}
 }
 
+const getMyLike = async () => {
+	albumInfo.value = {
+		name:'我喜欢',
+		desc:'用户喜欢的歌曲',
+		pic:'',
+		updateTime:'',
+		avatar:'',
+		nickname:'我'
+	}
+	let likeList = uni.getStorageSync('likeList');
+	songList.value = likeList.map(ele=>({
+		name: ele.name,
+		id: ele.id,
+		mv: ele.mv,
+		time: ele.duration * 1000,
+		album: ele.album,
+		pic: ele.pic,
+		author: ele.author,
+		platform:ele.platform
+	}))
+}
+
 const getKWRankDetail = async (id: number | string) => {
 	try {
 		loading.value = true;
@@ -385,25 +407,32 @@ const getAlbumInfo = async () => {
 			await getKGAlbum(albumId.value);
 		}
 	}else if(platform.value == 0){
-		return await getMyAlbum(albumId.value);
+		if(albumId.value == 0){
+			await getMyLike()
+		}else{
+			await getMyAlbum(albumId.value);
+		}
 	}
 };
 
 const playSong = song => {
 	$eventBus.emit('playSong',{
 		id: song.id,
-		platform: platform.value
+		platform: platform.value || song.platform || 0
 	})
 };
 
 const addLike = song => {
 	// 需要的信息：歌曲名、歌手、id、平台
-	const { name, id, author } = song;
+	const { name, id, author,mv,time,album } = song;
 	$eventBus.emit('addLike', {
 		name,
 		id,
 		author,
-		platform: platform.value
+		platform: platform.value,
+		mv,
+		time,
+		album
 	});
 };
 const unlike = song => {
@@ -414,7 +443,7 @@ const unlike = song => {
 };
 
 const collect = () => {
-	if(!albumInfo.name) return; // 还未获取到信息
+	if(!albumInfo.value.name) return; // 还未获取到信息
 	$eventBus.emit('addCollect', {
 		id: albumId.value,
 		pic: albumInfo.value.pic,

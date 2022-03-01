@@ -1348,7 +1348,10 @@ var __spreadValues = (a, b) => {
             vue.createElementVNode("view", { class: "flex justify-between mb-2" }, [
               vue.createElementVNode("text", { class: "text-xl font-bold" }, "\u6211\u7684\u97F3\u4E50")
             ]),
-            vue.createElementVNode("view", { class: "flex px-5 items-center py-2 border-b" }, [
+            vue.createElementVNode("view", {
+              onClick: _cache[0] || (_cache[0] = ($event) => toAlbum(0, 0, 0)),
+              class: "flex px-5 items-center py-2 border-b"
+            }, [
               vue.createElementVNode("image", {
                 class: "w-12 h-12 rounded mr-3",
                 src: "http://preferyou.cn/freed/icon.png"
@@ -1356,7 +1359,10 @@ var __spreadValues = (a, b) => {
               vue.createElementVNode("text", { class: "text-sm text-gray-500" }, "\u6211\u559C\u6B22")
             ])
           ]),
-          vue.createElementVNode("view", { class: "my-2 px-4 mt-5" }, [
+          vue.createElementVNode("view", {
+            class: "my-2 px-4 mt-5",
+            style: { "min-height": "150rpx" }
+          }, [
             vue.createElementVNode("view", { class: "flex justify-between mb-2" }, [
               vue.createElementVNode("text", { class: "text-xl font-bold" }, "\u6211\u7684\u6B4C\u5355"),
               vue.createElementVNode("view", { class: "flex items-center text-gray-400" }, [
@@ -7832,6 +7838,27 @@ var __spreadValues = (a, b) => {
           }));
         }
       };
+      const getMyLike = async () => {
+        albumInfo.value = {
+          name: "\u6211\u559C\u6B22",
+          desc: "\u7528\u6237\u559C\u6B22\u7684\u6B4C\u66F2",
+          pic: "",
+          updateTime: "",
+          avatar: "",
+          nickname: "\u6211"
+        };
+        let likeList = uni.getStorageSync("likeList");
+        songList.value = likeList.map((ele) => ({
+          name: ele.name,
+          id: ele.id,
+          mv: ele.mv,
+          time: ele.duration * 1e3,
+          album: ele.album,
+          pic: ele.pic,
+          author: ele.author,
+          platform: ele.platform
+        }));
+      };
       const getKWRankDetail = async (id) => {
         try {
           loading.value = true;
@@ -7967,22 +7994,29 @@ var __spreadValues = (a, b) => {
             await getKGAlbum(albumId.value);
           }
         } else if (platform2.value == 0) {
-          return await getMyAlbum(albumId.value);
+          if (albumId.value == 0) {
+            await getMyLike();
+          } else {
+            await getMyAlbum(albumId.value);
+          }
         }
       };
       const playSong = (song) => {
         $eventBus.emit("playSong", {
           id: song.id,
-          platform: platform2.value
+          platform: platform2.value || song.platform || 0
         });
       };
       const addLike = (song) => {
-        const { name, id, author } = song;
+        const { name, id, author, mv, time, album } = song;
         $eventBus.emit("addLike", {
           name,
           id,
           author,
-          platform: platform2.value
+          platform: platform2.value,
+          mv,
+          time,
+          album
         });
       };
       const unlike = (song) => {
@@ -7992,7 +8026,7 @@ var __spreadValues = (a, b) => {
         });
       };
       const collect = () => {
-        if (!albumInfo.name)
+        if (!albumInfo.value.name)
           return;
         $eventBus.emit("addCollect", {
           id: albumId.value,
@@ -8539,13 +8573,20 @@ var __spreadValues = (a, b) => {
     },
     onLaunch: function() {
       const store2 = useStore();
+      let appear = true;
       const $eventBus = vue.inject("$eventBus");
-      formatAppLog("log", "at App.vue:20", "App Launch");
+      formatAppLog("log", "at App.vue:21", "App Launch");
       const bgAudioManager = uni.getBackgroundAudioManager();
       store2.commit("setAudioManager", bgAudioManager);
       bgAudioManager.onCanplay(() => {
-        bgAudioManager.play();
-        store2.commit("changeAudioPlaying", true);
+        if (!appear) {
+          bgAudioManager.play();
+          store2.commit("changeAudioPlaying", true);
+        } else {
+          bgAudioManager.pause();
+          store2.commit("changeAudioPlaying", false);
+          appear = false;
+        }
       });
       bgAudioManager.onPause(() => {
         store2.commit("changeAudioPlaying", false);
@@ -8565,7 +8606,7 @@ var __spreadValues = (a, b) => {
       store2.commit("setAlbumList", uni.getStorageSync("albumList"));
       store2.commit("setCollectList", uni.getStorageSync("collectList"));
       $eventBus.on("addLike", (song) => {
-        formatAppLog("log", "at App.vue:97", 1);
+        formatAppLog("log", "at App.vue:113", 1);
         if (store2.state.likeList.some((ele) => ele.id == song.id && ele.platform == song.platform)) {
           uni.showToast({
             title: "\u6B4C\u66F2\u5DF2\u5B58\u5728",
@@ -8592,7 +8633,7 @@ var __spreadValues = (a, b) => {
         }
       });
       $eventBus.on("addCollect", (album) => {
-        formatAppLog("log", "at App.vue:130", vue.toRaw(store2.state.collectList), album);
+        formatAppLog("log", "at App.vue:146", vue.toRaw(store2.state.collectList), album);
         if (store2.state.collectList.some((ele) => ele.id == album.id && ele.platform == album.platform)) {
           return uni.showToast({
             title: "\u91CD\u590D\u6536\u85CF!",
@@ -8657,6 +8698,7 @@ var __spreadValues = (a, b) => {
         }
       });
       $eventBus.on("playSong", async ({ id, platform: platform2, auto = false, force = false }) => {
+        formatAppLog("log", "at App.vue:231", id, platform2);
         if (!id)
           return;
         if (store2.state.audioIdBaseInfo.id == id && !force) {
@@ -8702,6 +8744,11 @@ var __spreadValues = (a, b) => {
           uni.setStorageSync("playList", list);
           store2.commit("setPlayList", list);
         }
+        uni.setStorageSync("currentSong", {
+          id,
+          platform: platform2,
+          songInfo
+        });
       });
       $eventBus.on("playAll", async (songList) => {
         uni.setStorageSync("playList", songList);
@@ -8757,15 +8804,19 @@ var __spreadValues = (a, b) => {
         store2.state.audioManager.play();
         store2.commit("changeAudioPlaying", true);
       });
+      let historySong = uni.getStorageSync("currentSong");
+      if (historySong) {
+        $eventBus.emit("playSong", historySong);
+      }
     },
     onShow: function() {
-      formatAppLog("log", "at App.vue:349", "App Show");
+      formatAppLog("log", "at App.vue:394", "App Show");
     },
     onHide: function() {
-      formatAppLog("log", "at App.vue:352", "App Hide");
+      formatAppLog("log", "at App.vue:397", "App Hide");
     },
     onLoad: function() {
-      formatAppLog("log", "at App.vue:355", 9999);
+      formatAppLog("log", "at App.vue:400", 9999);
     }
   };
   function mitt(n) {
@@ -8826,7 +8877,7 @@ var __spreadValues = (a, b) => {
       changeMode(state) {
         state.playMode = (state.playMode + 1) % 3;
       },
-      setAduioInfo(state, info) {
+      setAduioInfo(state, info, play = true) {
         state.audioInfo = info;
         state.audioManager.src = info.src;
         state.audioManager.title = info.name;

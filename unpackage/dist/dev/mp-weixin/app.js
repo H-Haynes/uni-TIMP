@@ -25,13 +25,20 @@ const _sfc_main = {
   },
   onLaunch: function() {
     const store = common_vendor.useStore();
+    let appear = true;
     const $eventBus = common_vendor.inject("$eventBus");
     console.log("App Launch");
     const bgAudioManager = common_vendor.index.getBackgroundAudioManager();
     store.commit("setAudioManager", bgAudioManager);
     bgAudioManager.onCanplay(() => {
-      bgAudioManager.play();
-      store.commit("changeAudioPlaying", true);
+      if (!appear) {
+        bgAudioManager.play();
+        store.commit("changeAudioPlaying", true);
+      } else {
+        bgAudioManager.pause();
+        store.commit("changeAudioPlaying", false);
+        appear = false;
+      }
     });
     bgAudioManager.onPause(() => {
       store.commit("changeAudioPlaying", false);
@@ -143,6 +150,7 @@ const _sfc_main = {
       }
     });
     $eventBus.on("playSong", async ({ id, platform, auto = false, force = false }) => {
+      console.log(id, platform);
       if (!id)
         return;
       if (store.state.audioIdBaseInfo.id == id && !force) {
@@ -188,6 +196,11 @@ const _sfc_main = {
         common_vendor.index.setStorageSync("playList", list);
         store.commit("setPlayList", list);
       }
+      common_vendor.index.setStorageSync("currentSong", {
+        id,
+        platform,
+        songInfo
+      });
     });
     $eventBus.on("playAll", async (songList) => {
       common_vendor.index.setStorageSync("playList", songList);
@@ -243,6 +256,10 @@ const _sfc_main = {
       store.state.audioManager.play();
       store.commit("changeAudioPlaying", true);
     });
+    let historySong = common_vendor.index.getStorageSync("currentSong");
+    if (historySong) {
+      $eventBus.emit("playSong", historySong);
+    }
   },
   onShow: function() {
     console.log("App Show");

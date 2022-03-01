@@ -4,12 +4,12 @@
 			<view class="flex justify-between mb-2">
 				<text class="text-xl font-bold">我的音乐</text>
 			</view>
-			<view  class="flex px-5 items-center py-2 border-b">
+			<view @click="toAlbum(0,0,0)" class="flex px-5 items-center py-2 border-b">
 				<image class="w-12 h-12 rounded mr-3" src="http://preferyou.cn/freed/icon.png" />
 				<text class="text-sm text-gray-500">我喜欢</text>
 			</view>
 		</view>
-		<view class="my-2 px-4 mt-5">
+		<view class="my-2 px-4 mt-5" style="min-height:150rpx">
 			<view class="flex justify-between mb-2">
 				<text class="text-xl font-bold">我的歌单</text>
 				<view class="flex items-center text-gray-400">

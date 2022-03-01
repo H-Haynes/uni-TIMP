@@ -16,6 +16,7 @@
 		},
 		onLaunch: function() {
 			const store = useStore();
+			let appear = true;
 			const $eventBus = inject('$eventBus');
 			console.log('App Launch');
 			// #ifndef H5
@@ -23,8 +24,14 @@
 			store.commit('setAudioManager',bgAudioManager);
 			
 			bgAudioManager.onCanplay(()=>{
-				bgAudioManager.play();
-				store.commit('changeAudioPlaying',true);
+				if(!appear){
+					bgAudioManager.play();
+					store.commit('changeAudioPlaying',true);
+				}else{
+					bgAudioManager.pause();
+					store.commit('changeAudioPlaying',false);
+					appear = false;
+				}
 			});
 			// onplay会一直调用
 			// bgAudioManager.onPlay(()=>{
@@ -52,8 +59,14 @@
 				document.body.appendChild(audio);
 				store.commit('setAudioManager',audio);
 				audio.oncanplay = () => {
-					audio.play();
-					store.commit('changeAudioPlaying',true);
+					if(!appear){
+						audio.play();
+						store.commit('changeAudioPlaying',true);
+					}else{
+						audio.pause();
+						store.commit('changeAudioPlaying',false);
+						appear = false;
+					}
 				};
 				
 				audio.onplay = () =>{
@@ -81,6 +94,9 @@
 			// uni.clearStorageSync();
 			
 			// 初始化用户私人数据
+			
+			
+			
 			// 获取用户播放列表
 			store.commit('setPlayList',uni.getStorageSync('playList'))
 			// 获取用户喜欢列表
@@ -212,6 +228,7 @@
 			// 3. 在播放列表中添加该歌曲(区分自动切歌，非自动切歌需要将歌曲加入播放列表)
 			// auto代表自动切歌，force代表强制切歌(用于单曲循环);
 			$eventBus.on('playSong',async({id,platform,auto=false,force=false})=>{
+				console.log(id,platform)
 				if(!id) return; // 无歌曲id不进行操作
 				if(store.state.audioIdBaseInfo.id == id && !force){
 					// 当前正在播放此歌曲
@@ -272,6 +289,11 @@
 					uni.setStorageSync('playList',list);
 					store.commit('setPlayList',list);
 				}
+				
+				// 存储当前播放歌曲
+				uni.setStorageSync('currentSong',{
+					id,platform,songInfo
+				})
 			})
 			
 			// 监听播放全部
@@ -338,6 +360,29 @@
 			})
 		
 			
+			
+			
+			// 读取上次播放歌曲
+			let historySong = uni.getStorageSync('currentSong');
+			if(historySong){
+				$eventBus.emit('playSong',historySong);
+				// store.state.audioManager.oncanplay =()=> {
+				// 	$eventBus.emit('pause');
+				// 	// 重新注册该事件
+				// 	console.log("来了吗")
+				// 	store.state.audioManager.oncanplay = () => {
+				// 		$eventBus.emit('play')
+				// 	};
+				// }
+				// store.state.audioManager.onCanplay && store.state.audioManager.onCanplay(()=>{
+				// 	//进入应用时禁止自动播放
+				// 	$eventBus.emit('pause');
+				// 	// 重新注册该事件
+				// 	store.state.audioManager.onCanplay(()=>{
+				// 		$eventBus.emit('play')
+				// 	});
+				// })
+			}
 		
 			// TODO 歌词界面 --done
 			// TODO 添加歌曲到我的歌单

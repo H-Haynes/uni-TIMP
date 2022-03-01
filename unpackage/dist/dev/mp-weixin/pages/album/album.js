@@ -186,6 +186,27 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         }));
       }
     };
+    const getMyLike = async () => {
+      albumInfo.value = {
+        name: "\u6211\u559C\u6B22",
+        desc: "\u7528\u6237\u559C\u6B22\u7684\u6B4C\u66F2",
+        pic: "",
+        updateTime: "",
+        avatar: "",
+        nickname: "\u6211"
+      };
+      let likeList = common_vendor.index.getStorageSync("likeList");
+      songList.value = likeList.map((ele) => ({
+        name: ele.name,
+        id: ele.id,
+        mv: ele.mv,
+        time: ele.duration * 1e3,
+        album: ele.album,
+        pic: ele.pic,
+        author: ele.author,
+        platform: ele.platform
+      }));
+    };
     const getKWRankDetail = async (id) => {
       try {
         loading.value = true;
@@ -321,22 +342,29 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
           await getKGAlbum(albumId.value);
         }
       } else if (platform.value == 0) {
-        return await getMyAlbum(albumId.value);
+        if (albumId.value == 0) {
+          await getMyLike();
+        } else {
+          await getMyAlbum(albumId.value);
+        }
       }
     };
     const playSong = (song) => {
       $eventBus.emit("playSong", {
         id: song.id,
-        platform: platform.value
+        platform: platform.value || song.platform || 0
       });
     };
     const addLike = (song) => {
-      const { name, id, author } = song;
+      const { name, id, author, mv, time, album } = song;
       $eventBus.emit("addLike", {
         name,
         id,
         author,
-        platform: platform.value
+        platform: platform.value,
+        mv,
+        time,
+        album
       });
     };
     const unlike = (song) => {
@@ -346,7 +374,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       });
     };
     const collect = () => {
-      if (!albumInfo.name)
+      if (!albumInfo.value.name)
         return;
       $eventBus.emit("addCollect", {
         id: albumId.value,

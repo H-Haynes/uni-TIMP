@@ -42,7 +42,7 @@ const store = common_vendor.createStore({
     changeMode(state) {
       state.playMode = (state.playMode + 1) % 3;
     },
-    setAduioInfo(state, info) {
+    setAduioInfo(state, info, play = true) {
       state.audioInfo = info;
       state.audioManager.src = info.src;
       state.audioManager.title = info.name;

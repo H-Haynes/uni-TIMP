@@ -42,10 +42,11 @@ const store = createStore({
 		changeMode(state){
 			state.playMode = (state.playMode+1) % 3;
 		},
-		setAduioInfo(state,info){
+		setAduioInfo(state,info,play=true){
 			state.audioInfo = info;
 			state.audioManager.src = info.src;
 			state.audioManager.title = info.name;
+			
 			// 监听事件
 			// 小canplay针对h5创建的audio元素
 			// state.audioManager.oncanplay = state.audioManager.onCanplay = () => {

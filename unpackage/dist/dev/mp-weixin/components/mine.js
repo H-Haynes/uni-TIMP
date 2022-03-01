@@ -38,8 +38,9 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     };
     return (_ctx, _cache) => {
       return {
-        a: common_vendor.o(createAlbum),
-        b: common_vendor.f(common_vendor.unref(store).state.albumList, (item, k0, i0) => {
+        a: common_vendor.o(($event) => toAlbum(0, 0, 0)),
+        b: common_vendor.o(createAlbum),
+        c: common_vendor.f(common_vendor.unref(store).state.albumList, (item, k0, i0) => {
           return {
             a: item.pic || "http://preferyou.cn/freed/icon.png",
             b: common_vendor.t(item.name),
@@ -47,7 +48,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
             d: item.id
           };
         }),
-        c: common_vendor.f(common_vendor.unref(store).state.collectList, (item, k0, i0) => {
+        d: common_vendor.f(common_vendor.unref(store).state.collectList, (item, k0, i0) => {
           return {
             a: item.pic || "http://preferyou.cn/freed/icon.png",
             b: common_vendor.t(item.name),
