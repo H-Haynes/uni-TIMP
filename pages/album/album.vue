@@ -50,11 +50,12 @@
 							class="inline-block text-xl iconfont icon-chuangyikongjianICON_fuzhi-  text-red-500 mr-2"
 						></text>
 						<text v-else @click="addLike(song)" class="inline-block iconfont icon-xihuan text-xl mr-2"></text>
-						<text class="inline-block iconfont icon-plus text-xl mr-2"></text>
+						<text @click="addCollect(song)" class="inline-block iconfont icon-plus text-xl mr-2"></text>
 					</uni-td>
 				</uni-tr>
 			</uni-table>
 		</view>
+		<album-dialog :show="showCollectDialog" @confirm="confirm" @update:show="e=>showCollectDialog=e"></album-dialog>
 	</view>
 </template>
 
@@ -67,6 +68,7 @@ import { getAlbumDetailKG, getRankMusicListKG } from '@/apis/kugou';
 import { ref, watch, inject ,toRaw} from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
 import wLoading from '@/components/w-loading/w-loading.vue';
+import AlbumDialog from '@/components/AlbumDialog.vue'
 import { useStore } from 'vuex';
 const defaultImg = 'http://preferyou.cn/freed/icon.png';
 const loadingRef = ref(null);
@@ -76,6 +78,7 @@ const albumId = ref();
 const isRank = ref(false);
 const $filters = inject('$filters');
 const $eventBus = inject('$eventBus');
+const showCollectDialog = ref(false);
 const albumInfo = ref({
 	name: '',
 	updateTime: '',
@@ -86,6 +89,7 @@ const albumInfo = ref({
 });
 const songList = ref([]);
 const store = useStore();
+const operateSong = ref({});
 onLoad(params => {
 	platform.value = +params.type;
 	isRank.value = Boolean(+params.rank);
@@ -384,7 +388,8 @@ const collect = () => {
 		id: albumId.value,
 		pic: albumInfo.value.pic,
 		name: albumInfo.value.name,
-		platform: platform.value
+		platform: platform.value,
+		isRank:+isRank.value
 	});
 };
 
@@ -410,6 +415,26 @@ const playAll = () => {
 				name:ele.name
 			})));
 		}
+	})
+}
+
+
+const addCollect = song => {
+	operateSong.value = toRaw(song);
+	showCollectDialog.value = true;
+}
+
+const confirm = id => {
+	console.log(id);
+	// 添加到歌单;
+	$eventBus.emit('addSongToAlbum',{
+		song:{
+			id:operateSong.value.id,
+			platform:platform.value || operateSong.value.platform,
+			name:operateSong.value.name,
+			author:toRaw(operateSong.value.author),
+		},
+		albumId:id
 	})
 }
 

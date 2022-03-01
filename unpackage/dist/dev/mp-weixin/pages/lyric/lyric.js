@@ -54,7 +54,7 @@ const _sfc_main = {
             d: item.time + index
           };
         }),
-        e: "lyric" + (common_vendor.unref(highlightLine) - 5),
+        e: "lyric" + (common_vendor.unref(highlightLine) - 6),
         f: currentTime.value * 1e3 / common_vendor.unref(store).state.audioInfo.time * 100 + "%",
         g: common_vendor.o(setCurrentTime),
         h: common_vendor.o(prev),

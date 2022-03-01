@@ -6144,6 +6144,7 @@ function mitt(n2) {
   } };
 }
 const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => !isInSSRComponentSetup && injectHook(lifecycle, hook, target);
+const onShow = /* @__PURE__ */ createHook(ON_SHOW$1);
 const onLoad = /* @__PURE__ */ createHook(ON_LOAD$1);
 const isArray = Array.isArray;
 const isObject = (val) => val !== null && typeof val === "object";
@@ -6440,6 +6441,7 @@ exports.mitt = mitt;
 exports.n = n;
 exports.o = o;
 exports.onLoad = onLoad;
+exports.onShow = onShow;
 exports.p = p;
 exports.readonly = readonly;
 exports.ref = ref;

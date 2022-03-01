@@ -11,6 +11,18 @@ const _sfc_main = {
     const $eventBus = common_vendor.inject("$eventBus");
     const drawRef = common_vendor.ref(null);
     const showDrawer = common_vendor.ref(false);
+    const currentTime = common_vendor.ref(store.state.currentTime);
+    common_vendor.onShow(() => {
+      store.state.audioManager.onPlay && store.state.audioManager.onPlay(() => {
+        currentTime.value = store.state.audioManager.currentTime;
+      });
+      store.state.audioManager.ontimeupdate = () => {
+        currentTime.value = store.state.audioManager.currentTime;
+      };
+      store.state.audioManager.onTimeUpdate && store.state.audioManager.onTimeUpdate(() => {
+        currentTime.value = store.state.audioManager.currentTime;
+      });
+    });
     const playSong = (song) => {
       $eventBus.emit("playSong", {
         id: song.id,
@@ -54,7 +66,8 @@ const _sfc_main = {
         h: common_vendor.o(pause)
       }, {
         i: common_vendor.o(showPlayList),
-        j: common_vendor.f(common_vendor.unref(store).state.playList, (song, index, i0) => {
+        j: currentTime.value * 1e3 / common_vendor.unref(store).state.audioInfo.time * 100 + "%",
+        k: common_vendor.f(common_vendor.unref(store).state.playList, (song, index, i0) => {
           return {
             a: common_vendor.t(song.name),
             b: common_vendor.t(song.author.map((ele) => ele.name).join("&")),
@@ -64,11 +77,11 @@ const _sfc_main = {
             f: common_vendor.o(($event) => playSong(song), song.id)
           };
         }),
-        k: common_vendor.sr(drawRef, "45c99028-0", {
+        l: common_vendor.sr(drawRef, "45c99028-0", {
           "k": "drawRef"
         }),
-        l: common_vendor.o(($event) => showDrawer.value = false),
-        m: common_vendor.p({
+        m: common_vendor.o(($event) => showDrawer.value = false),
+        n: common_vendor.p({
           show: showDrawer.value
         })
       });

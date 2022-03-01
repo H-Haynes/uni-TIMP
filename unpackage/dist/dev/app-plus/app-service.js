@@ -45,6 +45,7 @@ var __spreadValues = (a, b) => {
   const toRawType = (value) => {
     return toTypeString(value).slice(8, -1);
   };
+  const ON_SHOW = "onShow";
   const ON_LOAD = "onLoad";
   function isDebugMode() {
     return typeof __channelId__ === "string" && __channelId__;
@@ -96,6 +97,7 @@ var __spreadValues = (a, b) => {
     return isString(component) ? easycom : component;
   }
   const createHook = (lifecycle) => (hook, target = vue.getCurrentInstance()) => !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
+  const onShow = /* @__PURE__ */ createHook(ON_SHOW);
   const onLoad = /* @__PURE__ */ createHook(ON_LOAD);
   function getDevtoolsGlobalHook() {
     return getTarget().__VUE_DEVTOOLS_GLOBAL_HOOK__;
@@ -1105,7 +1107,7 @@ var __spreadValues = (a, b) => {
     }
     return target;
   };
-  const _sfc_main$n = {
+  const _sfc_main$o = {
     name: "fui-drawer",
     emits: ["close"],
     props: {
@@ -1170,14 +1172,26 @@ var __spreadValues = (a, b) => {
       ], 6)
     ], 38)) : vue.createCommentVNode("v-if", true);
   }
-  var Drawer = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["render", _sfc_render$d], ["__scopeId", "data-v-755fb578"]]);
-  const _sfc_main$m = {
+  var Drawer = /* @__PURE__ */ _export_sfc(_sfc_main$o, [["render", _sfc_render$d], ["__scopeId", "data-v-755fb578"]]);
+  const _sfc_main$n = {
     setup(__props) {
       const defaultPic = vue.readonly("http://preferyou.cn/freed/icon.png");
       const store2 = useStore();
       const $eventBus = vue.inject("$eventBus");
       const drawRef = vue.ref(null);
       const showDrawer = vue.ref(false);
+      const currentTime = vue.ref(store2.state.currentTime);
+      onShow(() => {
+        store2.state.audioManager.onPlay && store2.state.audioManager.onPlay(() => {
+          currentTime.value = store2.state.audioManager.currentTime;
+        });
+        store2.state.audioManager.ontimeupdate = () => {
+          currentTime.value = store2.state.audioManager.currentTime;
+        };
+        store2.state.audioManager.onTimeUpdate && store2.state.audioManager.onTimeUpdate(() => {
+          currentTime.value = store2.state.audioManager.currentTime;
+        });
+      });
       const playSong = (song) => {
         $eventBus.emit("playSong", {
           id: song.id,
@@ -1192,7 +1206,7 @@ var __spreadValues = (a, b) => {
         $eventBus.emit("play");
       };
       const showPlayList = () => {
-        formatAppLog("log", "at components/TimpAudio.vue:73", drawRef.value.open);
+        formatAppLog("log", "at components/TimpAudio.vue:93", drawRef.value.open);
         showDrawer.value = true;
         drawRef.vlaue && drawRef.value.open();
       };
@@ -1217,6 +1231,7 @@ var __spreadValues = (a, b) => {
             vue.createElementVNode("view", { class: "w-12 h-12 border rounded-full overflow-hidden mr-2 relative -top-2" }, [
               vue.createElementVNode("image", {
                 onClick: toLyric,
+                "lazy-load": "true",
                 class: vue.normalizeClass([{ "album-rotate": vue.unref(store2).state.audioPlaying }, "w-full h-full"]),
                 src: vue.unref(store2).state.audioInfo.picUrl || vue.unref(defaultPic)
               }, null, 10, ["src"])
@@ -1237,7 +1252,11 @@ var __spreadValues = (a, b) => {
             vue.createElementVNode("text", {
               onClick: showPlayList,
               class: "iconfont icon-liebiao_o ml-2 text-3xl"
-            })
+            }),
+            vue.createElementVNode("view", {
+              class: "progress absolute bottom-0 left-0 h-1 bg-blue-700",
+              style: vue.normalizeStyle({ width: currentTime.value * 1e3 / vue.unref(store2).state.audioInfo.time * 100 + "%" })
+            }, null, 4)
           ]),
           vue.createVNode(Drawer, {
             ref_key: "drawRef",
@@ -1277,7 +1296,7 @@ var __spreadValues = (a, b) => {
       };
     }
   };
-  var TimpAudio = /* @__PURE__ */ _export_sfc(_sfc_main$m, [["__scopeId", "data-v-d1c9d3da"]]);
+  var TimpAudio = /* @__PURE__ */ _export_sfc(_sfc_main$n, [["__scopeId", "data-v-d1c9d3da"]]);
   var promisify = (api) => {
     return (options, ...params) => {
       return new Promise((resolve, reject) => {
@@ -1288,7 +1307,7 @@ var __spreadValues = (a, b) => {
       });
     };
   };
-  const _sfc_main$l = /* @__PURE__ */ vue.defineComponent({
+  const _sfc_main$m = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const store2 = useStore();
       const createAlbum = () => {
@@ -1318,8 +1337,13 @@ var __spreadValues = (a, b) => {
           }
         });
       };
+      const toAlbum = (id, platform2, isRank) => {
+        uni.navigateTo({
+          url: `/pages/album/album?type=${platform2}&id=${id}&rank=${isRank}`
+        });
+      };
       return (_ctx, _cache) => {
-        return vue.openBlock(), vue.createElementBlock("view", null, [
+        return vue.openBlock(), vue.createElementBlock("view", { class: "h-full overflow-y-scroll" }, [
           vue.createElementVNode("view", { class: "my-2 px-4 mt-5" }, [
             vue.createElementVNode("view", { class: "flex justify-between mb-2" }, [
               vue.createElementVNode("text", { class: "text-xl font-bold" }, "\u6211\u7684\u97F3\u4E50")
@@ -1340,7 +1364,10 @@ var __spreadValues = (a, b) => {
                   onClick: createAlbum,
                   class: "iconfont icon-plus text-xl"
                 }),
-                vue.createElementVNode("text", { class: "iconfont icon-guanbi text-lg ml-3" })
+                vue.createElementVNode("text", {
+                  class: "iconfont icon-guanbi text-lg ml-3",
+                  onClick: _cache[0] || (_cache[0] = ($event) => _ctx.show = true)
+                })
               ])
             ]),
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(store2).state.albumList, (item) => {
@@ -1360,6 +1387,7 @@ var __spreadValues = (a, b) => {
             vue.createElementVNode("text", { class: "text-xl font-bold" }, "\u6211\u7684\u6536\u85CF"),
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(store2).state.collectList, (item) => {
               return vue.openBlock(), vue.createElementBlock("view", {
+                onClick: ($event) => toAlbum(item.id, item.platform, item.isRank),
                 key: item.id,
                 class: "flex px-5 items-center py-2 border-b"
               }, [
@@ -1368,14 +1396,14 @@ var __spreadValues = (a, b) => {
                   src: item.pic || "http://preferyou.cn/freed/icon.png"
                 }, null, 8, ["src"]),
                 vue.createElementVNode("text", { class: "text-sm text-gray-500" }, vue.toDisplayString(item.name), 1)
-              ]);
+              ], 8, ["onClick"]);
             }), 128))
           ])
         ]);
       };
     }
   });
-  const _sfc_main$k = {
+  const _sfc_main$l = {
     name: "w-loading",
     props: {
       text: String,
@@ -1425,7 +1453,7 @@ var __spreadValues = (a, b) => {
       vue.createCommentVNode(" \u906E\u7F69\u5C42")
     ], 2112);
   }
-  var wLoading = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$c], ["__scopeId", "data-v-85c3a0dc"]]);
+  var wLoading = /* @__PURE__ */ _export_sfc(_sfc_main$l, [["render", _sfc_render$c], ["__scopeId", "data-v-85c3a0dc"]]);
   const prefix$3 = "http://preferyou.cn/wy";
   const request$3 = promisify(uni.request);
   const getRecommendWy = () => {
@@ -1473,7 +1501,7 @@ var __spreadValues = (a, b) => {
   const getLyricWy = (id) => {
     return request$3({ url: `${prefix$3}/lyric?id=${id}` });
   };
-  const _sfc_main$j = {
+  const _sfc_main$k = {
     emits: ["bannerClick"],
     props: {
       bannerList: {
@@ -1578,8 +1606,8 @@ var __spreadValues = (a, b) => {
       ], 40, ["indicator-dots", "indicator-color", "indicator-active-color", "autoplay", "interval", "duration", "circular", "previous-margin", "next-margin"])
     ]);
   }
-  var myBanner = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["render", _sfc_render$b], ["__scopeId", "data-v-5562298d"]]);
-  const _sfc_main$i = /* @__PURE__ */ vue.defineComponent({
+  var myBanner = /* @__PURE__ */ _export_sfc(_sfc_main$k, [["render", _sfc_render$b], ["__scopeId", "data-v-5562298d"]]);
+  const _sfc_main$j = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const albumList = vue.ref([]);
       const bannerList = vue.ref([]);
@@ -1758,7 +1786,7 @@ var __spreadValues = (a, b) => {
       };
     }
   });
-  var NeteaseList = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["__scopeId", "data-v-f2301884"]]);
+  var NeteaseList = /* @__PURE__ */ _export_sfc(_sfc_main$j, [["__scopeId", "data-v-f2301884"]]);
   const prefix$2 = "http://preferyou.cn/qq";
   const request$2 = promisify(uni.request);
   const getRecommendQQ = () => {
@@ -1809,7 +1837,7 @@ var __spreadValues = (a, b) => {
   const getLyricQQ = (id) => {
     return request$2({ url: `${prefix$2}/getLyric?songmid=${id}` });
   };
-  const _sfc_main$h = /* @__PURE__ */ vue.defineComponent({
+  const _sfc_main$i = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const albumList = vue.ref([]);
       const bannerList = vue.ref([]);
@@ -1986,7 +2014,7 @@ var __spreadValues = (a, b) => {
       };
     }
   });
-  var QQList = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["__scopeId", "data-v-9242fe4e"]]);
+  var QQList = /* @__PURE__ */ _export_sfc(_sfc_main$i, [["__scopeId", "data-v-9242fe4e"]]);
   const prefix$1 = "http://preferyou.cn/kuwo";
   const request$1 = promisify(uni.request);
   const getBannerKW = () => {
@@ -2040,7 +2068,7 @@ var __spreadValues = (a, b) => {
   const getLyricKW = (id) => {
     return request$1({ url: `${prefix$1}/kuwo/lrc?musicId=${id}` });
   };
-  const _sfc_main$g = /* @__PURE__ */ vue.defineComponent({
+  const _sfc_main$h = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const albumList = vue.ref([]);
       const bannerList = vue.ref([]);
@@ -2225,7 +2253,7 @@ var __spreadValues = (a, b) => {
       };
     }
   });
-  var KuwoList = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["__scopeId", "data-v-0fb611bb"]]);
+  var KuwoList = /* @__PURE__ */ _export_sfc(_sfc_main$h, [["__scopeId", "data-v-0fb611bb"]]);
   const prefix = "http://preferyou.cn/kuwo";
   const request = promisify(uni.request);
   const getRecommendKG = (page = 1) => {
@@ -2269,7 +2297,7 @@ var __spreadValues = (a, b) => {
       url: `${prefix}/kugou/playInfo?id=${id}`
     });
   };
-  const _sfc_main$f = /* @__PURE__ */ vue.defineComponent({
+  const _sfc_main$g = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const albumList = vue.ref([]);
       const categoryList = vue.ref([]);
@@ -2432,14 +2460,14 @@ var __spreadValues = (a, b) => {
       };
     }
   });
-  var KugouList = /* @__PURE__ */ _export_sfc(_sfc_main$f, [["__scopeId", "data-v-f7898a14"]]);
-  const _sfc_main$e = {
+  var KugouList = /* @__PURE__ */ _export_sfc(_sfc_main$g, [["__scopeId", "data-v-f7898a14"]]);
+  const _sfc_main$f = {
     setup(__props) {
       const platform2 = vue.ref(0);
       const platformComp = vue.computed(() => {
         switch (platform2.value) {
           case 0:
-            return _sfc_main$l;
+            return _sfc_main$m;
           case 1:
             return NeteaseList;
           case 2:
@@ -2449,7 +2477,7 @@ var __spreadValues = (a, b) => {
           case 4:
             return KugouList;
           default:
-            return _sfc_main$l;
+            return _sfc_main$m;
         }
       });
       return (_ctx, _cache) => {
@@ -3671,7 +3699,7 @@ var __spreadValues = (a, b) => {
     const reg = /^[0-9]*$/g;
     return typeof val === "number" || reg.test(val) ? val + "px" : val;
   };
-  const _sfc_main$d = {
+  const _sfc_main$e = {
     name: "UniIcons",
     emits: ["click"],
     props: {
@@ -3722,7 +3750,7 @@ var __spreadValues = (a, b) => {
       onClick: _cache[0] || (_cache[0] = (...args) => $options._onClick && $options._onClick(...args))
     }, null, 6);
   }
-  var __easycom_0$2 = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$a], ["__scopeId", "data-v-a2e81f6e"]]);
+  var __easycom_0$2 = /* @__PURE__ */ _export_sfc(_sfc_main$e, [["render", _sfc_render$a], ["__scopeId", "data-v-a2e81f6e"]]);
   class Calendar {
     constructor({
       date,
@@ -4018,7 +4046,7 @@ var __spreadValues = (a, b) => {
       this.weeks = weeks;
     }
   }
-  const _sfc_main$c = {
+  const _sfc_main$d = {
     props: {
       weeks: {
         type: Object,
@@ -4088,7 +4116,7 @@ var __spreadValues = (a, b) => {
       }, null, 2)
     ], 34);
   }
-  var calendarItem = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$9], ["__scopeId", "data-v-39ec3f8e"]]);
+  var calendarItem = /* @__PURE__ */ _export_sfc(_sfc_main$d, [["render", _sfc_render$9], ["__scopeId", "data-v-39ec3f8e"]]);
   const isArray = Array.isArray;
   const isObject = (val) => val !== null && typeof val === "object";
   const defaultDelimiters = ["{", "}"];
@@ -4433,7 +4461,7 @@ var __spreadValues = (a, b) => {
     "zh-Hant": zhHant
   };
   const { t: t$2 } = initVueI18n(messages);
-  const _sfc_main$b = {
+  const _sfc_main$c = {
     name: "UniDatetimePicker",
     components: {},
     data() {
@@ -5112,11 +5140,11 @@ var __spreadValues = (a, b) => {
       ], 6)) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  var timePicker = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$8], ["__scopeId", "data-v-60a1244c"]]);
+  var timePicker = /* @__PURE__ */ _export_sfc(_sfc_main$c, [["render", _sfc_render$8], ["__scopeId", "data-v-60a1244c"]]);
   const {
     t: t$1
   } = initVueI18n(messages);
-  const _sfc_main$a = {
+  const _sfc_main$b = {
     components: {
       calendarItem,
       timePicker
@@ -5697,11 +5725,11 @@ var __spreadValues = (a, b) => {
       ], 2)) : vue.createCommentVNode("v-if", true)
     ], 32);
   }
-  var calendar = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$7], ["__scopeId", "data-v-94becebc"]]);
+  var calendar = /* @__PURE__ */ _export_sfc(_sfc_main$b, [["render", _sfc_render$7], ["__scopeId", "data-v-94becebc"]]);
   const {
     t
   } = initVueI18n(messages);
-  const _sfc_main$9 = {
+  const _sfc_main$a = {
     name: "UniDatetimePicker",
     components: {
       calendar,
@@ -6580,8 +6608,8 @@ var __spreadValues = (a, b) => {
       ])
     ]);
   }
-  var __easycom_0$1 = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$6], ["__scopeId", "data-v-6e13d7e2"]]);
-  const _sfc_main$8 = {
+  var __easycom_0$1 = /* @__PURE__ */ _export_sfc(_sfc_main$a, [["render", _sfc_render$6], ["__scopeId", "data-v-6e13d7e2"]]);
+  const _sfc_main$9 = {
     name: "TableCheckbox",
     emits: ["checkboxSelected"],
     props: {
@@ -6664,7 +6692,7 @@ var __spreadValues = (a, b) => {
       ]))
     ]);
   }
-  var tableCheckbox = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$5], ["__scopeId", "data-v-68100fa0"]]);
+  var tableCheckbox = /* @__PURE__ */ _export_sfc(_sfc_main$9, [["render", _sfc_render$5], ["__scopeId", "data-v-68100fa0"]]);
   const resource = {
     "reset": "\u91CD\u7F6E",
     "search": "\u641C\u7D22",
@@ -6681,7 +6709,7 @@ var __spreadValues = (a, b) => {
     Date: "date",
     Timestamp: "timestamp"
   };
-  const _sfc_main$7 = {
+  const _sfc_main$8 = {
     name: "FilterDropdown",
     emits: ["change"],
     components: {
@@ -7032,8 +7060,8 @@ var __spreadValues = (a, b) => {
       ])) : vue.createCommentVNode("v-if", true)
     ]);
   }
-  var dropdown = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$4], ["__scopeId", "data-v-609c3cee"]]);
-  const _sfc_main$6 = {
+  var dropdown = /* @__PURE__ */ _export_sfc(_sfc_main$8, [["render", _sfc_render$4], ["__scopeId", "data-v-609c3cee"]]);
+  const _sfc_main$7 = {
     name: "uniTh",
     options: {
       virtualHost: true
@@ -7172,8 +7200,8 @@ var __spreadValues = (a, b) => {
       vue.renderSlot(_ctx.$slots, "default", {}, void 0, true)
     ], 6);
   }
-  var __easycom_0 = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$3], ["__scopeId", "data-v-511e81f9"]]);
-  const _sfc_main$5 = {
+  var __easycom_0 = /* @__PURE__ */ _export_sfc(_sfc_main$7, [["render", _sfc_render$3], ["__scopeId", "data-v-511e81f9"]]);
+  const _sfc_main$6 = {
     name: "uniTr",
     components: { tableCheckbox },
     props: {
@@ -7273,8 +7301,8 @@ var __spreadValues = (a, b) => {
       vue.renderSlot(_ctx.$slots, "default", {}, void 0, true)
     ]);
   }
-  var __easycom_1 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$2], ["__scopeId", "data-v-c2c83a8e"]]);
-  const _sfc_main$4 = {
+  var __easycom_1 = /* @__PURE__ */ _export_sfc(_sfc_main$6, [["render", _sfc_render$2], ["__scopeId", "data-v-c2c83a8e"]]);
+  const _sfc_main$5 = {
     name: "uniTd",
     options: {
       virtualHost: true
@@ -7331,8 +7359,8 @@ var __spreadValues = (a, b) => {
       ], 6)
     ], 2112);
   }
-  var __easycom_2 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render$1], ["__scopeId", "data-v-321f8e79"]]);
-  const _sfc_main$3 = {
+  var __easycom_2 = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render$1], ["__scopeId", "data-v-321f8e79"]]);
+  const _sfc_main$4 = {
     name: "uniTable",
     options: {
       virtualHost: true
@@ -7577,7 +7605,70 @@ var __spreadValues = (a, b) => {
       ], 6)
     ], 2);
   }
-  var __easycom_3 = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["render", _sfc_render], ["__scopeId", "data-v-6cd49106"]]);
+  var __easycom_3 = /* @__PURE__ */ _export_sfc(_sfc_main$4, [["render", _sfc_render], ["__scopeId", "data-v-6cd49106"]]);
+  const _sfc_main$3 = {
+    props: {
+      height: {
+        type: String,
+        default: "50%"
+      },
+      show: {
+        type: Boolean,
+        default: false
+      }
+    },
+    emits: ["confirm", "update:show"],
+    setup(__props, { emit }) {
+      vue.ref(true);
+      vue.ref(null);
+      const store2 = useStore();
+      const close = () => {
+        emit("update:show", false);
+      };
+      const confirm = (id) => {
+        emit("confirm", id);
+        emit("update:show", false);
+      };
+      return (_ctx, _cache) => {
+        return vue.withDirectives((vue.openBlock(), vue.createElementBlock("view", { class: "fixed fixed left-0 top-0 w-full h-full z-10" }, [
+          vue.createElementVNode("view", {
+            class: "w-full h-full bg-gray-800 bg-opacity-40 mask",
+            onClick: close
+          }),
+          __props.show ? (vue.openBlock(), vue.createElementBlock("view", {
+            key: 0,
+            class: "container absolute bottom-0 left-0 w-full rounded-t-md overflow-y-scroll",
+            style: vue.normalizeStyle({ height: __props.height })
+          }, [
+            vue.createElementVNode("view", { class: "w-full h-full bg-gray-50 flex flex-col" }, [
+              vue.createElementVNode("view", { class: "text-center text-sm linear-bg text-white py-3 px-3" }, "\u6DFB\u52A0\u5230\u6B4C\u5355"),
+              vue.createElementVNode("scroll-view", {
+                class: "flex-1 overflow-hidden",
+                "scroll-y": "true"
+              }, [
+                (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(store2).state.albumList, (album, index) => {
+                  return vue.openBlock(), vue.createElementBlock("view", {
+                    onClick: ($event) => confirm(album.id),
+                    class: "py-2 hover:bg-gray-100 text-gray-500 px-3 flex justify-between items-center text-xs border-b",
+                    key: album.id
+                  }, [
+                    vue.createElementVNode("image", {
+                      src: album.pic,
+                      class: "w-12 h-12 mr-4 rounded"
+                    }, null, 8, ["src"]),
+                    vue.createElementVNode("text", { class: "truncate mr-2 flex-2 flex-shrink-0" }, vue.toDisplayString(album.name), 1)
+                  ], 8, ["onClick"]);
+                }), 128))
+              ])
+            ])
+          ], 4)) : vue.createCommentVNode("v-if", true)
+        ], 512)), [
+          [vue.vShow, __props.show]
+        ]);
+      };
+    }
+  };
+  var AlbumDialog = /* @__PURE__ */ _export_sfc(_sfc_main$3, [["__scopeId", "data-v-68a7170c"]]);
   const _sfc_main$2 = /* @__PURE__ */ vue.defineComponent({
     setup(__props) {
       const defaultImg = "http://preferyou.cn/freed/icon.png";
@@ -7588,6 +7679,7 @@ var __spreadValues = (a, b) => {
       const isRank = vue.ref(false);
       const $filters = vue.inject("$filters");
       const $eventBus = vue.inject("$eventBus");
+      const showCollectDialog = vue.ref(false);
       const albumInfo = vue.ref({
         name: "",
         updateTime: "",
@@ -7598,6 +7690,7 @@ var __spreadValues = (a, b) => {
       });
       const songList = vue.ref([]);
       const store2 = useStore();
+      const operateSong = vue.ref({});
       onLoad((params) => {
         platform2.value = +params.type;
         isRank.value = Boolean(+params.rank);
@@ -7880,7 +7973,8 @@ var __spreadValues = (a, b) => {
           id: albumId.value,
           pic: albumInfo.value.pic,
           name: albumInfo.value.name,
-          platform: platform2.value
+          platform: platform2.value,
+          isRank: +isRank.value
         });
       };
       const unCollect = () => {
@@ -7904,6 +7998,22 @@ var __spreadValues = (a, b) => {
               name: ele.name
             })));
           }
+        });
+      };
+      const addCollect = (song) => {
+        operateSong.value = vue.toRaw(song);
+        showCollectDialog.value = true;
+      };
+      const confirm = (id) => {
+        formatAppLog("log", "at pages/album/album.vue:428", id);
+        $eventBus.emit("addSongToAlbum", {
+          song: {
+            id: operateSong.value.id,
+            platform: platform2.value || operateSong.value.platform,
+            name: operateSong.value.name,
+            author: vue.toRaw(operateSong.value.author)
+          },
+          albumId: id
         });
       };
       vue.watch([() => albumId.value], () => {
@@ -8022,7 +8132,10 @@ var __spreadValues = (a, b) => {
                             onClick: ($event) => addLike(song),
                             class: "inline-block iconfont icon-xihuan text-xl mr-2"
                           }, null, 8, ["onClick"])),
-                          vue.createElementVNode("text", { class: "inline-block iconfont icon-plus text-xl mr-2" })
+                          vue.createElementVNode("text", {
+                            onClick: ($event) => addCollect(song),
+                            class: "inline-block iconfont icon-plus text-xl mr-2"
+                          }, null, 8, ["onClick"])
                         ]),
                         _: 2
                       }, 1024)
@@ -8033,7 +8146,12 @@ var __spreadValues = (a, b) => {
               ]),
               _: 1
             })
-          ])
+          ]),
+          vue.createVNode(AlbumDialog, {
+            show: showCollectDialog.value,
+            onConfirm: confirm,
+            "onUpdate:show": _cache[0] || (_cache[0] = (e) => showCollectDialog.value = e)
+          }, null, 8, ["show"])
         ]);
       };
     }
@@ -8080,9 +8198,10 @@ var __spreadValues = (a, b) => {
         }).exec();
       };
       return (_ctx, _cache) => {
-        return vue.openBlock(), vue.createElementBlock("view", { class: "bg-gray-800 bg-opacity-50 h_full relative w-full flex flex-col text-gray-300 p-4 pt-24 border-red-500" }, [
+        return vue.openBlock(), vue.createElementBlock("view", { class: "bg-gray-800 bg-opacity-50 h_full relative w-full overflow-hidden flex flex-col text-gray-300 p-4 pt-24 border-red-500" }, [
           vue.createElementVNode("view", { class: "flex justify-around items-center px-8" }, [
             vue.createElementVNode("image", {
+              "lazy-load": "true",
               class: "w-24 h-24 rounded",
               src: vue.unref(store2).state.audioInfo.picUrl
             }, null, 8, ["src"]),
@@ -8092,10 +8211,10 @@ var __spreadValues = (a, b) => {
             ])
           ]),
           vue.createElementVNode("scroll-view", {
-            "scroll-into-view": "lyric" + (vue.unref(highlightLine) - 5),
+            "scroll-into-view": "lyric" + (vue.unref(highlightLine) - 6),
             "scroll-with-animation": "",
             "scroll-y": "",
-            class: "gap-top lyric-container text-center text-base"
+            class: "gap-top lyric-container text-center text-base flex-1"
           }, [
             (vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(vue.unref(store2).state.lyric, (item, index) => {
               return vue.openBlock(), vue.createElementBlock("view", {
@@ -8105,7 +8224,7 @@ var __spreadValues = (a, b) => {
               }, vue.toDisplayString(item.words), 11, ["id"]);
             }), 128))
           ], 8, ["scroll-into-view"]),
-          vue.createElementVNode("view", { class: "mt-5 flex-1 flex flex-col" }, [
+          vue.createElementVNode("view", { class: "mt-5 h-32 flex flex-col justify-around" }, [
             vue.createElementVNode("view", { class: "h-1" }, [
               vue.createCommentVNode(' <movable-area class="h-1 px-1 bg-gray-400 w-full relative overflow-x-hidden">\n					<movable-view style="left:0" class="absolute top-0 h-full w-full bg-white rounded">\n						<text class="absolute w-3 h-3 rounded-full -right-1 -top-1 bg-white"></text>\n					</movable-view>\n				</movable-area> '),
               vue.createElementVNode("view", {
@@ -8121,7 +8240,7 @@ var __spreadValues = (a, b) => {
                 ], 4)
               ])
             ]),
-            vue.createElementVNode("view", { class: "flex flex-1 items-center justify-around" }, [
+            vue.createElementVNode("view", { class: "flex items-center justify-around" }, [
               vue.createElementVNode("text", {
                 onClick: prev,
                 class: "iconfont icon-shangyishou"
@@ -8167,7 +8286,8 @@ var __spreadValues = (a, b) => {
               filter: "blur(15px)",
               opacity: 0.8,
               "background-image": `url(${vue.unref(store2).state.audioInfo.picUrl})`,
-              "background-size": "auto 100%"
+              "background-size": "auto 100%",
+              transform: "scale(1.15)"
             }),
             class: "absolute left-0 top-0 w-full h-full"
           }, null, 4)
@@ -8186,7 +8306,7 @@ var __spreadValues = (a, b) => {
   if (uni.restoreGlobal) {
     uni.restoreGlobal(vue__namespace, weex, plus, setTimeout, clearTimeout, setInterval, clearInterval);
   }
-  __definePage("pages/index/index", _sfc_main$e);
+  __definePage("pages/index/index", _sfc_main$f);
   __definePage("pages/album/album", _sfc_main$2);
   __definePage("pages/lyric/lyric", _sfc_main$1);
   var platform;
@@ -8455,6 +8575,23 @@ var __spreadValues = (a, b) => {
           });
         }
       });
+      $eventBus.on("addSongToAlbum", ({ song, albumId }) => {
+        let albumList = uni.getStorageSync("albumList") || [];
+        let index = albumList.findIndex((ele) => ele.id == albumId);
+        if (albumList[index].list.some((ele) => ele.id == song.id && ele.platform == song.platform)) {
+          return uni.showToast({
+            title: "\u91CD\u590D\u6DFB\u52A0",
+            icon: "none"
+          });
+        }
+        albumList[index].list.push(song);
+        uni.setStorageSync("albumList", albumList);
+        store2.commit("setAlbumList", albumList);
+        uni.showToast({
+          title: "\u6DFB\u52A0\u6210\u529F",
+          icon: "none"
+        });
+      });
       $eventBus.on("playSong", async ({ id, platform: platform2, auto = false, force = false }) => {
         if (!id)
           return;
@@ -8558,13 +8695,13 @@ var __spreadValues = (a, b) => {
       });
     },
     onShow: function() {
-      formatAppLog("log", "at App.vue:305", "App Show");
+      formatAppLog("log", "at App.vue:332", "App Show");
     },
     onHide: function() {
-      formatAppLog("log", "at App.vue:308", "App Hide");
+      formatAppLog("log", "at App.vue:335", "App Hide");
     },
     onLoad: function() {
-      formatAppLog("log", "at App.vue:311", 9999);
+      formatAppLog("log", "at App.vue:338", 9999);
     }
   };
   function mitt(n) {

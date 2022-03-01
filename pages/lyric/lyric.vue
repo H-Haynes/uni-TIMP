@@ -1,14 +1,16 @@
 <template>
-	<view class="bg-gray-800 bg-opacity-50 h_full relative w-full  flex flex-col text-gray-300 p-4 pt-24 border-red-500">
+	<view class="bg-gray-800 bg-opacity-50 h_full relative w-full overflow-hidden  flex flex-col text-gray-300 p-4 pt-24 border-red-500">
 		<view class="flex justify-around items-center px-8 ">
-			<image class="w-24 h-24 rounded" :src="store.state.audioInfo.picUrl" />
+			<image lazy-load="true" class="w-24 h-24 rounded" :src="store.state.audioInfo.picUrl" />
 			<view class="flex-1 truncate ml-5 flex flex-col justify-around">
 				<text class="text-xl">{{store.state.audioInfo.name}}</text>
 				<text class="text-sm mt-3">{{store.state.audioInfo.author && store.state.audioInfo.author.map(ele=>ele.name).join('&')}}</text>
 			</view>
 		</view>
 		
-		<scroll-view :scroll-into-view="'lyric' + (highlightLine-5)" scroll-with-animation scroll-y class="gap-top  lyric-container  text-center text-base">
+		<scroll-view :scroll-into-view="'lyric' + (highlightLine-6)" 
+					scroll-with-animation scroll-y 
+					class="gap-top  lyric-container  text-center text-base flex-1">
 			<view 
 				:class="{'linear-text highlight-line font-bold':highlightLine== index}"
 				:id="'lyric'+index"
@@ -18,7 +20,7 @@
 			</view>
 		</scroll-view>
 		
-		<view class="mt-5 flex-1  flex flex-col">
+		<view class="mt-5 h-32 flex  flex-col justify-around">
 			<view class=" h-1">
 				<!-- <movable-area class="h-1 px-1 bg-gray-400 w-full relative overflow-x-hidden">
 					<movable-view style="left:0" class="absolute top-0 h-full w-full bg-white rounded">
@@ -32,7 +34,7 @@
 					</view>
 				</view>
 			</view>
-			<view class="flex flex-1 items-center justify-around">
+			<view class="flex  items-center justify-around">
 				<text @click="prev" class="iconfont icon-shangyishou"></text>
 				<text v-if="store.state.audioPlaying" @click="togglePlay" class="iconfont icon-zantingtingzhi"></text>
 				<text v-else  @click="togglePlay" class="iconfont icon-bofang"></text>
@@ -57,6 +59,7 @@
 				opacity:0.8,
 				'background-image':`url(${store.state.audioInfo.picUrl})`,
 				'background-size':'auto 100%',
+				transform:'scale(1.15)'
 				}" 
 			class="absolute left-0 top-0 w-full h-full">
 		</view>

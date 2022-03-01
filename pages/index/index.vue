@@ -31,6 +31,7 @@
 			<!-- #endif -->
 		</view>
 		<timp-audio></timp-audio>
+		
 	</view>
 </template>
 
@@ -53,6 +54,7 @@
 			default: return mine;
 		}
 	})
+	
 </script>
 <style>
 	

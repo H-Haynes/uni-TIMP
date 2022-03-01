@@ -31,21 +31,28 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         }
       });
     };
+    const toAlbum = (id, platform, isRank) => {
+      common_vendor.index.navigateTo({
+        url: `/pages/album/album?type=${platform}&id=${id}&rank=${isRank}`
+      });
+    };
     return (_ctx, _cache) => {
       return {
         a: common_vendor.o(createAlbum),
-        b: common_vendor.f(common_vendor.unref(store).state.albumList, (item, k0, i0) => {
+        b: common_vendor.o(($event) => _ctx.show = true),
+        c: common_vendor.f(common_vendor.unref(store).state.albumList, (item, k0, i0) => {
           return {
             a: item.pic || "http://preferyou.cn/freed/icon.png",
             b: common_vendor.t(item.name),
             c: item.id
           };
         }),
-        c: common_vendor.f(common_vendor.unref(store).state.collectList, (item, k0, i0) => {
+        d: common_vendor.f(common_vendor.unref(store).state.collectList, (item, k0, i0) => {
           return {
             a: item.pic || "http://preferyou.cn/freed/icon.png",
             b: common_vendor.t(item.name),
-            c: item.id
+            c: common_vendor.o(($event) => toAlbum(item.id, item.platform, item.isRank), item.id),
+            d: item.id
           };
         })
       };

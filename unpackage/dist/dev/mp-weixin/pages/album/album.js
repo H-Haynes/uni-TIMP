@@ -17,9 +17,10 @@ const _easycom_uni_tr = () => "../../uni_modules/uni-table/components/uni-tr/uni
 const _easycom_uni_td = () => "../../uni_modules/uni-table/components/uni-td/uni-td.js";
 const _easycom_uni_table = () => "../../uni_modules/uni-table/components/uni-table/uni-table.js";
 if (!Math) {
-  (wLoading + _easycom_uni_th + _easycom_uni_tr + _easycom_uni_td + _easycom_uni_table)();
+  (wLoading + _easycom_uni_th + _easycom_uni_tr + _easycom_uni_td + _easycom_uni_table + AlbumDialog)();
 }
 const wLoading = () => "../../components/w-loading/w-loading.js";
+const AlbumDialog = () => "../../components/AlbumDialog.js";
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   setup(__props) {
     const defaultImg = "http://preferyou.cn/freed/icon.png";
@@ -30,6 +31,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     const isRank = common_vendor.ref(false);
     const $filters = common_vendor.inject("$filters");
     const $eventBus = common_vendor.inject("$eventBus");
+    const showCollectDialog = common_vendor.ref(false);
     const albumInfo = common_vendor.ref({
       name: "",
       updateTime: "",
@@ -40,6 +42,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     });
     const songList = common_vendor.ref([]);
     const store = common_vendor.useStore();
+    const operateSong = common_vendor.ref({});
     common_vendor.onLoad((params) => {
       platform.value = +params.type;
       isRank.value = Boolean(+params.rank);
@@ -322,7 +325,8 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         id: albumId.value,
         pic: albumInfo.value.pic,
         name: albumInfo.value.name,
-        platform: platform.value
+        platform: platform.value,
+        isRank: +isRank.value
       });
     };
     const unCollect = () => {
@@ -346,6 +350,22 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
             name: ele.name
           })));
         }
+      });
+    };
+    const addCollect = (song) => {
+      operateSong.value = common_vendor.toRaw(song);
+      showCollectDialog.value = true;
+    };
+    const confirm = (id) => {
+      console.log(id);
+      $eventBus.emit("addSongToAlbum", {
+        song: {
+          id: operateSong.value.id,
+          platform: platform.value || operateSong.value.platform,
+          name: operateSong.value.name,
+          author: common_vendor.toRaw(operateSong.value.author)
+        },
+        albumId: id
       });
     };
     common_vendor.watch([() => albumId.value], () => {
@@ -399,9 +419,10 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
           } : {
             h: common_vendor.o(($event) => addLike(song))
           }, {
-            i: "312fc82d-7-" + i0 + "," + ("312fc82d-5-" + i0),
-            j: song.id,
-            k: "312fc82d-5-" + i0 + ",312fc82d-1"
+            i: common_vendor.o(($event) => addCollect(song)),
+            j: "312fc82d-7-" + i0 + "," + ("312fc82d-5-" + i0),
+            k: song.id,
+            l: "312fc82d-5-" + i0 + ",312fc82d-1"
           });
         }),
         p: common_vendor.p({
@@ -410,6 +431,11 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         q: common_vendor.p({
           stripe: true,
           emptyText: "\u6682\u65E0\u66F4\u591A\u6570\u636E"
+        }),
+        r: common_vendor.o(confirm),
+        s: common_vendor.o((e) => showCollectDialog.value = e),
+        t: common_vendor.p({
+          show: showCollectDialog.value
         })
       });
     };

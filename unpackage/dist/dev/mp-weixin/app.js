@@ -112,6 +112,23 @@ const _sfc_main = {
         });
       }
     });
+    $eventBus.on("addSongToAlbum", ({ song, albumId }) => {
+      let albumList = common_vendor.index.getStorageSync("albumList") || [];
+      let index = albumList.findIndex((ele) => ele.id == albumId);
+      if (albumList[index].list.some((ele) => ele.id == song.id && ele.platform == song.platform)) {
+        return common_vendor.index.showToast({
+          title: "\u91CD\u590D\u6DFB\u52A0",
+          icon: "none"
+        });
+      }
+      albumList[index].list.push(song);
+      common_vendor.index.setStorageSync("albumList", albumList);
+      store.commit("setAlbumList", albumList);
+      common_vendor.index.showToast({
+        title: "\u6DFB\u52A0\u6210\u529F",
+        icon: "none"
+      });
+    });
     $eventBus.on("playSong", async ({ id, platform, auto = false, force = false }) => {
       if (!id)
         return;

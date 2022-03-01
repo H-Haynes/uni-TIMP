@@ -165,6 +165,30 @@
 				}
 			})
 		
+			// 监听添加歌曲到歌单
+			
+			$eventBus.on('addSongToAlbum',({song,albumId}) => {
+				// 检查该歌单是否存在该歌曲
+				let albumList = uni.getStorageSync('albumList') || [];
+				let index = albumList.findIndex(ele=>ele.id == albumId);
+				if(albumList[index].list.some(ele=>ele.id == song.id && ele.platform == song.platform)){
+					return uni.showToast({
+						title:'重复添加',
+						icon:'none'
+					})
+				}
+				// 没有则更新该歌单
+				albumList[index].list.push(song);
+				// 更新缓存
+				uni.setStorageSync('albumList',albumList)
+				// 更新仓库
+				store.commit('setAlbumList',albumList)
+				uni.showToast({
+					title:'添加成功',
+					icon:'none'
+				})
+			})
+		
 			// 监听播放歌曲
 			// 1. 获取歌曲信息及播放地址
 			// 2. 设置当前播放信息到vuex
@@ -296,10 +320,13 @@
 				store.commit('changeAudioPlaying',true)
 			})
 		
-			// TODO 歌词界面
+			
+		
+			// TODO 歌词界面 --done
 			// TODO 添加歌曲到我的歌单
-			// TODO 手动切歌
-			// TODO 播放进度
+			// TODO 手动切歌 -- done
+			// TODO 滑动切歌
+			// TODO 播放进度 -- done
 		},
 		onShow: function() {
 			console.log('App Show')

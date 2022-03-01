@@ -1593,3 +1593,14 @@
     transform: rotate(360deg);
 }
 }
+.container[data-v-68a7170c] {
+  animation: bounceInDown-68a7170c 0.3s linear;
+}
+@keyframes bounceInDown-68a7170c {
+0% {
+    bottom: -100%;
+}
+100% {
+    bottom: 0%;
+}
+}

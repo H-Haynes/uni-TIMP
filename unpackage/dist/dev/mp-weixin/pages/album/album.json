@@ -6,6 +6,7 @@
     "uni-tr": "../../uni_modules/uni-table/components/uni-tr/uni-tr",
     "uni-td": "../../uni_modules/uni-table/components/uni-td/uni-td",
     "uni-table": "../../uni_modules/uni-table/components/uni-table/uni-table",
-    "w-loading": "../../components/w-loading/w-loading"
+    "w-loading": "../../components/w-loading/w-loading",
+    "album-dialog": "../../components/AlbumDialog"
   }
 }
