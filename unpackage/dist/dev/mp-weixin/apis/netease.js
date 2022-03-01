@@ -48,6 +48,9 @@ const getSongDetailWy = (id) => {
 const getLyricWy = (id) => {
   return request({ url: `${prefix}/lyric?id=${id}` });
 };
+const searchWy = (keyword) => {
+  return request({ url: `${prefix}/search/search/multimatch?keywords=${keyword}` });
+};
 exports.getAlbumDetailWy = getAlbumDetailWy;
 exports.getAlbumListWy = getAlbumListWy;
 exports.getBannerWy = getBannerWy;
@@ -57,3 +60,4 @@ exports.getRankListWy = getRankListWy;
 exports.getRecommendWy = getRecommendWy;
 exports.getSongDetailWy = getSongDetailWy;
 exports.getSongUrlWy = getSongUrlWy;
+exports.searchWy = searchWy;

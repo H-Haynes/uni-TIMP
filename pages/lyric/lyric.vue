@@ -21,19 +21,19 @@
 		</scroll-view>
 		
 		<view class="mt-5 h-32 flex  flex-col justify-around">
-			<view class=" h-1">
-				<!-- <movable-area class="h-1 px-1 bg-gray-400 w-full relative overflow-x-hidden">
-					<movable-view style="left:0" class="absolute top-0 h-full w-full bg-white rounded">
-						<text class="absolute w-3 h-3 rounded-full -right-1 -top-1 bg-white"></text>
-					</movable-view>
-				</movable-area> -->
-				<view id="progress" class="h-1  bg-gray-400 w-full relative" @click="setCurrentTime">
-					<view :style="{width:currentTime * 1000 / store.state.audioInfo.time * 100 + '%'}" 
-						class="absolute top-0 h-full w-0 bg-white rounded">
-						<text class="absolute w-3 h-3 rounded-full -right-1 -top-1 bg-white"></text>
+			<view class="flex items-center">
+				<text id="duration" class="text-xs duration">{{$filters.durationFormat(currentTime * 1000)}}</text>
+				<view class="h-1 flex-1">
+					<view id="progress"  class="h-1  bg-gray-400 w-full relative rounded" @click="setCurrentTime">
+						<view :style="{width:currentTime * 1000 / store.state.audioInfo.time * 100 + '%'}" 
+							class="absolute top-0 h-full w-0 bg-white rounded">
+							<text class="absolute w-3 h-3 rounded-full -right-1 -top-1 bg-white"></text>
+						</view>
 					</view>
 				</view>
+				<text class="text-xs duration">{{$filters.durationFormat(store.state.audioInfo.time)}}</text>
 			</view>
+			
 			<view class="flex  items-center justify-around">
 				<text @click="prev" class="iconfont icon-shangyishou"></text>
 				<text v-if="store.state.audioPlaying" @click="togglePlay" class="iconfont icon-zantingtingzhi"></text>
@@ -70,7 +70,7 @@
 	import {useStore} from 'vuex';
 	import {ref,toRaw,inject,computed,readonly,watch,onMounted} from 'vue';
 	const store = useStore();
-	
+	const $filters = inject('$filters');
 	const $eventBus = inject('$eventBus');
 	const next = () =>{
 		$eventBus.emit('playNext');
@@ -117,17 +117,21 @@
 	
 	const setCurrentTime = (e) => {
 		const query = uni.createSelectorQuery().in(this);
+		const query2  = uni.createSelectorQuery().in(this);
 		query.select('#progress').boundingClientRect(data => {
-		  // 用当前点击位置/宽度获取百分比，然后根据百分比设置时间;
-		  const percent = e.detail.x / data.width;
+			query2.select('#duration').boundingClientRect(durationData => {
+				// 用当前点击位置/宽度获取百分比，然后根据百分比设置时间;
+				const percent = (e.detail.x - durationData.width * 1.2)  / data.width;
+				
+				// #ifdef H5
+							store.state.audioManager.currentTime = store.state.audioInfo.time/1000 * percent;
+				// #endif
+				
+				// #ifndef H5
+							store.state.audioManager.startTime = store.state.audioInfo.time/1000 * percent;
+				// #endif
+			}).exec();
 		  
-		  // #ifdef H5
-			store.state.audioManager.currentTime = store.state.audioInfo.time/1000 * percent;
-		  // #endif
-		  
-		  // #ifndef H5
-			store.state.audioManager.startTime = store.state.audioInfo.time/1000 * percent;
-		  // #endif
 		}).exec();
 	}
 		
@@ -149,5 +153,9 @@
 	}
 	.lyric-container{
 		height:700rpx;
+	}
+	.duration{
+		width:120rpx;
+		text-align: center;
 	}
 </style>

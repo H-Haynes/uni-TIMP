@@ -13,3 +13,7 @@
 .lyric-container {
   height: 700rpx;
 }
+.duration {
+  width: 120rpx;
+  text-align: center;
+}

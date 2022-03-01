@@ -13,6 +13,7 @@ if (!Math) {
   "./pages/index/index.js";
   "./pages/album/album.js";
   "./pages/lyric/lyric.js";
+  "./pages/search/search.js";
 }
 const _sfc_main = {
   globalData: {
@@ -297,7 +298,7 @@ const filters = {
   },
   durationFormat: (value) => {
     if (!value)
-      return "--:--";
+      return "00:00";
     const minute = Math.floor(value / 6e4);
     const second = Math.floor(value % 6e4 / 1e3);
     const addZero = (num) => num < 10 ? "0" + num : num;

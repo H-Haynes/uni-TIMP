@@ -3,6 +3,7 @@ var common_vendor = require("../../common/vendor.js");
 const _sfc_main = {
   setup(__props) {
     const store = common_vendor.useStore();
+    const $filters = common_vendor.inject("$filters");
     const $eventBus = common_vendor.inject("$eventBus");
     const next = () => {
       $eventBus.emit("playNext");
@@ -36,9 +37,12 @@ const _sfc_main = {
     };
     const setCurrentTime = (e) => {
       const query = common_vendor.index.createSelectorQuery().in(this);
+      const query2 = common_vendor.index.createSelectorQuery().in(this);
       query.select("#progress").boundingClientRect((data) => {
-        const percent = e.detail.x / data.width;
-        store.state.audioManager.startTime = store.state.audioInfo.time / 1e3 * percent;
+        query2.select("#duration").boundingClientRect((durationData) => {
+          const percent = (e.detail.x - durationData.width * 1.2) / data.width;
+          store.state.audioManager.startTime = store.state.audioInfo.time / 1e3 * percent;
+        }).exec();
       }).exec();
     };
     return (_ctx, _cache) => {
@@ -55,28 +59,30 @@ const _sfc_main = {
           };
         }),
         e: "lyric" + (common_vendor.unref(highlightLine) - 6),
-        f: currentTime.value * 1e3 / common_vendor.unref(store).state.audioInfo.time * 100 + "%",
-        g: common_vendor.o(setCurrentTime),
-        h: common_vendor.o(prev),
-        i: common_vendor.unref(store).state.audioPlaying
+        f: common_vendor.t(common_vendor.unref($filters).durationFormat(currentTime.value * 1e3)),
+        g: currentTime.value * 1e3 / common_vendor.unref(store).state.audioInfo.time * 100 + "%",
+        h: common_vendor.o(setCurrentTime),
+        i: common_vendor.t(common_vendor.unref($filters).durationFormat(common_vendor.unref(store).state.audioInfo.time)),
+        j: common_vendor.o(prev),
+        k: common_vendor.unref(store).state.audioPlaying
       }, common_vendor.unref(store).state.audioPlaying ? {
-        j: common_vendor.o(togglePlay)
+        l: common_vendor.o(togglePlay)
       } : {
-        k: common_vendor.o(togglePlay)
+        m: common_vendor.o(togglePlay)
       }, {
-        l: common_vendor.o(next),
-        m: common_vendor.unref(store).state.playMode == 0
+        n: common_vendor.o(next),
+        o: common_vendor.unref(store).state.playMode == 0
       }, common_vendor.unref(store).state.playMode == 0 ? {
-        n: common_vendor.o(toggleMode)
-      } : common_vendor.unref(store).state.playMode == 1 ? {
         p: common_vendor.o(toggleMode)
-      } : common_vendor.unref(store).state.playMode == 2 ? {
+      } : common_vendor.unref(store).state.playMode == 1 ? {
         r: common_vendor.o(toggleMode)
+      } : common_vendor.unref(store).state.playMode == 2 ? {
+        t: common_vendor.o(toggleMode)
       } : {}, {
-        o: common_vendor.unref(store).state.playMode == 1,
-        q: common_vendor.unref(store).state.playMode == 2,
-        s: -1,
-        t: `url(${common_vendor.unref(store).state.audioInfo.picUrl})`
+        q: common_vendor.unref(store).state.playMode == 1,
+        s: common_vendor.unref(store).state.playMode == 2,
+        v: -1,
+        w: `url(${common_vendor.unref(store).state.audioInfo.picUrl})`
       });
     };
   }

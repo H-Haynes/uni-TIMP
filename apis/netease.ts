@@ -83,3 +83,10 @@ export const getSongDetailWy = (id: string|number) => {
 export const getLyricWy = (id) => {
     return request({url:`${prefix}/lyric?id=${id}`});
 };
+
+// 搜索(多重匹配)
+
+export const searchWy = (keyword:string) => {
+    return request({url:`${prefix}/search/search/multimatch?keywords=${keyword}`});
+
+};

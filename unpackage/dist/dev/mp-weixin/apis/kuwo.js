@@ -54,6 +54,9 @@ const getSongDetailKW = (id) => {
 const getLyricKW = (id) => {
   return request({ url: `${prefix}/kuwo/lrc?musicId=${id}` });
 };
+const searchKW = (keyword) => {
+  return request({ url: `${prefix}/kuwo/search/searchMusicBykeyWord?key=${keyword}` });
+};
 exports.getAlbumDetailKW = getAlbumDetailKW;
 exports.getAlbumListKW = getAlbumListKW;
 exports.getBannerKW = getBannerKW;
@@ -64,3 +67,4 @@ exports.getRankListKW = getRankListKW;
 exports.getRankMusicListKW = getRankMusicListKW;
 exports.getRecommendKW = getRecommendKW;
 exports.getSongDetailKW = getSongDetailKW;
+exports.searchKW = searchKW;

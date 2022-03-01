@@ -51,6 +51,9 @@ const getSongPicQQ = (id) => {
 const getLyricQQ = (id) => {
   return request({ url: `${prefix}/getLyric?songmid=${id}` });
 };
+const searchQQ = (keyword) => {
+  return request({ url: `${prefix}/getSmartbox?key=${keyword}&limit=30` });
+};
 exports.getAlbumDetailQQ = getAlbumDetailQQ;
 exports.getAlbumListQQ = getAlbumListQQ;
 exports.getCategoryListQQ = getCategoryListQQ;
@@ -61,3 +64,4 @@ exports.getRecommendQQ = getRecommendQQ;
 exports.getSongInfoQQ = getSongInfoQQ;
 exports.getSongPicQQ = getSongPicQQ;
 exports.getSongUrlQQ = getSongUrlQQ;
+exports.searchQQ = searchQQ;

@@ -90,3 +90,9 @@ export const getSongDetailKW = (id:string|number) => {
 export const getLyricKW = (id:string|number) => {
     return request({url:`${prefix}/kuwo/lrc?musicId=${id}`});
 };
+
+// 搜索
+
+export const searchKW = (keyword:string) => {
+    return request({url:`${prefix}/kuwo/search/searchMusicBykeyWord?key=${keyword}`});
+};

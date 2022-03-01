@@ -44,6 +44,9 @@ const getSongDetailKG = (id) => {
     url: `${prefix}/kugou/playInfo?id=${id}`
   });
 };
+const searchKG = (keyword, page = 1) => {
+  return request({ url: `${prefix}/kugou/search?keywords=${keyword}&page=${page}` });
+};
 exports.getAlbumDetailKG = getAlbumDetailKG;
 exports.getAlbumListKG = getAlbumListKG;
 exports.getCategoryListKG = getCategoryListKG;
@@ -51,3 +54,4 @@ exports.getRankListKG = getRankListKG;
 exports.getRankMusicListKG = getRankMusicListKG;
 exports.getRecommendKG = getRecommendKG;
 exports.getSongDetailKG = getSongDetailKG;
+exports.searchKG = searchKG;

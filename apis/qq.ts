@@ -90,3 +90,8 @@ export const getSongPicQQ = (id:string|number) => {
 export const getLyricQQ = (id:number|string) => {
     return request({url:`${prefix}/getLyric?songmid=${id}`});
 };
+
+// 搜索
+export const searchQQ = (keyword:string) => {
+    return request({url:`${prefix}/getSmartbox?key=${keyword}&limit=30`});
+};

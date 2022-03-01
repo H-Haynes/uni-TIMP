@@ -79,3 +79,8 @@ export const getKGLyric = (id:string) =>{
     return request({url:`${prefix}/kugou/lyric?id=${id}`});
 };
 
+
+// 搜索
+export const searchKG = (keyword:string,page=1) => {
+    return request({url:`${prefix}/kugou/search?keywords=${keyword}&page=${page}`});
+};

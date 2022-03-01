@@ -2,7 +2,7 @@
 	<view class="content flex flex-col h-full">
 		<view class="flex items-center  shadow-sm shadow-inner w-full pl-2 py-2">
 			<text class="iconfont text-2xl icon-yuyin linear-text px-2"></text>
-			<input class="flex-1 rounded-2xl bg-gradient-to-r from-blue-100 to-purple-100 px-2 text-sm h-8" placeholder="请输入歌曲名" />
+			<input confirm-type="搜索" @confirm="toSearch" class="flex-1 rounded-2xl bg-gradient-to-r from-blue-100 to-purple-100 px-2 text-sm h-8" placeholder="请输入歌曲名" />
 			<text class="iconfont text-2xl linear-text icon-tinggeshiqu text-blue-500 px-2"></text>
 		</view>
 		<scroll-view scroll-x="true" :show-scrollbar="false" class="hide-scroll-bar whitespace-nowrap flex leading-10 text-gray-600">
@@ -54,6 +54,12 @@
 			default: return mine;
 		}
 	})
+	
+	const toSearch = (e) =>{
+		uni.navigateTo({
+			url:`/pages/search/search?keywords=${e.detail.value}`,
+		});
+	}
 	
 </script>
 <style>

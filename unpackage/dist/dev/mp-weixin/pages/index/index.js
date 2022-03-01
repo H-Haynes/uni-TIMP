@@ -28,23 +28,29 @@ const _sfc_main = {
           return mine;
       }
     });
+    const toSearch = (e) => {
+      common_vendor.index.navigateTo({
+        url: `/pages/search/search?keywords=${e.detail.value}`
+      });
+    };
     return (_ctx, _cache) => {
       return {
-        a: common_vendor.o(($event) => platform.value = 0),
-        b: platform.value === 0 ? 1 : "",
-        c: common_vendor.o(($event) => platform.value = 1),
-        d: platform.value === 1 ? 1 : "",
-        e: common_vendor.o(($event) => platform.value = 2),
-        f: platform.value === 2 ? 1 : "",
-        g: common_vendor.o(($event) => platform.value = 3),
-        h: platform.value === 3 ? 1 : "",
-        i: common_vendor.o(($event) => platform.value = 4),
-        j: platform.value === 4 ? 1 : "",
-        k: platform.value === 0,
-        l: platform.value === 1,
-        m: platform.value === 2,
-        n: platform.value === 3,
-        o: platform.value === 4
+        a: common_vendor.o(toSearch),
+        b: common_vendor.o(($event) => platform.value = 0),
+        c: platform.value === 0 ? 1 : "",
+        d: common_vendor.o(($event) => platform.value = 1),
+        e: platform.value === 1 ? 1 : "",
+        f: common_vendor.o(($event) => platform.value = 2),
+        g: platform.value === 2 ? 1 : "",
+        h: common_vendor.o(($event) => platform.value = 3),
+        i: platform.value === 3 ? 1 : "",
+        j: common_vendor.o(($event) => platform.value = 4),
+        k: platform.value === 4 ? 1 : "",
+        l: platform.value === 0,
+        m: platform.value === 1,
+        n: platform.value === 2,
+        o: platform.value === 3,
+        p: platform.value === 4
       };
     };
   }

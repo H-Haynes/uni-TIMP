@@ -753,11 +753,17 @@ input::-ms-input-placeholder {
 .border {
   border-width: 1px;
 }
+.border\:1px {
+  border-width: 1px;
+}
 .border-b {
   border-bottom-width: 1px;
 }
 .border-b-2 {
   border-bottom-width: 2px;
+}
+.border-r {
+  border-right-width: 1px;
 }
 .inline-block {
   display: inline-block;
@@ -843,6 +849,9 @@ input::-ms-input-placeholder {
 .h-48 {
   height: 12rem;
 }
+.h-7 {
+  height: 1.75rem;
+}
 .h-112 {
   height: 28rem;
 }
@@ -873,6 +882,14 @@ input::-ms-input-placeholder {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+.text-8xl {
+  font-size: 6rem;
+  line-height: 1;
 }
 .leading-5 {
   line-height: 1.25rem;
@@ -936,6 +953,12 @@ input::-ms-input-placeholder {
 }
 .mr-4 {
   margin-right: 1rem;
+}
+.ml-4 {
+  margin-left: 1rem;
+}
+.mt-1 {
+  margin-top: 0.25rem;
 }
 .overflow-hidden {
   overflow: hidden;
@@ -1135,6 +1158,9 @@ input::-ms-input-placeholder {
 .w-0 {
   width: 0px;
 }
+.w-20 {
+  width: 5rem;
+}
 .z-50 {
   z-index: 50;
 }
@@ -1189,6 +1215,9 @@ input::-ms-input-placeholder {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 .duration {
+  transition-duration: 150ms;
+}
+.\.duration {
   transition-duration: 150ms;
 }
 .filter {
