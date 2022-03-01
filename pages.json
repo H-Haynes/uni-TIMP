@@ -19,6 +19,7 @@
             "path" : "pages/lyric/lyric",
             "style" :                                                                                    
             {
+				"navigationStyle":"custom",
                 "navigationBarTitleText": "",
 				"navigationBarBackgroundColor":"#1F2937",
                 "enablePullDownRefresh": false

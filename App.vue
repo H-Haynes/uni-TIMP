@@ -178,11 +178,31 @@
 				}
 				const songUrl = await getSongUrl(id,platform);
 				if(!songUrl){
-					return uni.showToast({
+					uni.showToast({
 						title:'暂无播放地址',
-						icon:''
-					})
+						icon:'none'
+					});
+					// 如果是自动切歌的，此处自动触发下一首
+					if(auto){
+						store.commit('setAudioBaseInfo',{
+							id,
+							platform,
+						});
+						$eventBus.emit('playNext');
+					}
+					
+					return ;
 				}
+				// 更改过进度的重置开始时间;
+				// #ifdef H5
+					store.state.audioManager.currentTime = 0;
+				// #endif
+				
+				// #ifndef H5
+					store.state.audioManager.startTime = 0;
+				// #endif
+				 
+				
 				const songInfo = await getSongInfo(id,platform);
 				songInfo.src = songUrl;
 				store.commit('setAudioInfo',{

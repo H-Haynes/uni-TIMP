@@ -1,5 +1,5 @@
 <template>
-	<view class="bg-gray-800 h-full w-full flex flex-col text-gray-300 gap-5 border-red-500">
+	<view class="bg-gray-800 bg-opacity-50 h_full relative w-full  flex flex-col text-gray-300 p-4 pt-24 border-red-500">
 		<view class="flex justify-around items-center px-8 ">
 			<image class="w-24 h-24 rounded" :src="store.state.audioInfo.picUrl" />
 			<view class="flex-1 truncate ml-5 flex flex-col justify-around">
@@ -18,16 +18,48 @@
 			</view>
 		</scroll-view>
 		
-		<view class="mt-5 flex flex-1 items-center justify-around ">
-			<text @click="prev" class="iconfont icon-shangyishou"></text>
-			<text v-if="store.state.audioPlaying" @click="togglePlay" class="iconfont icon-zantingtingzhi"></text>
-			<text v-else  @click="togglePlay" class="iconfont icon-bofang"></text>
-			<text @click="next" class="iconfont icon-xiayishou"></text>
-			<text @click="toggleMode" v-if="store.state.playMode==0" class="iconfont icon-xunhuan"></text>
-			<text @click="toggleMode" v-else-if="store.state.playMode == 1" class="iconfont icon-suijibofang"></text>
-			<text @click="toggleMode" v-else-if="store.state.playMode == 2" class="iconfont icon-danquxunhuan"></text>
+		<view class="mt-5 flex-1  flex flex-col">
+			<view class=" h-1">
+				<!-- <movable-area class="h-1 px-1 bg-gray-400 w-full relative overflow-x-hidden">
+					<movable-view style="left:0" class="absolute top-0 h-full w-full bg-white rounded">
+						<text class="absolute w-3 h-3 rounded-full -right-1 -top-1 bg-white"></text>
+					</movable-view>
+				</movable-area> -->
+				<view id="progress" class="h-1  bg-gray-400 w-full relative" @click="setCurrentTime">
+					<view :style="{width:currentTime * 1000 / store.state.audioInfo.time * 100 + '%'}" 
+						class="absolute top-0 h-full w-0 bg-white rounded">
+						<text class="absolute w-3 h-3 rounded-full -right-1 -top-1 bg-white"></text>
+					</view>
+				</view>
+			</view>
+			<view class="flex flex-1 items-center justify-around">
+				<text @click="prev" class="iconfont icon-shangyishou"></text>
+				<text v-if="store.state.audioPlaying" @click="togglePlay" class="iconfont icon-zantingtingzhi"></text>
+				<text v-else  @click="togglePlay" class="iconfont icon-bofang"></text>
+				<text @click="next" class="iconfont icon-xiayishou"></text>
+				<text @click="toggleMode" v-if="store.state.playMode==0" class="iconfont icon-xunhuan"></text>
+				<text @click="toggleMode" v-else-if="store.state.playMode == 1" class="iconfont icon-suijibofang"></text>
+				<text @click="toggleMode" v-else-if="store.state.playMode == 2" class="iconfont icon-danquxunhuan"></text>
+			</view>
 		</view>
 		
+		<!-- <image mode="heightFix" :src="store.state.audioInfo.picUrl" :style="{
+				'z-index':-1,
+				filter:'blur(1px)',
+				opacity:0.8
+				}" 
+			class="absolute left-0 top-0 w-full h-full">
+		</image> -->
+		
+		<view  :style="{
+				'z-index':-1,
+				filter:'blur(15px)',
+				opacity:0.8,
+				'background-image':`url(${store.state.audioInfo.picUrl})`,
+				'background-size':'auto 100%',
+				}" 
+			class="absolute left-0 top-0 w-full h-full">
+		</view>
 	</view>
 </template>
 
@@ -79,12 +111,28 @@
 
 		$eventBus.emit(store.state.audioPlaying ? 'pause' : 'play')
 	}
+	
+	const setCurrentTime = (e) => {
+		const query = uni.createSelectorQuery().in(this);
+		query.select('#progress').boundingClientRect(data => {
+		  // 用当前点击位置/宽度获取百分比，然后根据百分比设置时间;
+		  const percent = e.detail.x / data.width;
+		  
+		  // #ifdef H5
+			store.state.audioManager.currentTime = store.state.audioInfo.time/1000 * percent;
+		  // #endif
+		  
+		  // #ifndef H5
+			store.state.audioManager.startTime = store.state.audioInfo.time/1000 * percent;
+		  // #endif
+		}).exec();
+	}
 		
 	
 </script>
 
 <style>
-	.h-full{
+	.h_full{
 		height:100vh;
 	}
 	.lyric-head{

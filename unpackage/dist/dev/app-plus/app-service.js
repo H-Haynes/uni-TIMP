@@ -1823,7 +1823,7 @@ var __spreadValues = (a, b) => {
         if (res.data.response.code === 0) {
           albumList.value = res.data.response.playlist.data.v_playlist.map((ele) => ({
             name: ele.title,
-            pic: ele.cover_url_medium,
+            pic: ele.cover_url_small,
             id: ele.tid
           }));
           bannerList.value = res.data.response.focus.data.content.map((ele) => ({
@@ -8072,8 +8072,15 @@ var __spreadValues = (a, b) => {
       const togglePlay = () => {
         $eventBus.emit(store2.state.audioPlaying ? "pause" : "play");
       };
+      const setCurrentTime = (e) => {
+        const query = uni.createSelectorQuery().in(this);
+        query.select("#progress").boundingClientRect((data) => {
+          const percent = e.detail.x / data.width;
+          store2.state.audioManager.startTime = store2.state.audioInfo.time / 1e3 * percent;
+        }).exec();
+      };
       return (_ctx, _cache) => {
-        return vue.openBlock(), vue.createElementBlock("view", { class: "bg-gray-800 h-full w-full flex flex-col text-gray-300 gap-5 border-red-500" }, [
+        return vue.openBlock(), vue.createElementBlock("view", { class: "bg-gray-800 bg-opacity-50 h_full relative w-full flex flex-col text-gray-300 p-4 pt-24 border-red-500" }, [
           vue.createElementVNode("view", { class: "flex justify-around items-center px-8" }, [
             vue.createElementVNode("image", {
               class: "w-24 h-24 rounded",
@@ -8098,38 +8105,72 @@ var __spreadValues = (a, b) => {
               }, vue.toDisplayString(item.words), 11, ["id"]);
             }), 128))
           ], 8, ["scroll-into-view"]),
-          vue.createElementVNode("view", { class: "mt-5 flex flex-1 items-center justify-around" }, [
-            vue.createElementVNode("text", {
-              onClick: prev,
-              class: "iconfont icon-shangyishou"
+          vue.createElementVNode("view", { class: "mt-5 flex-1 flex flex-col" }, [
+            vue.createElementVNode("view", { class: "h-1" }, [
+              vue.createCommentVNode(' <movable-area class="h-1 px-1 bg-gray-400 w-full relative overflow-x-hidden">\n					<movable-view style="left:0" class="absolute top-0 h-full w-full bg-white rounded">\n						<text class="absolute w-3 h-3 rounded-full -right-1 -top-1 bg-white"></text>\n					</movable-view>\n				</movable-area> '),
+              vue.createElementVNode("view", {
+                id: "progress",
+                class: "h-1 bg-gray-400 w-full relative",
+                onClick: setCurrentTime
+              }, [
+                vue.createElementVNode("view", {
+                  style: vue.normalizeStyle({ width: currentTime.value * 1e3 / vue.unref(store2).state.audioInfo.time * 100 + "%" }),
+                  class: "absolute top-0 h-full w-0 bg-white rounded"
+                }, [
+                  vue.createElementVNode("text", { class: "absolute w-3 h-3 rounded-full -right-1 -top-1 bg-white" })
+                ], 4)
+              ])
+            ]),
+            vue.createElementVNode("view", { class: "flex flex-1 items-center justify-around" }, [
+              vue.createElementVNode("text", {
+                onClick: prev,
+                class: "iconfont icon-shangyishou"
+              }),
+              vue.unref(store2).state.audioPlaying ? (vue.openBlock(), vue.createElementBlock("text", {
+                key: 0,
+                onClick: togglePlay,
+                class: "iconfont icon-zantingtingzhi"
+              })) : (vue.openBlock(), vue.createElementBlock("text", {
+                key: 1,
+                onClick: togglePlay,
+                class: "iconfont icon-bofang"
+              })),
+              vue.createElementVNode("text", {
+                onClick: next,
+                class: "iconfont icon-xiayishou"
+              }),
+              vue.unref(store2).state.playMode == 0 ? (vue.openBlock(), vue.createElementBlock("text", {
+                key: 2,
+                onClick: toggleMode,
+                class: "iconfont icon-xunhuan"
+              })) : vue.unref(store2).state.playMode == 1 ? (vue.openBlock(), vue.createElementBlock("text", {
+                key: 3,
+                onClick: toggleMode,
+                class: "iconfont icon-suijibofang"
+              })) : vue.unref(store2).state.playMode == 2 ? (vue.openBlock(), vue.createElementBlock("text", {
+                key: 4,
+                onClick: toggleMode,
+                class: "iconfont icon-danquxunhuan"
+              })) : vue.createCommentVNode("v-if", true)
+            ])
+          ]),
+          vue.createCommentVNode(` <image mode="heightFix" :src="store.state.audioInfo.picUrl" :style="{
+				'z-index':-1,
+				filter:'blur(1px)',
+				opacity:0.8
+				}" 
+			class="absolute left-0 top-0 w-full h-full">
+		</image> `),
+          vue.createElementVNode("view", {
+            style: vue.normalizeStyle({
+              "z-index": -1,
+              filter: "blur(15px)",
+              opacity: 0.8,
+              "background-image": `url(${vue.unref(store2).state.audioInfo.picUrl})`,
+              "background-size": "auto 100%"
             }),
-            vue.unref(store2).state.audioPlaying ? (vue.openBlock(), vue.createElementBlock("text", {
-              key: 0,
-              onClick: togglePlay,
-              class: "iconfont icon-zantingtingzhi"
-            })) : (vue.openBlock(), vue.createElementBlock("text", {
-              key: 1,
-              onClick: togglePlay,
-              class: "iconfont icon-bofang"
-            })),
-            vue.createElementVNode("text", {
-              onClick: next,
-              class: "iconfont icon-xiayishou"
-            }),
-            vue.unref(store2).state.playMode == 0 ? (vue.openBlock(), vue.createElementBlock("text", {
-              key: 2,
-              onClick: toggleMode,
-              class: "iconfont icon-xunhuan"
-            })) : vue.unref(store2).state.playMode == 1 ? (vue.openBlock(), vue.createElementBlock("text", {
-              key: 3,
-              onClick: toggleMode,
-              class: "iconfont icon-suijibofang"
-            })) : vue.unref(store2).state.playMode == 2 ? (vue.openBlock(), vue.createElementBlock("text", {
-              key: 4,
-              onClick: toggleMode,
-              class: "iconfont icon-danquxunhuan"
-            })) : vue.createCommentVNode("v-if", true)
-          ])
+            class: "absolute left-0 top-0 w-full h-full"
+          }, null, 4)
         ]);
       };
     }
@@ -8235,7 +8276,6 @@ var __spreadValues = (a, b) => {
       if (result.data.code == 200 && result.data.data[0].url) {
         return result.data.data[0].url;
       } else {
-        ElMessage.error("\u6682\u65E0\u64AD\u653E\u5730\u5740");
         return false;
       }
     } else if (platformType == 2) {
@@ -8243,7 +8283,6 @@ var __spreadValues = (a, b) => {
       if (!result.data.data.playUrl[id].error) {
         return result.data.data.playUrl[id].url;
       } else {
-        ElMessage.error(result.data.data.playUrl[id].error);
         return false;
       }
     } else if (platformType == 3) {
@@ -8251,7 +8290,6 @@ var __spreadValues = (a, b) => {
       if (result.data.code === 200) {
         return result.data.data;
       } else {
-        ElMessage.error("\u6682\u65E0\u64AD\u653E\u5730\u5740");
         return false;
       }
     } else if (platformType == 4) {
@@ -8425,11 +8463,20 @@ var __spreadValues = (a, b) => {
         }
         const songUrl = await getSongUrl(id, platform2);
         if (!songUrl) {
-          return uni.showToast({
+          uni.showToast({
             title: "\u6682\u65E0\u64AD\u653E\u5730\u5740",
-            icon: ""
+            icon: "none"
           });
+          if (auto) {
+            store2.commit("setAudioBaseInfo", {
+              id,
+              platform: platform2
+            });
+            $eventBus.emit("playNext");
+          }
+          return;
         }
+        store2.state.audioManager.startTime = 0;
         const songInfo = await getSongInfo(id, platform2);
         songInfo.src = songUrl;
         store2.commit("setAudioInfo", {
@@ -8511,13 +8558,13 @@ var __spreadValues = (a, b) => {
       });
     },
     onShow: function() {
-      formatAppLog("log", "at App.vue:285", "App Show");
+      formatAppLog("log", "at App.vue:305", "App Show");
     },
     onHide: function() {
-      formatAppLog("log", "at App.vue:288", "App Hide");
+      formatAppLog("log", "at App.vue:308", "App Hide");
     },
     onLoad: function() {
-      formatAppLog("log", "at App.vue:291", 9999);
+      formatAppLog("log", "at App.vue:311", 9999);
     }
   };
   function mitt(n) {

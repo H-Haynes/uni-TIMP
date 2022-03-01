@@ -637,6 +637,14 @@ uni-input::-ms-input-placeholder {
   --tw-bg-opacity: 1;
   background-color: rgba(31, 41, 55, var(--tw-bg-opacity));
 }
+.bg-gray-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(156, 163, 175, var(--tw-bg-opacity));
+}
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+}
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
@@ -646,6 +654,9 @@ uni-input::-ms-input-placeholder {
 }
 .to-purple-100 {
   --tw-gradient-to: rgba(237, 233, 254, var(--tw-to-opacity, 1));
+}
+.bg-opacity-50 {
+  --tw-bg-opacity: 0.5;
 }
 .border-gray-100 {
   --tw-border-opacity: 1;
@@ -740,14 +751,11 @@ uni-input::-ms-input-placeholder {
 .h-24 {
   height: 6rem;
 }
-.h-96 {
-  height: 24rem;
+.h-1 {
+  height: 0.25rem;
 }
-.h-16 {
-  height: 4rem;
-}
-.\.h-full {
-  height: 100%;
+.h-3 {
+  height: 0.75rem;
 }
 .text-sm {
   font-size: 0.875rem;
@@ -761,6 +769,10 @@ uni-input::-ms-input-placeholder {
   font-size: 1.875rem;
   line-height: 2.25rem;
 }
+.text-2xl {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
@@ -772,10 +784,6 @@ uni-input::-ms-input-placeholder {
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
-}
-.text-2xl {
-  font-size: 1.5rem;
-  line-height: 2rem;
 }
 .leading-5 {
   line-height: 1.25rem;
@@ -840,6 +848,9 @@ uni-input::-ms-input-placeholder {
 .overflow-hidden {
   overflow: hidden;
 }
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
 .overflow-y-scroll {
   overflow-y: scroll;
 }
@@ -850,13 +861,13 @@ uni-input::-ms-input-placeholder {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
-.py-1 {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-}
 .py-3 {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
+}
+.px-3 {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
 }
 .px-4 {
   padding-left: 1rem;
@@ -870,19 +881,26 @@ uni-input::-ms-input-placeholder {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
 .px-8 {
   padding-left: 2rem;
   padding-right: 2rem;
 }
-.px-3 {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
 }
 .pl-2 {
   padding-left: 0.5rem;
 }
 .pb-12 {
   padding-bottom: 3rem;
+}
+.pt-24 {
+  padding-top: 6rem;
 }
 .fixed {
   position: fixed;
@@ -904,6 +922,12 @@ uni-input::-ms-input-placeholder {
 }
 .-top-2 {
   top: -0.5rem;
+}
+.-right-1 {
+  right: -0.25rem;
+}
+.-top-1 {
+  top: -0.25rem;
 }
 .shadow-sm {
   --tw-shadow: 0 1px 2px 0 rgb(0 0 0/0.05);
@@ -991,23 +1015,11 @@ uni-input::-ms-input-placeholder {
 .w-24 {
   width: 6rem;
 }
-.w-56 {
-  width: 14rem;
+.w-3 {
+  width: 0.75rem;
 }
-.w-48 {
-  width: 12rem;
-}
-.gap-4 {
-  grid-gap: 1rem;
-  gap: 1rem;
-}
-.\.gap-4 {
-  grid-gap: 1rem;
-  gap: 1rem;
-}
-.gap-5 {
-  grid-gap: 1.25rem;
-  gap: 1.25rem;
+.w-0 {
+  width: 0px;
 }
 .\.gap-5 {
   grid-gap: 1.25rem;
@@ -1048,6 +1060,12 @@ uni-input::-ms-input-placeholder {
   --tw-sepia: var(--tw-empty,/*!*/ /*!*/);
   --tw-drop-shadow: var(--tw-empty,/*!*/ /*!*/);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.blur\(1px\) {
+  --tw-blur: blur(8px);
+}
+.blur\(15px\) {
+  --tw-blur: blur(8px);
 }
 .grayscale {
   --tw-grayscale: grayscale(100%);

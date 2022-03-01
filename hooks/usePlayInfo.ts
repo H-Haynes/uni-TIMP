@@ -92,7 +92,6 @@ export const getSongUrl = async (id:string|number,platformType:platform)=>{
       if(result.data.code == 200 && result.data.data[0].url){
         return result.data.data[0].url;
       }else{
-        ElMessage.error('暂无播放地址');
         return false;
       }
     }else if(platformType == platform.qq){
@@ -100,7 +99,7 @@ export const getSongUrl = async (id:string|number,platformType:platform)=>{
       if(!result.data.data.playUrl[id].error){
         return result.data.data.playUrl[id].url;
       }else{
-        ElMessage.error(result.data.data.playUrl[id].error);
+        // ElMessage.error(result.data.data.playUrl[id].error);
         return false;
       }
     }else if(platformType == platform.kw){
@@ -109,7 +108,7 @@ export const getSongUrl = async (id:string|number,platformType:platform)=>{
       if(result.data.code === 200){
         return result.data.data;
       }else{
-        ElMessage.error('暂无播放地址');
+        // ElMessage.error('暂无播放地址');
         return false;
       }
     }else if(platformType == platform.kg){

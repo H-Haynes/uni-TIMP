@@ -1,4 +1,4 @@
-.h-full {
+.h_full {
   height: 100vh;
 }
 .lyric-head {

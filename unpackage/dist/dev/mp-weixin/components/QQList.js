@@ -21,7 +21,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       if (res.data.response.code === 0) {
         albumList.value = res.data.response.playlist.data.v_playlist.map((ele) => ({
           name: ele.title,
-          pic: ele.cover_url_medium,
+          pic: ele.cover_url_small,
           id: ele.tid
         }));
         bannerList.value = res.data.response.focus.data.content.map((ele) => ({

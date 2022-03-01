@@ -635,6 +635,22 @@ input::-ms-input-placeholder {
   --tw-bg-opacity: 1;
   background-color: rgba(31, 41, 55, var(--tw-bg-opacity));
 }
+.bg-red-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(252, 165, 165, var(--tw-bg-opacity));
+}
+.bg-gray-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(156, 163, 175, var(--tw-bg-opacity));
+}
+.bg-orange-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(249, 115, 22, var(--tw-bg-opacity));
+}
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgba(255, 255, 255, var(--tw-bg-opacity));
+}
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
@@ -644,6 +660,9 @@ input::-ms-input-placeholder {
 }
 .to-purple-100 {
   --tw-gradient-to: rgba(237, 233, 254, var(--tw-to-opacity, 1));
+}
+.bg-opacity-50 {
+  --tw-bg-opacity: 0.5;
 }
 .border-gray-100 {
   --tw-border-opacity: 1;
@@ -747,6 +766,18 @@ input::-ms-input-placeholder {
 .\.h-full {
   height: 100%;
 }
+.h-3 {
+  height: 0.75rem;
+}
+.h-1 {
+  height: 0.25rem;
+}
+.h-4 {
+  height: 1rem;
+}
+.h-112 {
+  height: 28rem;
+}
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -838,6 +869,9 @@ input::-ms-input-placeholder {
 .overflow-hidden {
   overflow: hidden;
 }
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
 .overflow-y-scroll {
   overflow-y: scroll;
 }
@@ -876,11 +910,18 @@ input::-ms-input-placeholder {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 }
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
 .pl-2 {
   padding-left: 0.5rem;
 }
 .pb-12 {
   padding-bottom: 3rem;
+}
+.pt-24 {
+  padding-top: 6rem;
 }
 .fixed {
   position: fixed;
@@ -902,6 +943,15 @@ input::-ms-input-placeholder {
 }
 .-top-2 {
   top: -0.5rem;
+}
+.right-0 {
+  right: 0px;
+}
+.-right-1 {
+  right: -0.25rem;
+}
+.-top-1 {
+  top: -0.25rem;
 }
 .shadow-sm {
   --tw-shadow: 0 1px 2px 0 rgb(0 0 0/0.05);
@@ -995,6 +1045,21 @@ input::-ms-input-placeholder {
 .w-48 {
   width: 12rem;
 }
+.w-1\/2 {
+  width: 50%;
+}
+.w-4 {
+  width: 1rem;
+}
+.w-8 {
+  width: 2rem;
+}
+.w-3 {
+  width: 0.75rem;
+}
+.w-0 {
+  width: 0px;
+}
 .gap-4 {
   grid-gap: 1rem;
   gap: 1rem;
@@ -1046,6 +1111,24 @@ input::-ms-input-placeholder {
   --tw-sepia: var(--tw-empty,/*!*/ /*!*/);
   --tw-drop-shadow: var(--tw-empty,/*!*/ /*!*/);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.blur\(2px\) {
+  --tw-blur: blur(8px);
+}
+.blur\(5px\) {
+  --tw-blur: blur(8px);
+}
+.blur\(10px\) {
+  --tw-blur: blur(8px);
+}
+.blur\(1px\) {
+  --tw-blur: blur(8px);
+}
+.blur\(20px\) {
+  --tw-blur: blur(8px);
+}
+.blur\(15px\) {
+  --tw-blur: blur(8px);
 }
 .grayscale {
   --tw-grayscale: grayscale(100%);

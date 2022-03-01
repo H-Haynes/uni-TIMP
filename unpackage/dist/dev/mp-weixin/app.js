@@ -120,11 +120,20 @@ const _sfc_main = {
       }
       const songUrl = await hooks_usePlayInfo.getSongUrl(id, platform);
       if (!songUrl) {
-        return common_vendor.index.showToast({
+        common_vendor.index.showToast({
           title: "\u6682\u65E0\u64AD\u653E\u5730\u5740",
-          icon: ""
+          icon: "none"
         });
+        if (auto) {
+          store.commit("setAudioBaseInfo", {
+            id,
+            platform
+          });
+          $eventBus.emit("playNext");
+        }
+        return;
       }
+      store.state.audioManager.startTime = 0;
       const songInfo = await hooks_usePlayInfo.getSongInfo(id, platform);
       songInfo.src = songUrl;
       store.commit("setAudioInfo", {

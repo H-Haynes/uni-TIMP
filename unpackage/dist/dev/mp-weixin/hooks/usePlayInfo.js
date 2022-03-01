@@ -90,7 +90,6 @@ const getSongUrl = async (id, platformType) => {
     if (result.data.code == 200 && result.data.data[0].url) {
       return result.data.data[0].url;
     } else {
-      ElMessage.error("\u6682\u65E0\u64AD\u653E\u5730\u5740");
       return false;
     }
   } else if (platformType == 2) {
@@ -98,7 +97,6 @@ const getSongUrl = async (id, platformType) => {
     if (!result.data.data.playUrl[id].error) {
       return result.data.data.playUrl[id].url;
     } else {
-      ElMessage.error(result.data.data.playUrl[id].error);
       return false;
     }
   } else if (platformType == 3) {
@@ -106,7 +104,6 @@ const getSongUrl = async (id, platformType) => {
     if (result.data.code === 200) {
       return result.data.data;
     } else {
-      ElMessage.error("\u6682\u65E0\u64AD\u653E\u5730\u5740");
       return false;
     }
   } else if (platformType == 4) {

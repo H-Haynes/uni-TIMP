@@ -34,6 +34,13 @@ const _sfc_main = {
     const togglePlay = () => {
       $eventBus.emit(store.state.audioPlaying ? "pause" : "play");
     };
+    const setCurrentTime = (e) => {
+      const query = common_vendor.index.createSelectorQuery().in(this);
+      query.select("#progress").boundingClientRect((data) => {
+        const percent = e.detail.x / data.width;
+        store.state.audioManager.startTime = store.state.audioInfo.time / 1e3 * percent;
+      }).exec();
+    };
     return (_ctx, _cache) => {
       return common_vendor.e({
         a: common_vendor.unref(store).state.audioInfo.picUrl,
@@ -48,24 +55,28 @@ const _sfc_main = {
           };
         }),
         e: "lyric" + (common_vendor.unref(highlightLine) - 5),
-        f: common_vendor.o(prev),
-        g: common_vendor.unref(store).state.audioPlaying
+        f: currentTime.value * 1e3 / common_vendor.unref(store).state.audioInfo.time * 100 + "%",
+        g: common_vendor.o(setCurrentTime),
+        h: common_vendor.o(prev),
+        i: common_vendor.unref(store).state.audioPlaying
       }, common_vendor.unref(store).state.audioPlaying ? {
-        h: common_vendor.o(togglePlay)
+        j: common_vendor.o(togglePlay)
       } : {
-        i: common_vendor.o(togglePlay)
+        k: common_vendor.o(togglePlay)
       }, {
-        j: common_vendor.o(next),
-        k: common_vendor.unref(store).state.playMode == 0
+        l: common_vendor.o(next),
+        m: common_vendor.unref(store).state.playMode == 0
       }, common_vendor.unref(store).state.playMode == 0 ? {
-        l: common_vendor.o(toggleMode)
-      } : common_vendor.unref(store).state.playMode == 1 ? {
         n: common_vendor.o(toggleMode)
-      } : common_vendor.unref(store).state.playMode == 2 ? {
+      } : common_vendor.unref(store).state.playMode == 1 ? {
         p: common_vendor.o(toggleMode)
+      } : common_vendor.unref(store).state.playMode == 2 ? {
+        r: common_vendor.o(toggleMode)
       } : {}, {
-        m: common_vendor.unref(store).state.playMode == 1,
-        o: common_vendor.unref(store).state.playMode == 2
+        o: common_vendor.unref(store).state.playMode == 1,
+        q: common_vendor.unref(store).state.playMode == 2,
+        s: -1,
+        t: `url(${common_vendor.unref(store).state.audioInfo.picUrl})`
       });
     };
   }
