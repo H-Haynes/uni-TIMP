@@ -1,7 +1,0 @@
-{
-  "component": true,
-  "usingComponents": {
-    "w-loading": "./w-loading/w-loading",
-    "my-banner": "./EtherealWheat-banner/specialBanner"
-  }
-}
