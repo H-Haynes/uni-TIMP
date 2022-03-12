@@ -48,7 +48,7 @@
 			placeholderText:'请输入歌单名称(20字内)',
 		}).then(res=>{
 			if(res.confirm){
-				if(res.content.trim().length > 20){
+				if(res.content.trim().length > 20 || !res.content.trim()){
 					return uni.showToast({
 						title:'名称20字内',
 						icon:'none'

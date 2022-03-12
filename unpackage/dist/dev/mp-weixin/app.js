@@ -151,7 +151,6 @@ const _sfc_main = {
       }
     });
     $eventBus.on("playSong", async ({ id, platform, auto = false, force = false }) => {
-      console.log(id, platform);
       if (!id)
         return;
       if (store.state.audioIdBaseInfo.id == id && !force) {
@@ -163,7 +162,8 @@ const _sfc_main = {
           title: "\u6682\u65E0\u64AD\u653E\u5730\u5740",
           icon: "none"
         });
-        if (auto) {
+        let index = store.state.playList.findIndex((ele) => ele.id == id && ele.platform == platform);
+        if (auto && index != store.state.playList.length - 1) {
           store.commit("setAudioBaseInfo", {
             id,
             platform

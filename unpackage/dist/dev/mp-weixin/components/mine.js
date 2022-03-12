@@ -11,7 +11,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
         placeholderText: "\u8BF7\u8F93\u5165\u6B4C\u5355\u540D\u79F0(20\u5B57\u5185)"
       }).then((res) => {
         if (res.confirm) {
-          if (res.content.trim().length > 20) {
+          if (res.content.trim().length > 20 || !res.content.trim()) {
             return common_vendor.index.showToast({
               title: "\u540D\u79F020\u5B57\u5185",
               icon: "none"

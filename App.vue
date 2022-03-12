@@ -228,7 +228,6 @@
 			// 3. 在播放列表中添加该歌曲(区分自动切歌，非自动切歌需要将歌曲加入播放列表)
 			// auto代表自动切歌，force代表强制切歌(用于单曲循环);
 			$eventBus.on('playSong',async({id,platform,auto=false,force=false})=>{
-				console.log(id,platform)
 				if(!id) return; // 无歌曲id不进行操作
 				if(store.state.audioIdBaseInfo.id == id && !force){
 					// 当前正在播放此歌曲
@@ -240,8 +239,10 @@
 						title:'暂无播放地址',
 						icon:'none'
 					});
-					// 如果是自动切歌的，此处自动触发下一首
-					if(auto){
+					// 如果是自动切歌的，此处自动触发下一首(最多到列表最后一首);
+					let index = store.state.playList.findIndex(ele=>ele.id == id && ele.platform == platform);
+					
+					if(auto && index != store.state.playList.length -1){
 						store.commit('setAudioBaseInfo',{
 							id,
 							platform,

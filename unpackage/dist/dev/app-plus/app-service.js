@@ -1317,7 +1317,7 @@ var __spreadValues = (a, b) => {
           placeholderText: "\u8BF7\u8F93\u5165\u6B4C\u5355\u540D\u79F0(20\u5B57\u5185)"
         }).then((res) => {
           if (res.confirm) {
-            if (res.content.trim().length > 20) {
+            if (res.content.trim().length > 20 || !res.content.trim()) {
               return uni.showToast({
                 title: "\u540D\u79F020\u5B57\u5185",
                 icon: "none"
@@ -8951,7 +8951,6 @@ var __spreadValues = (a, b) => {
         }
       });
       $eventBus.on("playSong", async ({ id, platform: platform2, auto = false, force = false }) => {
-        formatAppLog("log", "at App.vue:231", id, platform2);
         if (!id)
           return;
         if (store2.state.audioIdBaseInfo.id == id && !force) {
@@ -8963,7 +8962,8 @@ var __spreadValues = (a, b) => {
             title: "\u6682\u65E0\u64AD\u653E\u5730\u5740",
             icon: "none"
           });
-          if (auto) {
+          let index = store2.state.playList.findIndex((ele) => ele.id == id && ele.platform == platform2);
+          if (auto && index != store2.state.playList.length - 1) {
             store2.commit("setAudioBaseInfo", {
               id,
               platform: platform2
@@ -9063,13 +9063,13 @@ var __spreadValues = (a, b) => {
       }
     },
     onShow: function() {
-      formatAppLog("log", "at App.vue:394", "App Show");
+      formatAppLog("log", "at App.vue:395", "App Show");
     },
     onHide: function() {
-      formatAppLog("log", "at App.vue:397", "App Hide");
+      formatAppLog("log", "at App.vue:398", "App Hide");
     },
     onLoad: function() {
-      formatAppLog("log", "at App.vue:400", 9999);
+      formatAppLog("log", "at App.vue:401", 9999);
     }
   };
   function mitt(n) {
